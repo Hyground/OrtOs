@@ -1,0 +1,20 @@
+# Java / Kotlin
+target/
+build/
+.gradle/
+*.class
+
+# Android / IDE
+.idea/
+*.iml
+local.properties
+
+# Node
+node_modules/
+dist/
+
+# Environment and OS
+.env
+.DS_Store
+Thumbs.db
+

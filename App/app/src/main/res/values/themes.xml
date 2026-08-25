@@ -1,0 +1,7 @@
+<resources>
+    <style name="Theme.OrtOs" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">#315C8C</item>
+        <item name="android:fontFamily">sans</item>
+    </style>
+</resources>
+

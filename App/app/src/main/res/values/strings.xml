@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">OrtOs</string>
+    <string name="welcome_message">Hola desde Kotlin</string>
+</resources>
+

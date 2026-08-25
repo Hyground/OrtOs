@@ -1,0 +1,14 @@
+services:
+  api:
+    build:
+      context: ../API
+    ports:
+      - "8080:8080"
+
+  web:
+    build:
+      context: ../Web
+    depends_on:
+      - api
+    ports:
+      - "3000:80"
