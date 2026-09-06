@@ -1,7 +1,15 @@
-<resources>
-    <style name="Theme.OrtOs" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">#315C8C</item>
-        <item name="android:fontFamily">sans</item>
-    </style>
-</resources>
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
+    <style name="Base.Theme.OrtOs" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/brand_primary</item>
+        <item name="colorSecondary">@color/brand_secondary</item>
+        <item name="colorTertiary">@color/brand_tertiary</item>
+
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+
+    <style name="Theme.OrtOs" parent="Base.Theme.OrtOs" />
+</resources>
