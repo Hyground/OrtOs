@@ -3,13 +3,26 @@
 
     <style name="Base.Theme.OrtOs" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/brand_primary</item>
-        <item name="colorSecondary">@color/brand_secondary</item>
-        <item name="colorTertiary">@color/brand_tertiary</item>
+        <item name="colorOnPrimary">@color/brand_on_primary</item>
+        <item name="colorPrimaryContainer">@color/brand_primary</item>
+        <item name="colorOnPrimaryContainer">@color/brand_on_primary</item>
 
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:navigationBarColor">@android:color/transparent</item>
-        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:colorBackground">@color/light_background</item>
+        <item name="colorSurface">@color/light_surface</item>
+        <item name="colorSurfaceContainer">@color/light_surface</item>
+        <item name="colorOnSurface">@color/light_on_surface</item>
+        <item name="colorOnSurfaceVariant">@color/light_on_surface_variant</item>
+        <item name="colorOutline">@color/light_outline</item>
+
+        <item name="android:statusBarColor">@color/brand_primary</item>
+        <item name="android:navigationBarColor">?android:attr/colorBackground</item>
+        <item name="android:windowLightStatusBar">false</item>
     </style>
 
     <style name="Theme.OrtOs" parent="Base.Theme.OrtOs" />
+
+    <style name="ThemeOverlay.OrtOs.Toolbar" parent="ThemeOverlay.Material3.Dark">
+        <item name="colorOnSurface">@color/brand_on_primary</item>
+        <item name="colorOnSurfaceVariant">@color/brand_on_primary</item>
+    </style>
 </resources>

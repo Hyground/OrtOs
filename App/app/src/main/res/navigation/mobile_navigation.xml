@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@id/nav_home">
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="com.wave.gt.ortos.ui.home.HomeFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/nav_cita"
+        android:name="com.wave.gt.ortos.ui.cita.CitaFragment"
+        android:label="@string/menu_cita"
+        tools:layout="@layout/fragment_cita" />
+
+    <fragment
+        android:id="@+id/nav_pagos"
+        android:name="com.wave.gt.ortos.ui.pagos.PagosFragment"
+        android:label="@string/menu_pagos"
+        tools:layout="@layout/fragment_pagos" />
+
+    <fragment
+        android:id="@+id/nav_perfil"
+        android:name="com.wave.gt.ortos.ui.perfil.PerfilFragment"
+        android:label="@string/menu_perfil"
+        tools:layout="@layout/fragment_perfil" />
+
+    <fragment
+        android:id="@+id/nav_notificaciones"
+        android:name="com.wave.gt.ortos.ui.notificaciones.NotificacionesFragment"
+        android:label="@string/action_notificaciones"
+        tools:layout="@layout/fragment_notificaciones" />
+</navigation>
