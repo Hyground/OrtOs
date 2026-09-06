@@ -17,7 +17,11 @@ class AuthRepositoryImpl(
     private val useFakeBackend: Boolean
 ) : AuthRepository {
 
-    override suspend fun loginWithEmail(email: String, password: String): Outcome<AuthUser> {
+    override suspend fun loginWithEmail(
+        email: String,
+        password: String,
+        rememberUser: Boolean
+    ): Outcome<AuthUser> {
         val outcome = runCatching {
             if (useFakeBackend) {
                 fake.loginWithEmail(email, password)
@@ -26,7 +30,10 @@ class AuthRepositoryImpl(
             }
         }.getOrElse { return it.toOutcome() }
 
-        if (outcome is Outcome.Success) session.save(outcome.value)
+        if (outcome is Outcome.Success) {
+            session.save(outcome.value)
+            session.setRememberedEmail(if (rememberUser) outcome.value.email else null)
+        }
         return outcome
     }
 
@@ -54,6 +61,8 @@ class AuthRepositoryImpl(
             }
         }.getOrElse { it.toOutcome() }
     }
+
+    override fun rememberedEmail(): String? = session.rememberedEmail
 
     override fun currentUser(): AuthUser? = session.currentUser()
 

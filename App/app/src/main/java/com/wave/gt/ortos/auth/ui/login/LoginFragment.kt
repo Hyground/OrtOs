@@ -14,8 +14,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.wave.gt.ortos.R
 import com.wave.gt.ortos.auth.ui.AuthActivity
 import com.wave.gt.ortos.auth.ui.AuthViewModelFactory
-import com.wave.gt.ortos.auth.ui.toMessage
 import com.wave.gt.ortos.auth.ui.toEmailMessage
+import com.wave.gt.ortos.auth.ui.toMessage
 import com.wave.gt.ortos.auth.ui.toPasswordMessage
 import com.wave.gt.ortos.databinding.FragmentLoginBinding
 import com.wave.gt.ortos.di.appContainer
@@ -30,15 +30,25 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         AuthViewModelFactory {
             LoginViewModel(
                 appContainer.loginWithEmailUseCase,
-                appContainer.loginWithGoogleUseCase
+                appContainer.loginWithGoogleUseCase,
+                appContainer.getRememberedEmailUseCase
             )
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         _binding = FragmentLoginBinding.bind(view)
+        prefillFromState()
         setupListeners()
         observeState()
+    }
+
+    private fun prefillFromState() {
+        val state = viewModel.uiState.value
+        if (binding.inputEmail.text.isNullOrEmpty() && state.email.isNotEmpty()) {
+            binding.inputEmail.setText(state.email)
+        }
+        binding.checkboxRemember.isChecked = state.rememberUser
     }
 
     private fun setupListeners() {
@@ -47,6 +57,9 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         }
         binding.inputPassword.doAfterTextChanged { text ->
             viewModel.onPasswordChange(text?.toString().orEmpty())
+        }
+        binding.checkboxRemember.setOnCheckedChangeListener { _, isChecked ->
+            viewModel.onRememberUserChange(isChecked)
         }
         binding.buttonLogin.setOnClickListener { viewModel.submit() }
         binding.buttonForgotPassword.setOnClickListener {
@@ -66,6 +79,10 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
     private fun render(state: LoginUiState) {
         binding.layoutEmail.error = state.emailError?.let { getString(it.toEmailMessage()) }
         binding.layoutPassword.error = state.passwordError?.let { getString(it.toPasswordMessage()) }
+
+        if (binding.checkboxRemember.isChecked != state.rememberUser) {
+            binding.checkboxRemember.isChecked = state.rememberUser
+        }
 
         binding.loadingOverlay.isVisible = state.isLoading
         binding.buttonLogin.isEnabled = !state.isLoading

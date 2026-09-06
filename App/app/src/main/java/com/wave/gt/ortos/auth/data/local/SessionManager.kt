@@ -13,6 +13,9 @@ class SessionManager(context: Context) {
     val isLoggedIn: Boolean
         get() = prefs.getBoolean(KEY_LOGGED_IN, false)
 
+    val rememberedEmail: String?
+        get() = prefs.getString(KEY_REMEMBERED_EMAIL, null)
+
     fun save(user: AuthUser) {
         prefs.edit {
             putBoolean(KEY_LOGGED_IN, true)
@@ -20,6 +23,12 @@ class SessionManager(context: Context) {
             putString(KEY_EMAIL, user.email)
             putString(KEY_NAME, user.displayName)
             putString(KEY_PROVIDER, user.provider.name)
+        }
+    }
+
+    fun setRememberedEmail(email: String?) {
+        prefs.edit {
+            if (email.isNullOrBlank()) remove(KEY_REMEMBERED_EMAIL) else putString(KEY_REMEMBERED_EMAIL, email)
         }
     }
 
@@ -35,7 +44,13 @@ class SessionManager(context: Context) {
     }
 
     fun clear() {
-        prefs.edit { clear() }
+        prefs.edit {
+            remove(KEY_LOGGED_IN)
+            remove(KEY_ID)
+            remove(KEY_EMAIL)
+            remove(KEY_NAME)
+            remove(KEY_PROVIDER)
+        }
     }
 
     private companion object {
@@ -45,5 +60,6 @@ class SessionManager(context: Context) {
         const val KEY_EMAIL = "user_email"
         const val KEY_NAME = "user_name"
         const val KEY_PROVIDER = "user_provider"
+        const val KEY_REMEMBERED_EMAIL = "remembered_email"
     }
 }

@@ -1,0 +1,28 @@
+<resources>
+    <string name="login_title">Iniciar sesión</string>
+    <string name="login_subtitle">Inicia sesión para continuar</string>
+    <string name="hint_email">Correo electrónico</string>
+    <string name="hint_password">Contraseña</string>
+    <string name="action_login">Iniciar sesión</string>
+    <string name="action_forgot_password">¿Olvidaste tu contraseña?</string>
+    <string name="action_remember_me">Recordarme</string>
+    <string name="action_google_sign_in">Continuar con Google</string>
+    <string name="label_or">o</string>
+
+    <string name="recover_title">Recuperar contraseña</string>
+    <string name="recover_subtitle">Ingresa tu correo y te enviaremos instrucciones para restablecer tu contraseña.</string>
+    <string name="action_send_reset_link">Enviar instrucciones</string>
+    <string name="recover_success_message">Si el correo está registrado, recibirás un mensaje con los pasos para restablecer tu contraseña.</string>
+    <string name="action_back_to_login">Volver al inicio de sesión</string>
+
+    <string name="error_email_required">Ingresa tu correo electrónico</string>
+    <string name="error_email_invalid">El correo electrónico no es válido</string>
+    <string name="error_email_not_found">No encontramos una cuenta con ese correo</string>
+    <string name="error_password_required">Ingresa tu contraseña</string>
+    <string name="error_password_too_short">La contraseña debe tener al menos 8 caracteres</string>
+    <string name="error_password_weak">La contraseña debe incluir letras y números</string>
+    <string name="error_invalid_credentials">Correo o contraseña incorrectos</string>
+    <string name="error_google_sign_in">No se pudo iniciar sesión con Google</string>
+    <string name="error_network">Sin conexión. Revisa tu internet e inténtalo de nuevo</string>
+    <string name="error_unknown">Ocurrió un error inesperado. Inténtalo de nuevo</string>
+</resources>

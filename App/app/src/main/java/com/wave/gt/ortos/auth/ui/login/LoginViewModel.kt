@@ -2,6 +2,7 @@ package com.wave.gt.ortos.auth.ui.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.wave.gt.ortos.auth.domain.usecase.GetRememberedEmailUseCase
 import com.wave.gt.ortos.auth.domain.usecase.GoogleLoginResult
 import com.wave.gt.ortos.auth.domain.usecase.LoginResult
 import com.wave.gt.ortos.auth.domain.usecase.LoginWithEmailUseCase
@@ -14,10 +15,11 @@ import kotlinx.coroutines.launch
 
 class LoginViewModel(
     private val loginWithEmail: LoginWithEmailUseCase,
-    private val loginWithGoogle: LoginWithGoogleUseCase
+    private val loginWithGoogle: LoginWithGoogleUseCase,
+    getRememberedEmail: GetRememberedEmailUseCase
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(LoginUiState())
+    private val _uiState = MutableStateFlow(initialState(getRememberedEmail()))
     val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
 
     fun onEmailChange(value: String) {
@@ -28,6 +30,10 @@ class LoginViewModel(
         _uiState.update { it.copy(password = value, passwordError = null, errorType = null) }
     }
 
+    fun onRememberUserChange(value: Boolean) {
+        _uiState.update { it.copy(rememberUser = value) }
+    }
+
     fun submit() {
         val current = _uiState.value
         if (current.isLoading) return
@@ -35,7 +41,7 @@ class LoginViewModel(
             it.copy(isLoading = true, emailError = null, passwordError = null, errorType = null)
         }
         viewModelScope.launch {
-            when (val result = loginWithEmail(current.email, current.password)) {
+            when (val result = loginWithEmail(current.email, current.password, current.rememberUser)) {
                 is LoginResult.Success ->
                     _uiState.update { it.copy(isLoading = false, authenticated = true) }
                 is LoginResult.InvalidInput ->
@@ -68,4 +74,9 @@ class LoginViewModel(
     fun errorShown() {
         _uiState.update { it.copy(errorType = null) }
     }
+
+    private fun initialState(rememberedEmail: String?) = LoginUiState(
+        email = rememberedEmail.orEmpty(),
+        rememberUser = rememberedEmail != null
+    )
 }

@@ -22,7 +22,11 @@ class LoginWithEmailUseCase(
     private val repository: AuthRepository
 ) {
 
-    suspend operator fun invoke(rawEmail: String, rawPassword: String): LoginResult {
+    suspend operator fun invoke(
+        rawEmail: String,
+        rawPassword: String,
+        rememberUser: Boolean
+    ): LoginResult {
         val email = rawEmail.trim()
         val emailValidation = EmailValidator.validate(email)
         val passwordValidation = PasswordValidator.validate(rawPassword)
@@ -34,7 +38,7 @@ class LoginWithEmailUseCase(
             )
         }
 
-        return when (val outcome = repository.loginWithEmail(email, rawPassword)) {
+        return when (val outcome = repository.loginWithEmail(email, rawPassword, rememberUser)) {
             is Outcome.Success -> LoginResult.Success(outcome.value)
             is Outcome.Error -> LoginResult.Failure(outcome.type)
         }
