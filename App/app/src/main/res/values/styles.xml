@@ -3,28 +3,42 @@
 
     <style name="Widget.OrtOs.Button" parent="Widget.Material3.Button">
         <item name="android:minHeight">52dp</item>
-        <item name="cornerRadius">14dp</item>
+        <item name="cornerRadius">26dp</item>
+        <item name="android:textSize">15sp</item>
     </style>
 
     <style name="Widget.OrtOs.Button.Google" parent="Widget.Material3.Button.OutlinedButton">
         <item name="android:minHeight">52dp</item>
-        <item name="cornerRadius">14dp</item>
+        <item name="cornerRadius">26dp</item>
         <item name="iconPadding">12dp</item>
+        <item name="android:textSize">15sp</item>
     </style>
 
     <style name="Widget.OrtOs.TextInputLayout" parent="Widget.Material3.TextInputLayout.OutlinedBox">
-        <item name="boxCornerRadiusTopStart">12dp</item>
-        <item name="boxCornerRadiusTopEnd">12dp</item>
-        <item name="boxCornerRadiusBottomStart">12dp</item>
-        <item name="boxCornerRadiusBottomEnd">12dp</item>
+        <item name="boxCornerRadiusTopStart">14dp</item>
+        <item name="boxCornerRadiusTopEnd">14dp</item>
+        <item name="boxCornerRadiusBottomStart">14dp</item>
+        <item name="boxCornerRadiusBottomEnd">14dp</item>
+    </style>
+
+    <style name="Widget.OrtOs.Card" parent="Widget.Material3.CardView.Elevated">
+        <item name="cardCornerRadius">24dp</item>
+        <item name="cardElevation">2dp</item>
+        <item name="contentPadding">20dp</item>
+    </style>
+
+    <style name="Widget.OrtOs.SectionLabel" parent="TextAppearance.Material3.LabelMedium">
+        <item name="android:textColor">?attr/colorPrimary</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:letterSpacing">0.06</item>
     </style>
 
     <style name="TextAppearance.OrtOs.HeaderTitle" parent="TextAppearance.Material3.HeadlineMedium">
-        <item name="android:textColor">@color/brand_on_primary</item>
+        <item name="android:textColor">@color/white</item>
         <item name="android:textStyle">bold</item>
     </style>
 
     <style name="TextAppearance.OrtOs.HeaderSubtitle" parent="TextAppearance.Material3.BodyMedium">
-        <item name="android:textColor">@color/brand_on_primary</item>
+        <item name="android:textColor">@color/brand_on_primary_muted</item>
     </style>
 </resources>

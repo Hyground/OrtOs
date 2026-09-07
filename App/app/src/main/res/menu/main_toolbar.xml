@@ -3,6 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/action_chat"
+        android:icon="@drawable/ic_chat_24"
+        android:title="@string/menu_chat"
+        app:showAsAction="always" />
+
+    <item
         android:id="@+id/action_notificaciones"
         android:icon="@drawable/ic_notifications_24"
         android:title="@string/action_notificaciones"

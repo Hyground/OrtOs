@@ -12,10 +12,10 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.wave.gt.ortos.R
-import com.wave.gt.ortos.auth.ui.AuthViewModelFactory
 import com.wave.gt.ortos.auth.ui.toEmailMessage
 import com.wave.gt.ortos.auth.ui.toMessage
 import com.wave.gt.ortos.databinding.FragmentRecoverPasswordBinding
+import com.wave.gt.ortos.di.ViewModelFactory
 import com.wave.gt.ortos.di.appContainer
 import kotlinx.coroutines.launch
 
@@ -25,7 +25,7 @@ class RecoverPasswordFragment : Fragment(R.layout.fragment_recover_password) {
     private val binding get() = _binding!!
 
     private val viewModel: RecoverPasswordViewModel by viewModels {
-        AuthViewModelFactory {
+        ViewModelFactory {
             RecoverPasswordViewModel(appContainer.recoverPasswordUseCase)
         }
     }

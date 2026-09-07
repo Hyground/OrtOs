@@ -1,9 +1,9 @@
-package com.wave.gt.ortos.auth.ui
+package com.wave.gt.ortos.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 
-class AuthViewModelFactory(
+class ViewModelFactory(
     private val creator: () -> ViewModel
 ) : ViewModelProvider.Factory {
 

@@ -1,0 +1,17 @@
+<resources>
+    <string name="home_header_welcome">Te damos la bienvenida</string>
+    <string name="home_greeting">Hola, %1$s</string>
+
+    <string name="home_treatment_step">Alineador %1$d de %2$d</string>
+    <string name="home_treatment_percent">%1$d%%</string>
+    <string name="home_treatment_next_change">Próximo cambio</string>
+    <string name="home_treatment_next_value">%1$s · Alineador #%2$d</string>
+
+    <string name="home_promotions_title">Promociones para ti</string>
+
+    <string name="home_appointment_meta">Próxima cita · %1$s</string>
+    <string name="home_appointment_dentist">%1$s · %2$s</string>
+
+    <string name="home_payment_amount_due">%1$s (vence %2$s)</string>
+    <string name="home_payments_action">Pagar</string>
+</resources>

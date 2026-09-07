@@ -1,6 +1,6 @@
 package com.wave.gt.ortos.auth.data
 
-import com.wave.gt.ortos.auth.data.fake.FakeAuthDataSource
+import com.wave.gt.ortos.auth.data.local.LocalAuthDataSource
 import com.wave.gt.ortos.auth.data.local.SessionManager
 import com.wave.gt.ortos.auth.data.remote.RemoteAuthDataSource
 import com.wave.gt.ortos.auth.domain.AuthErrorType
@@ -12,9 +12,9 @@ import java.io.IOException
 
 class AuthRepositoryImpl(
     private val remote: RemoteAuthDataSource,
-    private val fake: FakeAuthDataSource,
+    private val local: LocalAuthDataSource,
     private val session: SessionManager,
-    private val useFakeBackend: Boolean
+    private val useLocalBackend: Boolean
 ) : AuthRepository {
 
     override suspend fun loginWithEmail(
@@ -23,8 +23,8 @@ class AuthRepositoryImpl(
         rememberUser: Boolean
     ): Outcome<AuthUser> {
         val outcome = runCatching {
-            if (useFakeBackend) {
-                fake.loginWithEmail(email, password)
+            if (useLocalBackend) {
+                local.loginWithEmail(email, password)
             } else {
                 Outcome.Success(remote.loginWithEmail(email, password))
             }
@@ -39,8 +39,8 @@ class AuthRepositoryImpl(
 
     override suspend fun loginWithGoogle(idToken: String?): Outcome<AuthUser> {
         val outcome = runCatching {
-            if (useFakeBackend) {
-                fake.loginWithGoogle(idToken)
+            if (useLocalBackend) {
+                local.loginWithGoogle(idToken)
             } else {
                 val token = idToken ?: return Outcome.Error(AuthErrorType.GOOGLE_SIGN_IN_FAILED)
                 Outcome.Success(remote.loginWithGoogle(token))
@@ -53,8 +53,8 @@ class AuthRepositoryImpl(
 
     override suspend fun sendPasswordReset(email: String): Outcome<Unit> {
         return runCatching {
-            if (useFakeBackend) {
-                fake.sendPasswordReset(email)
+            if (useLocalBackend) {
+                local.sendPasswordReset(email)
             } else {
                 remote.sendPasswordReset(email)
                 Outcome.Success(Unit)

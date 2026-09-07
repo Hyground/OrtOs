@@ -1,10 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="white">#FFFFFFFF</color>
-    <color name="black">#FF000000</color>
 
     <color name="brand_primary">#FF0284C7</color>
+    <color name="brand_primary_deep">#FF075985</color>
     <color name="brand_on_primary">#FFFFFFFF</color>
+    <color name="brand_on_primary_muted">#CCFFFFFF</color>
+    <color name="brand_container">#FFE0F2FE</color>
+    <color name="brand_on_container">#FF075985</color>
+
+    <color name="avatar_fill">#33FFFFFF</color>
+    <color name="avatar_stroke">#59FFFFFF</color>
+
+    <color name="home_panel">#FFF1F5F9</color>
+
+    <color name="promo_a_bg">#FFE0F2FE</color>
+    <color name="promo_a_on">#FF0C4A6E</color>
+    <color name="promo_b_bg">#FF0284C7</color>
+    <color name="promo_b_on">#FFFFFFFF</color>
+    <color name="promo_c_bg">#FFCFFAFE</color>
+    <color name="promo_c_on">#FF155E75</color>
 
     <color name="light_background">#FFF4F5F8</color>
     <color name="light_surface">#FFFFFFFF</color>

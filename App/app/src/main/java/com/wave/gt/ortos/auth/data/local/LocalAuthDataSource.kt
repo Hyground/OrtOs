@@ -1,4 +1,4 @@
-package com.wave.gt.ortos.auth.data.fake
+package com.wave.gt.ortos.auth.data.local
 
 import com.wave.gt.ortos.auth.domain.AuthErrorType
 import com.wave.gt.ortos.auth.domain.AuthProvider
@@ -7,9 +7,9 @@ import com.wave.gt.ortos.auth.domain.Outcome
 import kotlinx.coroutines.delay
 import java.util.UUID
 
-class FakeAuthDataSource {
+class LocalAuthDataSource {
 
-    private data class FakeAccount(
+    private data class Account(
         val id: String,
         val email: String,
         val password: String,
@@ -17,7 +17,7 @@ class FakeAuthDataSource {
     )
 
     private val accounts = mutableListOf(
-        FakeAccount(
+        Account(
             id = "u-001",
             email = "demo@ortos.com",
             password = "Ortos123",
@@ -26,7 +26,7 @@ class FakeAuthDataSource {
     )
 
     suspend fun loginWithEmail(email: String, password: String): Outcome<AuthUser> {
-        delay(NETWORK_DELAY_MS)
+        delay(RESPONSE_DELAY_MS)
         val account = accounts.firstOrNull { it.email.equals(email, ignoreCase = true) }
             ?: return Outcome.Error(AuthErrorType.INVALID_CREDENTIALS)
         if (account.password != password) {
@@ -36,7 +36,7 @@ class FakeAuthDataSource {
     }
 
     suspend fun loginWithGoogle(idToken: String?): Outcome<AuthUser> {
-        delay(NETWORK_DELAY_MS)
+        delay(RESPONSE_DELAY_MS)
         val user = AuthUser(
             id = "g-${UUID.randomUUID()}",
             email = "google.user@ortos.com",
@@ -47,11 +47,11 @@ class FakeAuthDataSource {
     }
 
     suspend fun sendPasswordReset(email: String): Outcome<Unit> {
-        delay(NETWORK_DELAY_MS)
+        delay(RESPONSE_DELAY_MS)
         return Outcome.Success(Unit)
     }
 
-    private fun FakeAccount.toDomain(provider: AuthProvider) = AuthUser(
+    private fun Account.toDomain(provider: AuthProvider) = AuthUser(
         id = id,
         email = email,
         displayName = displayName,
@@ -59,6 +59,6 @@ class FakeAuthDataSource {
     )
 
     private companion object {
-        const val NETWORK_DELAY_MS = 900L
+        const val RESPONSE_DELAY_MS = 900L
     }
 }

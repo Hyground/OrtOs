@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/nav_home"
-        android:name="com.wave.gt.ortos.ui.home.HomeFragment"
+        android:name="com.wave.gt.ortos.home.ui.HomeFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_home" />
 
@@ -22,6 +22,12 @@
         android:name="com.wave.gt.ortos.ui.pagos.PagosFragment"
         android:label="@string/menu_pagos"
         tools:layout="@layout/fragment_pagos" />
+
+    <fragment
+        android:id="@+id/nav_chat"
+        android:name="com.wave.gt.ortos.chat.ui.ChatFragment"
+        android:label="@string/menu_chat"
+        tools:layout="@layout/fragment_chat" />
 
     <fragment
         android:id="@+id/nav_perfil"

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="home_panel">#FF23262A</color>
+    <color name="brand_container">#FF0C4A6E</color>
+    <color name="brand_on_container">#FFBAE6FD</color>
+
+    <color name="promo_a_bg">#FF0B2C40</color>
+    <color name="promo_a_on">#FFBAE6FD</color>
+    <color name="promo_c_bg">#FF0A2E33</color>
+    <color name="promo_c_on">#FFA5F3FC</color>
+</resources>

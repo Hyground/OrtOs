@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.OptIn
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -14,12 +15,13 @@ import androidx.navigation.ui.onNavDestinationSelected
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.wave.gt.ortos.auth.ui.AuthActivity
+import com.wave.gt.ortos.core.navigateTo
 import com.google.android.material.badge.BadgeDrawable
 import com.google.android.material.badge.BadgeUtils
 import com.google.android.material.badge.ExperimentalBadgeUtils
 import com.wave.gt.ortos.databinding.ActivityMainBinding
 
-@OptIn(ExperimentalBadgeUtils::class)
+@OptIn(markerClass = [ExperimentalBadgeUtils::class])
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
@@ -43,7 +45,7 @@ class MainActivity : AppCompatActivity() {
         navController = navHostFragment.navController
 
         appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.nav_home, R.id.nav_cita, R.id.nav_pagos, R.id.nav_perfil),
+            setOf(R.id.nav_home, R.id.nav_cita, R.id.nav_pagos, R.id.nav_chat, R.id.nav_perfil),
             binding.drawerLayout
         )
 
@@ -86,10 +88,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
+            R.id.action_chat -> {
+                navController.navigateTo(R.id.nav_chat)
+                true
+            }
             R.id.action_notificaciones -> {
-                if (navController.currentDestination?.id != R.id.nav_notificaciones) {
-                    navController.navigate(R.id.nav_notificaciones)
-                }
+                navController.navigateTo(R.id.nav_notificaciones)
                 true
             }
             else -> super.onOptionsItemSelected(item)

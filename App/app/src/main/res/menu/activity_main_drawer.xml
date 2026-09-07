@@ -17,6 +17,10 @@
             android:icon="@drawable/ic_pagos_24"
             android:title="@string/menu_pagos" />
         <item
+            android:id="@+id/nav_chat"
+            android:icon="@drawable/ic_chat_24"
+            android:title="@string/menu_chat" />
+        <item
             android:id="@+id/nav_perfil"
             android:icon="@drawable/ic_perfil_24"
             android:title="@string/menu_perfil" />

@@ -13,11 +13,11 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.wave.gt.ortos.R
 import com.wave.gt.ortos.auth.ui.AuthActivity
-import com.wave.gt.ortos.auth.ui.AuthViewModelFactory
 import com.wave.gt.ortos.auth.ui.toEmailMessage
 import com.wave.gt.ortos.auth.ui.toMessage
 import com.wave.gt.ortos.auth.ui.toPasswordMessage
 import com.wave.gt.ortos.databinding.FragmentLoginBinding
+import com.wave.gt.ortos.di.ViewModelFactory
 import com.wave.gt.ortos.di.appContainer
 import kotlinx.coroutines.launch
 
@@ -27,7 +27,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
     private val binding get() = _binding!!
 
     private val viewModel: LoginViewModel by viewModels {
-        AuthViewModelFactory {
+        ViewModelFactory {
             LoginViewModel(
                 appContainer.loginWithEmailUseCase,
                 appContainer.loginWithGoogleUseCase,
