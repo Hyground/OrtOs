@@ -23,6 +23,21 @@
   gap: var(--space-5);
 }
 
+@media (min-width: 1400px) {
+  .inner {
+    grid-template-columns: 1fr 1.1fr;
+    gap: var(--space-8) calc(var(--space-8) * 1.5);
+  }
+
+  .lead {
+    max-width: 52ch;
+  }
+
+  .media {
+    max-width: 620px;
+  }
+}
+
 .badge {
   display: inline-block;
   padding: 0.5rem 1rem;

@@ -55,5 +55,11 @@
   --shadow-md: 0 12px 30px rgba(15, 43, 73, 0.1);
   --shadow-lg: 0 30px 70px rgba(15, 43, 73, 0.16);
 
-  --layout-max-width: 1180px;
+  --layout-max-width: 1280px;
+}
+
+@media (min-width: 1680px) {
+  :root {
+    --layout-max-width: 1460px;
+  }
 }

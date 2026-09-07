@@ -74,6 +74,40 @@ export function IconClose(props) {
   )
 }
 
+export function IconArrowRight(props) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M5 12h14M13 6l6 6-6 6" />
+    </svg>
+  )
+}
+
+export function IconTooth(props) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M7.5 3.5C5.6 3.5 4 5 4 7.2c0 3 1 4.5 1.6 7 .5 2 .8 4.3 1.9 4.3 1.4 0 1.2-3.5 2.5-3.5s1.1 3.5 2.5 3.5c1.1 0 1.4-2.3 1.9-4.3.6-2.5 1.6-4 1.6-7C20 5 18.4 3.5 16.5 3.5c-1.8 0-2.4 1-4.5 1s-2.7-1-4.5-1Z" />
+    </svg>
+  )
+}
+
+export function IconSparkle(props) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M12 3l1.8 5L19 9.8 14 12l-2 5-2-5-5-2.2L10 8l2-5Z" />
+      <path d="M18.5 15.5 19 17l1.5.5L19 18l-.5 1.5L18 18l-1.5-.5L18 17l.5-1.5Z" />
+    </svg>
+  )
+}
+
+export function IconShield(props) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M12 3.5 5 6v5.5c0 4.5 3 7.5 7 9 4-1.5 7-4.5 7-9V6l-7-2.5Z" />
+      <path d="m9 12 2 2 4-4" />
+    </svg>
+  )
+}
+
 export function IconMail(props) {
   return (
     <svg {...base} {...props}>
