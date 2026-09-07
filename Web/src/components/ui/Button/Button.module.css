@@ -20,6 +20,15 @@
   transform: translateY(1px);
 }
 
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.block {
+  width: 100%;
+}
+
 .md {
   padding: 0.85rem 1.6rem;
   font-size: var(--font-size-base);

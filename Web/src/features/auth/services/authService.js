@@ -14,6 +14,11 @@ export const authService = {
     return { token: data.token, user: toAuthUser(data.user) }
   },
 
+  async loginWithGoogle({ idToken }) {
+    const data = await httpClient.post('/api/auth/login/google', { idToken }, { auth: false })
+    return { token: data.token, user: toAuthUser(data.user) }
+  },
+
   async me() {
     const data = await httpClient.get('/api/auth/me')
     return toAuthUser(data)

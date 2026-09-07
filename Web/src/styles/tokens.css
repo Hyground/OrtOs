@@ -11,6 +11,7 @@
   --color-text: #33424f;
   --color-text-muted: #667487;
   --color-accent: var(--color-primary);
+  --color-danger: #d64545;
 
   --color-bg: #f4f5f8;
   --color-surface: #ffffff;

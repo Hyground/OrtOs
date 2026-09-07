@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { render } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
+import { AuthProvider } from '@/features/auth/context/AuthProvider'
 import { AuthDialogProvider } from '@/features/auth/context/AuthDialogProvider'
 import { LoginModal } from '@/features/auth/components/LoginModal'
 import { Navbar } from './Navbar'
@@ -9,10 +10,12 @@ import { Navbar } from './Navbar'
 function renderNavbar() {
   return render(
     <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-      <AuthDialogProvider>
-        <Navbar />
-        <LoginModal />
-      </AuthDialogProvider>
+      <AuthProvider>
+        <AuthDialogProvider>
+          <Navbar />
+          <LoginModal />
+        </AuthDialogProvider>
+      </AuthProvider>
     </MemoryRouter>,
   )
 }

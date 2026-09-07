@@ -4,6 +4,7 @@ import styles from './Button.module.css'
 export function Button({
   variant = 'primary',
   size = 'md',
+  block = false,
   to,
   href,
   type = 'button',
@@ -11,7 +12,7 @@ export function Button({
   children,
   ...rest
 }) {
-  const classes = [styles.button, styles[variant], styles[size], className]
+  const classes = [styles.button, styles[variant], styles[size], block && styles.block, className]
     .filter(Boolean)
     .join(' ')
 

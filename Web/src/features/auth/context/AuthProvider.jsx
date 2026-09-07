@@ -42,6 +42,14 @@ export function AuthProvider({ children }) {
     return authUser
   }, [])
 
+  const loginWithGoogle = useCallback(async (idToken) => {
+    const { token, user: authUser } = await authService.loginWithGoogle({ idToken })
+    tokenStorage.set(token)
+    setUser(authUser)
+    setStatus('authenticated')
+    return authUser
+  }, [])
+
   const logout = useCallback(() => {
     tokenStorage.clear()
     setUser(null)
@@ -54,9 +62,10 @@ export function AuthProvider({ children }) {
       status,
       isAuthenticated: status === 'authenticated',
       login,
+      loginWithGoogle,
       logout,
     }),
-    [user, status, login, logout],
+    [user, status, login, loginWithGoogle, logout],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

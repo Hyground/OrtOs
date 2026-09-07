@@ -74,6 +74,73 @@ export function IconClose(props) {
   )
 }
 
+export function IconMail(props) {
+  return (
+    <svg {...base} {...props}>
+      <rect x="3" y="5" width="18" height="14" rx="2.5" />
+      <path d="m4 7 8 6 8-6" />
+    </svg>
+  )
+}
+
+export function IconLock(props) {
+  return (
+    <svg {...base} {...props}>
+      <rect x="4.5" y="10" width="15" height="10" rx="2.5" />
+      <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+    </svg>
+  )
+}
+
+export function IconEye(props) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z" />
+      <circle cx="12" cy="12" r="3" />
+    </svg>
+  )
+}
+
+export function IconEyeOff(props) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M4 4l16 16" />
+      <path d="M9.9 5.2A9.7 9.7 0 0 1 12 5c6 0 9.5 6.5 9.5 6.5a17 17 0 0 1-3.4 4M6.3 7.8A17 17 0 0 0 2.5 12S6 18.5 12 18.5c1.6 0 3-.4 4.2-1" />
+      <path d="M9.8 9.9a3 3 0 0 0 4.3 4.2" />
+    </svg>
+  )
+}
+
+export function IconGoogle(props) {
+  return (
+    <svg
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      focusable="false"
+      {...props}
+    >
+      <path
+        fill="#4285F4"
+        d="M23.06 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h6.2c-.27 1.44-1.08 2.66-2.3 3.48v2.89h3.72c2.18-2 3.44-4.96 3.44-8.38Z"
+      />
+      <path
+        fill="#34A853"
+        d="M12 24c3.1 0 5.7-1.03 7.6-2.78l-3.72-2.89c-1.03.69-2.36 1.1-3.88 1.1-2.98 0-5.5-2.01-6.4-4.72H1.75v2.98A12 12 0 0 0 12 24Z"
+      />
+      <path
+        fill="#FBBC05"
+        d="M5.6 14.71c-.23-.68-.36-1.4-.36-2.14 0-.74.13-1.46.36-2.14V7.45H1.75A12 12 0 0 0 0 12c0 1.93.46 3.76 1.75 4.55l3.85-1.84Z"
+      />
+      <path
+        fill="#EA4335"
+        d="M12 4.77c1.68 0 3.19.58 4.38 1.71l3.28-3.28C17.7 1.19 15.1 0 12 0 7.31 0 3.26 2.69 1.75 6.31l3.85 2.98C6.5 6.58 9.02 4.77 12 4.77Z"
+      />
+    </svg>
+  )
+}
+
 export function IconPlay(props) {
   return (
     <svg {...base} {...props}>
