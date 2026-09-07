@@ -1,0 +1,51 @@
+.root {
+  min-height: 100vh;
+  display: grid;
+  place-content: center;
+  padding: var(--space-5);
+  background: var(--color-bg);
+}
+
+.card {
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-6);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-md);
+  text-align: center;
+}
+
+.card p {
+  color: var(--color-text-muted);
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
+.actions button,
+.actions a {
+  padding: 0.6rem 1.2rem;
+  border-radius: var(--radius-full);
+  font-weight: 700;
+  font: inherit;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.actions button {
+  border: 0;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.actions a {
+  border: 1px solid var(--color-border);
+  color: var(--color-ink);
+}

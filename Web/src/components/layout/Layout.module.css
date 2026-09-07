@@ -11,9 +11,16 @@
   flex-direction: column;
 }
 
-.privateHeader {
+.privateHeader,
+.minimalHeader {
   border-bottom: 1px solid var(--color-border);
   background: var(--color-surface);
+}
+
+.minimalHeader {
+  padding: var(--space-4) var(--space-5);
+  display: flex;
+  justify-content: center;
 }
 
 .privateHeaderInner {

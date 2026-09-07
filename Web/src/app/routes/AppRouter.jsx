@@ -1,5 +1,6 @@
 import { Route, Routes } from 'react-router-dom'
 import { PublicLayout } from '@/components/layout/PublicLayout'
+import { MinimalLayout } from '@/components/layout/MinimalLayout'
 import { PrivateLayout } from '@/components/layout/PrivateLayout'
 import {
   HomePage,
@@ -22,10 +23,13 @@ export function AppRouter() {
         <Route path={paths.services} element={<ServicesPage />} />
         <Route path={paths.specialists} element={<SpecialistsPage />} />
         <Route path={paths.bookAppointment} element={<BookAppointmentPage />} />
+        <Route path={paths.notFound} element={<NotFoundPage />} />
       </Route>
 
       <Route element={<GuestRoute />}>
-        <Route path={paths.login} element={<LoginPage />} />
+        <Route element={<MinimalLayout />}>
+          <Route path={paths.login} element={<LoginPage />} />
+        </Route>
       </Route>
 
       <Route element={<ProtectedRoute />}>
@@ -33,8 +37,6 @@ export function AppRouter() {
           <Route path={paths.dashboard} element={<DashboardPage />} />
         </Route>
       </Route>
-
-      <Route path={paths.notFound} element={<NotFoundPage />} />
     </Routes>
   )
 }

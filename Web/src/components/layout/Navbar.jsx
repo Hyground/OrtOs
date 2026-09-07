@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import { paths } from '@/app/routes/paths'
 import { Button } from '@/components/ui/Button/Button'
@@ -27,6 +27,9 @@ function navLinkClass({ isActive }) {
 export function Navbar() {
   const [open, setOpen] = useState(false)
   const { pathname } = useLocation()
+  const toggleRef = useRef(null)
+  const drawerRef = useRef(null)
+  const closeRef = useRef(null)
 
   useEffect(() => {
     setOpen(false)
@@ -34,14 +37,38 @@ export function Navbar() {
 
   useEffect(() => {
     if (!open) return undefined
-    const onKeyDown = (event) => {
-      if (event.key === 'Escape') setOpen(false)
-    }
+
+    const drawer = drawerRef.current
+    const trigger = toggleRef.current
+    closeRef.current?.focus()
     document.body.style.overflow = 'hidden'
+
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        setOpen(false)
+        return
+      }
+      if (event.key !== 'Tab' || !drawer) return
+      const focusables = drawer.querySelectorAll(
+        'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      )
+      if (focusables.length === 0) return
+      const first = focusables[0]
+      const last = focusables[focusables.length - 1]
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault()
+        last.focus()
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault()
+        first.focus()
+      }
+    }
+
     window.addEventListener('keydown', onKeyDown)
     return () => {
       document.body.style.overflow = ''
       window.removeEventListener('keydown', onKeyDown)
+      trigger?.focus()
     }
   }, [open])
 
@@ -71,6 +98,7 @@ export function Navbar() {
         </Button>
 
         <button
+          ref={toggleRef}
           type="button"
           className={styles.toggle}
           aria-expanded={open}
@@ -89,6 +117,7 @@ export function Navbar() {
       />
 
       <nav
+        ref={drawerRef}
         id="menu-movil"
         className={open ? `${styles.drawer} ${styles.drawerOpen}` : styles.drawer}
         aria-label="Principal"
@@ -99,6 +128,7 @@ export function Navbar() {
             Ort<span>Os</span>
           </span>
           <button
+            ref={closeRef}
             type="button"
             className={styles.close}
             aria-label="Cerrar menú"

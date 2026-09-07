@@ -74,6 +74,22 @@ export function IconClose(props) {
   )
 }
 
+export function IconPlay(props) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M8 5.5v13l11-6.5-11-6.5Z" />
+    </svg>
+  )
+}
+
+export function IconPause(props) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M9 5v14M15 5v14" />
+    </svg>
+  )
+}
+
 export function IconPhone(props) {
   return (
     <svg {...base} {...props}>

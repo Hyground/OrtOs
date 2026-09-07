@@ -41,6 +41,26 @@
   pointer-events: none;
 }
 
+.playToggle {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  font-size: 1rem;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--color-glass);
+  color: var(--color-ink);
+  backdrop-filter: blur(6px);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+}
+
 .dots {
   position: absolute;
   left: 50%;
