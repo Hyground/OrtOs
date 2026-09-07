@@ -32,6 +32,19 @@ export function Navbar() {
     setOpen(false)
   }, [pathname])
 
+  useEffect(() => {
+    if (!open) return undefined
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape') setOpen(false)
+    }
+    document.body.style.overflow = 'hidden'
+    window.addEventListener('keydown', onKeyDown)
+    return () => {
+      document.body.style.overflow = ''
+      window.removeEventListener('keydown', onKeyDown)
+    }
+  }, [open])
+
   return (
     <header className={styles.root}>
       <div className={styles.inner}>
@@ -62,30 +75,58 @@ export function Navbar() {
           className={styles.toggle}
           aria-expanded={open}
           aria-controls="menu-movil"
-          onClick={() => setOpen((value) => !value)}
+          aria-label="Abrir menú"
+          onClick={() => setOpen(true)}
         >
-          {open ? <IconClose /> : <IconMenu />}
-          <span className={styles.srOnly}>Menú</span>
+          <IconMenu />
         </button>
       </div>
 
+      <div
+        className={open ? `${styles.scrim} ${styles.scrimOpen}` : styles.scrim}
+        onClick={() => setOpen(false)}
+        aria-hidden="true"
+      />
+
       <nav
         id="menu-movil"
-        className={open ? `${styles.mobileNav} ${styles.mobileNavOpen}` : styles.mobileNav}
+        className={open ? `${styles.drawer} ${styles.drawerOpen}` : styles.drawer}
         aria-label="Principal"
-        hidden={!open}
+        aria-hidden={!open}
       >
+        <div className={styles.drawerHead}>
+          <span className={styles.brand}>
+            Ort<span>Os</span>
+          </span>
+          <button
+            type="button"
+            className={styles.close}
+            aria-label="Cerrar menú"
+            onClick={() => setOpen(false)}
+            tabIndex={open ? 0 : -1}
+          >
+            <IconClose />
+          </button>
+        </div>
+
         <ul>
           {navItems.map(({ to, label, Icon, end }) => (
             <li key={to}>
-              <NavLink to={to} end={end} className={navLinkClass}>
+              <NavLink to={to} end={end} className={navLinkClass} tabIndex={open ? 0 : -1}>
                 <Icon className={styles.icon} />
                 {label}
               </NavLink>
             </li>
           ))}
         </ul>
-        <Button to={paths.login} variant="outline" size="sm">
+
+        <Button
+          to={paths.login}
+          variant="outline"
+          size="sm"
+          className={styles.drawerLogin}
+          tabIndex={open ? 0 : -1}
+        >
           <IconUser className={styles.icon} />
           Iniciar sesión
         </Button>
