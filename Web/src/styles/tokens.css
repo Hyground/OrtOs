@@ -1,9 +1,9 @@
 :root {
   --color-white: #ffffff;
 
-  --color-primary: #1e93d6;
-  --color-primary-dark: #1678b0;
-  --color-primary-soft: #e4f1fb;
+  --color-primary: #0284c7;
+  --color-primary-dark: #036aa1;
+  --color-primary-soft: #e0f2fb;
   --color-teal: #1fb59b;
 
   --color-ink: #0e2a47;
@@ -16,9 +16,6 @@
   --color-surface: #ffffff;
   --color-surface-alt: #eef1f6;
   --color-border: #e1e7ef;
-
-  --color-hero-from: #eaf1fb;
-  --color-hero-to: #e4f1ec;
 
   --color-footer-bg: #0284c7;
   --color-footer-text: #ffffff;
