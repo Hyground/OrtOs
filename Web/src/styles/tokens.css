@@ -12,7 +12,7 @@
   --color-text-muted: #667487;
   --color-accent: var(--color-primary);
 
-  --color-bg: #ffffff;
+  --color-bg: #f4f5f8;
   --color-surface: #ffffff;
   --color-surface-alt: #eef1f6;
   --color-border: #e1e7ef;
@@ -20,9 +20,9 @@
   --color-hero-from: #eaf1fb;
   --color-hero-to: #e4f1ec;
 
-  --color-footer-bg: #0f2747;
+  --color-footer-bg: #0284c7;
   --color-footer-text: #ffffff;
-  --color-footer-muted: #93a6be;
+  --color-footer-muted: #d5ecf7;
 
   --color-on-primary: #ffffff;
 

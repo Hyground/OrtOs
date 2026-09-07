@@ -27,7 +27,7 @@
 }
 
 .links a:hover {
-  color: var(--color-primary);
+  color: var(--color-footer-muted);
 }
 
 .copy {
@@ -53,7 +53,7 @@
 }
 
 .phone svg {
-  color: var(--color-primary);
+  color: var(--color-footer-text);
   font-size: 1.2em;
 }
 
@@ -75,7 +75,7 @@
 }
 
 .social a:hover {
-  color: var(--color-primary);
+  color: var(--color-primary-dark);
 }
 
 @media (max-width: 760px) {
