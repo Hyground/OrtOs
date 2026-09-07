@@ -17,11 +17,12 @@ Variables de entorno en `.env` (plantilla en `.env.example`): `VITE_API_URL`, `V
 ## Estructura
 
 ```
+public/         Archivos servidos tal cual (favicon, robots.txt)
 src/
-  app/          Router y proveedores globales
+  app/          Router, proveedores globales y ErrorBoundary
   assets/       Imágenes y recursos estáticos
   components/   Compartidos: layout, ui, icons, feedback
-  config/       Variables de entorno
+  config/       Entorno (env) y datos de contacto
   features/     Lógica por dominio (auth: sesión y validaciones)
   hooks/        Hooks reutilizables
   lib/          Utilidades sin React (http, storage)
