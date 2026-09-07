@@ -8,12 +8,19 @@ body {
   background: var(--color-bg);
 }
 
-h1 {
-  font-size: var(--font-size-xl);
+h1,
+h2,
+h3 {
+  color: var(--color-ink);
+  line-height: 1.15;
 }
 
-section {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
+a {
+  color: var(--color-primary);
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
 }

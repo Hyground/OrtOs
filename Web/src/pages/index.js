@@ -1,0 +1,7 @@
+export { HomePage } from './HomePage'
+export { ServicesPage } from './ServicesPage'
+export { SpecialistsPage } from './SpecialistsPage'
+export { BookAppointmentPage } from './BookAppointmentPage'
+export { LoginPage } from './LoginPage'
+export { DashboardPage } from './DashboardPage'
+export { NotFoundPage } from './NotFoundPage'

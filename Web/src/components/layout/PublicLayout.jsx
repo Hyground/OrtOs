@@ -8,9 +8,7 @@ export function PublicLayout() {
     <div className={styles.root}>
       <Navbar />
       <main className={styles.main}>
-        <div className={styles.content}>
-          <Outlet />
-        </div>
+        <Outlet />
       </main>
       <Footer />
     </div>

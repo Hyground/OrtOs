@@ -1,12 +1,15 @@
 import { Route, Routes } from 'react-router-dom'
 import { PublicLayout } from '@/components/layout/PublicLayout'
 import { PrivateLayout } from '@/components/layout/PrivateLayout'
-import { LandingPage } from '@/features/landing/pages/LandingPage'
-import { ServicesPage } from '@/features/services/pages/ServicesPage'
-import { BookAppointmentPage } from '@/features/appointments/pages/BookAppointmentPage'
-import { LoginPage } from '@/features/auth/pages/LoginPage'
-import { DashboardPage } from '@/features/dashboard/pages/DashboardPage'
-import { NotFoundPage } from '@/pages/NotFoundPage'
+import {
+  HomePage,
+  ServicesPage,
+  SpecialistsPage,
+  BookAppointmentPage,
+  LoginPage,
+  DashboardPage,
+  NotFoundPage,
+} from '@/pages'
 import { ProtectedRoute } from './ProtectedRoute'
 import { GuestRoute } from './GuestRoute'
 import { paths } from './paths'
@@ -15,8 +18,9 @@ export function AppRouter() {
   return (
     <Routes>
       <Route element={<PublicLayout />}>
-        <Route path={paths.home} element={<LandingPage />} />
+        <Route path={paths.home} element={<HomePage />} />
         <Route path={paths.services} element={<ServicesPage />} />
+        <Route path={paths.specialists} element={<SpecialistsPage />} />
         <Route path={paths.bookAppointment} element={<BookAppointmentPage />} />
       </Route>
 

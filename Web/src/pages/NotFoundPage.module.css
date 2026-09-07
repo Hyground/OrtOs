@@ -1,0 +1,15 @@
+.root {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-3);
+}
+
+.root h1 {
+  font-size: 4rem;
+}
+
+.root p {
+  color: var(--color-text-muted);
+}

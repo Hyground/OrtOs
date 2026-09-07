@@ -1,0 +1,12 @@
+.root {
+  min-height: 50vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-3);
+  padding-block: var(--space-7);
+}
+
+.root p {
+  color: var(--color-text-muted);
+}

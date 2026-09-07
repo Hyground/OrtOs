@@ -1,16 +1,38 @@
 :root {
-  --color-bg: #f4f7fa;
-  --color-surface: #ffffff;
-  --color-text: #17324d;
-  --color-text-muted: #5b7186;
-  --color-border: #dfe6ee;
-  --color-accent: #1f6feb;
+  --color-white: #ffffff;
 
-  --font-family-base: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --color-primary: #1e93d6;
+  --color-primary-dark: #1678b0;
+  --color-primary-soft: #e4f1fb;
+  --color-teal: #1fb59b;
+
+  --color-ink: #0e2a47;
+  --color-ink-strong: #0c1e33;
+  --color-text: #33424f;
+  --color-text-muted: #667487;
+  --color-accent: var(--color-primary);
+
+  --color-bg: #ffffff;
+  --color-surface: #ffffff;
+  --color-surface-alt: #eef1f6;
+  --color-border: #e1e7ef;
+
+  --color-hero-from: #eaf1fb;
+  --color-hero-to: #e4f1ec;
+
+  --color-footer-bg: #0f2747;
+  --color-footer-text: #ffffff;
+  --color-footer-muted: #93a6be;
+
+  --color-on-primary: #ffffff;
+
+  --font-family-base: 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-size-xs: 0.75rem;
   --font-size-sm: 0.875rem;
   --font-size-base: 1rem;
-  --font-size-lg: 1.125rem;
-  --font-size-xl: 1.5rem;
+  --font-size-md: 1.125rem;
+  --font-size-lg: 1.375rem;
+  --font-size-xl: 1.75rem;
 
   --space-1: 0.25rem;
   --space-2: 0.5rem;
@@ -19,11 +41,17 @@
   --space-5: 1.5rem;
   --space-6: 2rem;
   --space-7: 3rem;
+  --space-8: 4.5rem;
 
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 16px;
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
   --radius-full: 999px;
 
-  --layout-max-width: 1120px;
+  --shadow-sm: 0 1px 3px rgba(15, 43, 73, 0.08);
+  --shadow-md: 0 12px 30px rgba(15, 43, 73, 0.1);
+  --shadow-lg: 0 30px 70px rgba(15, 43, 73, 0.16);
+
+  --layout-max-width: 1180px;
 }

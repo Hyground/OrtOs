@@ -20,7 +20,9 @@ function renderAt(route) {
 describe('AppRouter', () => {
   it('muestra la landing pública en la raíz', async () => {
     renderAt('/')
-    expect(await screen.findByRole('heading', { name: 'OrtOs' })).toBeInTheDocument()
+    expect(
+      await screen.findByRole('heading', { name: /la sonrisa fresca y sana que mereces/i }),
+    ).toBeInTheDocument()
   })
 
   it('redirige al login cuando se entra al panel sin sesión', async () => {

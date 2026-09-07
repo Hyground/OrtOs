@@ -1,0 +1,140 @@
+.hero {
+  background: linear-gradient(135deg, var(--color-hero-from), var(--color-hero-to));
+}
+
+.inner {
+  max-width: var(--layout-max-width);
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-5);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-5);
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-full);
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(2.25rem, 4vw + 1rem, 3.4rem);
+  font-weight: 800;
+  color: var(--color-ink-strong);
+}
+
+.title span {
+  color: var(--color-primary);
+}
+
+.lead {
+  margin: 0;
+  max-width: 46ch;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-md);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-6);
+  list-style: none;
+  margin: var(--space-3) 0 0;
+  padding: 0;
+}
+
+.stats li {
+  display: flex;
+  flex-direction: column;
+}
+
+.stats strong {
+  font-size: var(--font-size-xl);
+  font-weight: 800;
+}
+
+.stats span {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.tonePrimary {
+  color: var(--color-primary);
+}
+
+.toneTeal {
+  color: var(--color-teal);
+}
+
+.toneInk {
+  color: var(--color-ink);
+}
+
+.media {
+  justify-self: end;
+  width: 100%;
+  max-width: 520px;
+}
+
+.media img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+}
+
+@media (max-width: 900px) {
+  .inner {
+    grid-template-columns: 1fr;
+    padding: var(--space-7) var(--space-5);
+    gap: var(--space-6);
+  }
+
+  .media {
+    order: -1;
+    justify-self: center;
+    max-width: 420px;
+  }
+
+  .content {
+    align-items: center;
+    text-align: center;
+  }
+
+  .stats {
+    justify-content: center;
+    gap: var(--space-5);
+  }
+}
+
+@media (max-width: 480px) {
+  .actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .actions a {
+    width: 100%;
+  }
+}

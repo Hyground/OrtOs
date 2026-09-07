@@ -1,12 +1,7 @@
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
+import { PagePlaceholder } from '@/components/feedback/PagePlaceholder'
 
 export function DashboardPage() {
   useDocumentTitle('Panel')
-
-  return (
-    <section>
-      <h1>Panel</h1>
-      <p>Pendiente de diseño.</p>
-    </section>
-  )
+  return <PagePlaceholder title="Panel" />
 }
