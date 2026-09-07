@@ -1,0 +1,12 @@
+.root {
+  border-top: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+}
+
+.inner {
+  max-width: var(--layout-max-width);
+  margin: 0 auto;
+  padding: var(--space-5);
+  font-size: var(--font-size-sm);
+}
