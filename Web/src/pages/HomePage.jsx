@@ -1,9 +1,22 @@
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 import { Button } from '@/components/ui/Button/Button'
+import { Carousel } from '@/components/ui/Carousel/Carousel'
 import { IconCalendar } from '@/components/icons/icons'
 import { paths } from '@/app/routes/paths'
-import heroImage from '@/assets/hero-placeholder.svg'
+import img1 from '@/assets/1.webp'
+import img2 from '@/assets/2.webp'
+import img3 from '@/assets/3.webp'
+import img4 from '@/assets/4.webp'
+import img5 from '@/assets/5.webp'
 import styles from './HomePage.module.css'
+
+const heroImages = [
+  { src: img1, alt: 'Paciente y odontólogos durante una consulta en OrtOs' },
+  { src: img2, alt: 'Odontólogo de OrtOs en el consultorio' },
+  { src: img3, alt: 'Revisión dental a una paciente' },
+  { src: img4, alt: 'Sonrisa sana después del tratamiento' },
+  { src: img5, alt: 'Colocación de brackets' },
+]
 
 const stats = [
   { value: '+100k', label: 'Pacientes felices', tone: styles.tonePrimary },
@@ -49,9 +62,7 @@ export function HomePage() {
           </ul>
         </div>
 
-        <div className={styles.media}>
-          <img src={heroImage} alt="Atención odontológica en OrtOs" />
-        </div>
+        <Carousel images={heroImages} className={styles.media} />
       </div>
     </section>
   )
