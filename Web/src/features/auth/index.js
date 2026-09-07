@@ -1,4 +1,7 @@
 export { AuthProvider } from './context/AuthProvider'
+export { AuthDialogProvider } from './context/AuthDialogProvider'
 export { useAuth } from './hooks/useAuth'
+export { useAuthDialog } from './hooks/useAuthDialog'
 export { authService } from './services/authService'
 export { validateEmail, validatePassword, authRules } from './validation/authRules'
+export { LoginModal } from './components/LoginModal'

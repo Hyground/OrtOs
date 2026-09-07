@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { AuthProvider } from '@/features/auth/context/AuthProvider'
+import { AuthDialogProvider } from '@/features/auth/context/AuthDialogProvider'
+import { LoginModal } from '@/features/auth/components/LoginModal'
 import { AppRouter } from './AppRouter'
 
 function renderAt(route) {
@@ -11,7 +13,10 @@ function renderAt(route) {
       future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
     >
       <AuthProvider>
-        <AppRouter />
+        <AuthDialogProvider>
+          <AppRouter />
+          <LoginModal />
+        </AuthDialogProvider>
       </AuthProvider>
     </MemoryRouter>,
   )
@@ -25,9 +30,12 @@ describe('AppRouter', () => {
     ).toBeInTheDocument()
   })
 
-  it('redirige al login cuando se entra al panel sin sesión', async () => {
+  it('sin sesión, /panel redirige al inicio y abre el modal de login', async () => {
     renderAt('/panel')
-    expect(await screen.findByRole('heading', { name: 'Iniciar sesión' })).toBeInTheDocument()
+    expect(
+      await screen.findByRole('heading', { name: /la sonrisa fresca y sana que mereces/i }),
+    ).toBeInTheDocument()
+    expect(await screen.findByRole('dialog', { name: 'Iniciar sesión' })).toBeInTheDocument()
   })
 
   it('muestra 404 en rutas desconocidas', async () => {

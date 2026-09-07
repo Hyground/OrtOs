@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import { paths } from '@/app/routes/paths'
+import { useAuthDialog } from '@/features/auth/hooks/useAuthDialog'
 import { Button } from '@/components/ui/Button/Button'
 import {
   IconCalendar,
@@ -27,6 +28,7 @@ function navLinkClass({ isActive }) {
 export function Navbar() {
   const [open, setOpen] = useState(false)
   const { pathname } = useLocation()
+  const { open: openLogin } = useAuthDialog()
   const toggleRef = useRef(null)
   const drawerRef = useRef(null)
   const closeRef = useRef(null)
@@ -92,7 +94,7 @@ export function Navbar() {
           </ul>
         </nav>
 
-        <Button to={paths.login} variant="outline" size="sm" className={styles.desktopLogin}>
+        <Button variant="outline" size="sm" className={styles.desktopLogin} onClick={openLogin}>
           <IconUser className={styles.icon} />
           Iniciar sesión
         </Button>
@@ -151,11 +153,14 @@ export function Navbar() {
         </ul>
 
         <Button
-          to={paths.login}
           variant="outline"
           size="sm"
           className={styles.drawerLogin}
           tabIndex={open ? 0 : -1}
+          onClick={() => {
+            setOpen(false)
+            openLogin()
+          }}
         >
           <IconUser className={styles.icon} />
           Iniciar sesión

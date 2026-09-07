@@ -35,11 +35,14 @@ variables CSS y se usan con `var(--color-…)` desde los `*.module.css`.
 
 ## Rutas
 
-| Ruta | Acceso | Página |
-|---|---|---|
-| `/` | Público | Inicio |
-| `/servicios` | Público | Servicios |
-| `/especialistas` | Público | Especialistas |
-| `/agendar` | Público | Agendar cita |
-| `/iniciar-sesion` | Invitados | Iniciar sesión |
-| `/panel` | Con sesión | Panel |
+| Ruta             | Acceso     | Página        |
+| ---------------- | ---------- | ------------- |
+| `/`              | Público    | Inicio        |
+| `/servicios`     | Público    | Servicios     |
+| `/especialistas` | Público    | Especialistas |
+| `/agendar`       | Público    | Agendar cita  |
+| `/panel`         | Con sesión | Panel         |
+
+Iniciar sesión no es una ruta: es un modal (`LoginModal`) que se abre sobre
+cualquier pantalla con `useAuthDialog().open()`. Entrar a `/panel` sin sesión
+redirige al inicio y abre ese modal.
