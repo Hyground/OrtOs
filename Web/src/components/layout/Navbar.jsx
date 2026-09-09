@@ -1,37 +1,26 @@
 import { useEffect, useRef, useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import { paths } from '@/app/routes/paths'
+import { privateMenuItems, publicNavItems } from '@/app/routes/navigation'
+import { useAuth } from '@/features/auth/hooks/useAuth'
 import { useAuthDialog } from '@/features/auth/hooks/useAuthDialog'
 import { Button } from '@/components/ui/Button/Button'
-import {
-  IconCalendar,
-  IconClose,
-  IconHome,
-  IconMenu,
-  IconServices,
-  IconSpecialist,
-  IconUser,
-} from '@/components/icons/icons'
+import { IconClose, IconLogOut, IconMenu, IconUser } from '@/components/icons/icons'
 import styles from './Navbar.module.css'
-
-const navItems = [
-  { to: paths.home, label: 'Inicio', Icon: IconHome, end: true },
-  { to: paths.services, label: 'Servicio', Icon: IconServices },
-  { to: paths.specialists, label: 'Especialista', Icon: IconSpecialist },
-  { to: paths.bookAppointment, label: 'Agendar cita', Icon: IconCalendar },
-]
 
 function navLinkClass({ isActive }) {
   return isActive ? `${styles.link} ${styles.linkActive}` : styles.link
 }
 
-export function Navbar() {
+export function Navbar({ variant = 'public' }) {
   const [open, setOpen] = useState(false)
   const { pathname } = useLocation()
+  const { isAuthenticated, user, logout } = useAuth()
   const { open: openLogin } = useAuthDialog()
   const toggleRef = useRef(null)
   const drawerRef = useRef(null)
   const closeRef = useRef(null)
+  const navItems = variant === 'private' ? privateMenuItems : publicNavItems
 
   useEffect(() => {
     setOpen(false)
@@ -74,6 +63,52 @@ export function Navbar() {
     }
   }, [open])
 
+  const handleLogout = () => {
+    setOpen(false)
+    logout()
+  }
+
+  const handleLogin = () => {
+    setOpen(false)
+    openLogin()
+  }
+
+  const renderSessionAction = (tabIndex) => {
+    if (variant === 'private') {
+      return (
+        <>
+          {user?.displayName ? <span className={styles.userName}>{user.displayName}</span> : null}
+          <Button variant="outline" size="sm" tabIndex={tabIndex} onClick={handleLogout}>
+            <IconLogOut className={styles.icon} />
+            Cerrar sesion
+          </Button>
+        </>
+      )
+    }
+
+    if (isAuthenticated) {
+      return (
+        <Button
+          to={paths.dashboard}
+          variant="outline"
+          size="sm"
+          tabIndex={tabIndex}
+          onClick={() => setOpen(false)}
+        >
+          <IconUser className={styles.icon} />
+          Mi panel
+        </Button>
+      )
+    }
+
+    return (
+      <Button variant="outline" size="sm" tabIndex={tabIndex} onClick={handleLogin}>
+        <IconUser className={styles.icon} />
+        Iniciar sesion
+      </Button>
+    )
+  }
+
   return (
     <header className={styles.root}>
       <div className={styles.inner}>
@@ -94,10 +129,7 @@ export function Navbar() {
           </ul>
         </nav>
 
-        <Button variant="outline" size="sm" className={styles.desktopLogin} onClick={openLogin}>
-          <IconUser className={styles.icon} />
-          Iniciar sesión
-        </Button>
+        <div className={styles.desktopActions}>{renderSessionAction(undefined)}</div>
 
         <button
           ref={toggleRef}
@@ -105,7 +137,7 @@ export function Navbar() {
           className={styles.toggle}
           aria-expanded={open}
           aria-controls="menu-movil"
-          aria-label="Abrir menú"
+          aria-label="Abrir menu"
           onClick={() => setOpen(true)}
         >
           <IconMenu />
@@ -133,7 +165,7 @@ export function Navbar() {
             ref={closeRef}
             type="button"
             className={styles.close}
-            aria-label="Cerrar menú"
+            aria-label="Cerrar menu"
             onClick={() => setOpen(false)}
             tabIndex={open ? 0 : -1}
           >
@@ -152,19 +184,7 @@ export function Navbar() {
           ))}
         </ul>
 
-        <Button
-          variant="outline"
-          size="sm"
-          className={styles.drawerLogin}
-          tabIndex={open ? 0 : -1}
-          onClick={() => {
-            setOpen(false)
-            openLogin()
-          }}
-        >
-          <IconUser className={styles.icon} />
-          Iniciar sesión
-        </Button>
+        <div className={styles.drawerActions}>{renderSessionAction(open ? 0 : -1)}</div>
       </nav>
     </header>
   )

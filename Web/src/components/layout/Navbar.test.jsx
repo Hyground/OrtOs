@@ -21,28 +21,28 @@ function renderNavbar() {
 }
 
 describe('Navbar', () => {
-  it('abre y cierra el menú lateral', async () => {
+  it('abre y cierra el menu lateral', async () => {
     const user = userEvent.setup()
     renderNavbar()
 
     const menu = document.getElementById('menu-movil')
     expect(menu).toHaveAttribute('aria-hidden', 'true')
 
-    await user.click(document.querySelector('[aria-label="Abrir menú"]'))
+    await user.click(document.querySelector('[aria-label="Abrir menu"]'))
     expect(menu).toHaveAttribute('aria-hidden', 'false')
     expect(document.body.style.overflow).toBe('hidden')
 
-    await user.click(document.querySelector('[aria-label="Cerrar menú"]'))
+    await user.click(document.querySelector('[aria-label="Cerrar menu"]'))
     expect(menu).toHaveAttribute('aria-hidden', 'true')
     expect(document.body.style.overflow).toBe('')
   })
 
-  it('el botón de iniciar sesión abre el modal', async () => {
+  it('el boton de iniciar sesion abre el modal', async () => {
     const user = userEvent.setup()
     renderNavbar()
 
     expect(document.querySelector('[role="dialog"]')).toBeNull()
-    await user.click(document.querySelector('[class*="desktopLogin"]'))
+    await user.click(document.querySelector('[class*="desktopActions"] button'))
     expect(document.querySelector('[role="dialog"]')).not.toBeNull()
   })
 })

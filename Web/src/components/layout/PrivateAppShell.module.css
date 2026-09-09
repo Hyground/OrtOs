@@ -1,0 +1,393 @@
+.shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 172px minmax(0, 1fr);
+  background: #f4f7fb;
+}
+
+.sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, #111827 0%, #1b2638 44%, #172334 100%);
+  color: var(--color-white);
+}
+
+.brandRow {
+  background: #111827;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  height: 88px;
+  padding-inline: 30px;
+  color: var(--color-white);
+  font-size: 2rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.brand span {
+  color: #0796dc;
+}
+
+.closeSidebar,
+.mobileMenu,
+.scrim {
+  display: none;
+}
+
+.sideNav {
+  flex: 1;
+  padding: 14px 14px 20px;
+}
+
+.navKicker {
+  display: block;
+  margin: 0 0 10px 2px;
+  color: #ffffff;
+  font-size: 0.55rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.sideNav ul {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.menuLink {
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  align-items: center;
+  gap: 9px;
+  min-height: 26px;
+  padding: 6px 8px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  font-size: 0.68rem;
+  font-weight: 800;
+  line-height: 1;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.menuLink svg {
+  width: 22px;
+  height: 22px;
+}
+
+.menuLinkActive,
+.menuLink:hover {
+  background: #0284c7;
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.profile {
+  position: relative;
+  display: grid;
+  gap: 3px;
+  padding: 18px 14px 14px;
+  color: #ffffff;
+  font-size: 0.68rem;
+  font-weight: 800;
+}
+
+.profile > span:not(.avatar) {
+  color: #40efd9;
+  text-decoration: none;
+}
+
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 54px;
+  height: 54px;
+  margin-bottom: 4px;
+  border-radius: var(--radius-full);
+  background: #36d7cd;
+  color: var(--color-white);
+  font-size: 2rem;
+}
+
+.profile button {
+  position: absolute;
+  right: 9px;
+  bottom: 17px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  background: transparent;
+  color: #ffffff;
+  font-size: 1.4rem;
+  cursor: pointer;
+}
+
+.workspace {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  min-height: 88px;
+  display: grid;
+  grid-template-columns: minmax(280px, 1fr) auto auto auto;
+  align-items: center;
+  gap: 18px;
+  padding: 18px 56px 18px 54px;
+  background: #ffffff;
+}
+
+.searchBox,
+.dateBox,
+.notification {
+  min-height: 38px;
+  border-radius: 8px;
+  background: #f4f7fb;
+}
+
+.searchBox {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 12px;
+  max-width: 392px;
+  padding: 0 12px;
+  color: #101828;
+}
+
+.searchBox svg {
+  font-size: 1.5rem;
+}
+
+.searchBox input {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: #111827;
+  font: inherit;
+  font-weight: 800;
+  outline: 0;
+}
+
+.searchBox input::placeholder {
+  color: #111827;
+  opacity: 1;
+}
+
+.dateBox {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 13px;
+  color: #111827;
+  font-size: 0.87rem;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.dateBox svg {
+  color: #0f9fe0;
+  font-size: 1.2rem;
+}
+
+.newButton {
+  min-height: 38px;
+  border-radius: 8px;
+  box-shadow: 0 4px 0 rgba(14, 42, 71, 0.12);
+  text-transform: none;
+}
+
+.newButton svg {
+  font-size: 1.4rem;
+}
+
+.notification {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  border: 0;
+  color: #101828;
+  font-size: 1.3rem;
+  cursor: pointer;
+}
+
+.notification span {
+  position: absolute;
+  top: 7px;
+  right: 9px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 12px;
+  height: 12px;
+  border-radius: var(--radius-full);
+  background: #ff0000;
+  color: #ffffff;
+  font-size: 0.5rem;
+  font-weight: 900;
+}
+
+.main {
+  flex: 1;
+  min-width: 0;
+  padding: 18px 36px 20px 38px;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 1040px) {
+  .shell {
+    grid-template-columns: 86px minmax(0, 1fr);
+  }
+
+  .brand {
+    justify-content: center;
+    padding-inline: 8px;
+    font-size: 1.2rem;
+  }
+
+  .navKicker,
+  .menuLink span,
+  .profile strong,
+  .profile > span:not(.avatar) {
+    display: none;
+  }
+
+  .menuLink {
+    grid-template-columns: 1fr;
+    justify-items: center;
+  }
+
+  .profile {
+    justify-items: center;
+  }
+
+  .profile button {
+    position: static;
+  }
+
+  .topbar {
+    grid-template-columns: 1fr auto;
+    padding-inline: 22px;
+  }
+
+  .dateBox,
+  .newButton {
+    display: none;
+  }
+
+  .main {
+    padding-inline: 22px;
+  }
+}
+
+@media (max-width: 680px) {
+  .shell {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    position: fixed;
+    left: 0;
+    z-index: 50;
+    width: 172px;
+    transform: translateX(-100%);
+    transition: transform 0.2s ease;
+  }
+
+  .sidebarOpen {
+    transform: translateX(0);
+  }
+
+  .brandRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .closeSidebar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    margin-right: 10px;
+    border: 0;
+    background: transparent;
+    color: #ffffff;
+    font-size: 1.3rem;
+  }
+
+  .scrim {
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    display: block;
+    border: 0;
+    background: rgba(17, 24, 39, 0.45);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .scrimOpen {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .topbar {
+    grid-template-columns: auto 1fr auto;
+    gap: 10px;
+    min-height: 72px;
+    padding: 14px;
+  }
+
+  .mobileMenu {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    background: #ffffff;
+    color: #111827;
+    font-size: 1.25rem;
+  }
+
+  .searchBox {
+    min-width: 0;
+  }
+
+  .searchBox input::placeholder {
+    color: transparent;
+  }
+
+  .main {
+    padding: 16px 14px 24px;
+  }
+}

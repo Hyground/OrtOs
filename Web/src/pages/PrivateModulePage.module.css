@@ -1,0 +1,48 @@
+.page {
+  min-height: calc(100vh - 140px);
+  display: grid;
+  grid-template-columns: auto minmax(0, 620px);
+  align-content: center;
+  align-items: center;
+  gap: var(--space-5);
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 86px;
+  height: 86px;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #0f9fe0;
+  font-size: 3rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.kicker {
+  color: #0f9fe0;
+  font-size: var(--font-size-sm);
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.page h1 {
+  margin: var(--space-2) 0;
+  color: #111827;
+  font-size: clamp(2rem, 4vw, 3rem);
+}
+
+.page p {
+  margin: 0;
+  color: #667487;
+  font-size: var(--font-size-md);
+}
+
+@media (max-width: 680px) {
+  .page {
+    grid-template-columns: 1fr;
+    align-content: start;
+    padding-top: var(--space-6);
+  }
+}

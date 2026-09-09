@@ -133,7 +133,7 @@ export function LoginModal() {
           {formError && <p className={styles.formError}>{formError}</p>}
 
           <Button type="submit" block disabled={loading}>
-            {loading ? 'Ingresando…' : 'Iniciar sesión'}
+            {loading ? 'Ingresando...' : 'Iniciar sesión'}
           </Button>
 
           <div className={styles.divider}>
@@ -177,7 +177,7 @@ export function LoginModal() {
           {formError && <p className={styles.formError}>{formError}</p>}
 
           <Button type="submit" block disabled={loading}>
-            {loading ? 'Enviando…' : 'Enviar enlace'}
+            {loading ? 'Enviando...' : 'Enviar enlace'}
           </Button>
           <button type="button" className={styles.link} onClick={() => switchMode('login')}>
             Volver a iniciar sesión
