@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { paths } from '@/app/routes/paths'
 import { Modal } from '@/components/ui/Modal/Modal'
 import { Button } from '@/components/ui/Button/Button'
 import { TextField } from '@/components/ui/TextField/TextField'
@@ -23,6 +25,7 @@ function resolveError(error) {
 export function LoginModal() {
   const { isOpen, close } = useAuthDialog()
   const { login } = useAuth()
+  const navigate = useNavigate()
 
   const [mode, setMode] = useState('login')
   const [email, setEmail] = useState('')
@@ -70,6 +73,7 @@ export function LoginModal() {
     try {
       await login({ email, password })
       close()
+      navigate(paths.dashboard)
     } catch (error) {
       setFormError(resolveError(error))
     } finally {

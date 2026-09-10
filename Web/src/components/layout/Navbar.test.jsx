@@ -21,23 +21,23 @@ function renderNavbar() {
 }
 
 describe('Navbar', () => {
-  it('abre y cierra el menu lateral', async () => {
+  it('abre y cierra el menú lateral', async () => {
     const user = userEvent.setup()
     renderNavbar()
 
     const menu = document.getElementById('menu-movil')
     expect(menu).toHaveAttribute('aria-hidden', 'true')
 
-    await user.click(document.querySelector('[aria-label="Abrir menu"]'))
+    await user.click(document.querySelector('[aria-label="Abrir menú"]'))
     expect(menu).toHaveAttribute('aria-hidden', 'false')
     expect(document.body.style.overflow).toBe('hidden')
 
-    await user.click(document.querySelector('[aria-label="Cerrar menu"]'))
+    await user.click(document.querySelector('[aria-label="Cerrar menú"]'))
     expect(menu).toHaveAttribute('aria-hidden', 'true')
     expect(document.body.style.overflow).toBe('')
   })
 
-  it('el boton de iniciar sesion abre el modal', async () => {
+  it('el botón de iniciar sesión abre el modal', async () => {
     const user = userEvent.setup()
     renderNavbar()
 

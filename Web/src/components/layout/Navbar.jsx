@@ -80,7 +80,7 @@ export function Navbar({ variant = 'public' }) {
           {user?.displayName ? <span className={styles.userName}>{user.displayName}</span> : null}
           <Button variant="outline" size="sm" tabIndex={tabIndex} onClick={handleLogout}>
             <IconLogOut className={styles.icon} />
-            Cerrar sesion
+            Cerrar sesión
           </Button>
         </>
       )
@@ -104,7 +104,7 @@ export function Navbar({ variant = 'public' }) {
     return (
       <Button variant="outline" size="sm" tabIndex={tabIndex} onClick={handleLogin}>
         <IconUser className={styles.icon} />
-        Iniciar sesion
+        Iniciar sesión
       </Button>
     )
   }
@@ -137,7 +137,7 @@ export function Navbar({ variant = 'public' }) {
           className={styles.toggle}
           aria-expanded={open}
           aria-controls="menu-movil"
-          aria-label="Abrir menu"
+          aria-label="Abrir menú"
           onClick={() => setOpen(true)}
         >
           <IconMenu />
@@ -165,7 +165,7 @@ export function Navbar({ variant = 'public' }) {
             ref={closeRef}
             type="button"
             className={styles.close}
-            aria-label="Cerrar menu"
+            aria-label="Cerrar menú"
             onClick={() => setOpen(false)}
             tabIndex={open ? 0 : -1}
           >

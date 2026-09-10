@@ -97,7 +97,7 @@ export function FloatingChat() {
             <div className={styles.chatArea}>
               <div className={styles.chatTitle}>
                 <strong>{activeConversation.name}</strong>
-                <span>En linea</span>
+                <span>En línea</span>
               </div>
 
               <ol className={styles.messages}>

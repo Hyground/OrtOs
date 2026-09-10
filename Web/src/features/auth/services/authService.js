@@ -48,7 +48,7 @@ function getDevUserFromToken(token) {
 function loginWithDevUser({ email, password }) {
   const user = findDevUserByEmail(email)
   if (!user || user.password !== password) {
-    throw new HttpError('Correo o contrasena incorrectos.', {
+    throw new HttpError('Correo o contraseña incorrectos.', {
       status: 401,
       code: 'DEV_AUTH_FAILED',
     })

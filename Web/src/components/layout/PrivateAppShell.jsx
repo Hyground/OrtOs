@@ -45,7 +45,7 @@ export function PrivateAppShell() {
       <SkipLink />
       <aside
         className={sidebarOpen ? `${styles.sidebar} ${styles.sidebarOpen}` : styles.sidebar}
-        aria-label="Menu administrativo"
+        aria-label="Menú administrativo"
       >
         <div className={styles.brandRow}>
           <NavLink
@@ -58,7 +58,7 @@ export function PrivateAppShell() {
           <button
             type="button"
             className={styles.closeSidebar}
-            aria-label="Cerrar menu"
+            aria-label="Cerrar menú"
             onClick={closeSidebar}
           >
             <IconClose />
@@ -84,8 +84,8 @@ export function PrivateAppShell() {
             <IconUser />
           </span>
           <strong>{user?.displayName ?? 'Admin el OrtOs'}</strong>
-          <span>En linea (Administrador)</span>
-          <button type="button" onClick={logout} aria-label="Cerrar sesion">
+          <span>En línea (Administrador)</span>
+          <button type="button" onClick={logout} aria-label="Cerrar sesión">
             <IconLogOut />
           </button>
         </div>
@@ -94,7 +94,7 @@ export function PrivateAppShell() {
       <button
         type="button"
         className={sidebarOpen ? `${styles.scrim} ${styles.scrimOpen}` : styles.scrim}
-        aria-label="Cerrar menu"
+        aria-label="Cerrar menú"
         onClick={closeSidebar}
       />
 
@@ -103,7 +103,7 @@ export function PrivateAppShell() {
           <button
             type="button"
             className={styles.mobileMenu}
-            aria-label="Abrir menu"
+            aria-label="Abrir menú"
             aria-expanded={sidebarOpen}
             onClick={() => setSidebarOpen(true)}
           >
