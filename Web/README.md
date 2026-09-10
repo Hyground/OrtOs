@@ -12,6 +12,14 @@ npm run lint
 npm test
 ```
 
+## Despliegue en Vercel y dominio propio
+
+Configure `Web/` como **Root Directory** del proyecto en Vercel. El archivo `vercel.json` conserva las rutas privadas de React al recargar o abrir enlaces directos.
+
+En Hostinger, agregue en la zona DNS los registros que Vercel indique al vincular el dominio en **Project > Settings > Domains**. No es necesario mover el dominio: Hostinger puede seguir siendo el registrador y Vercel servir la web.
+
+Si se conecta la API real, defina `VITE_API_URL=https://api.su-dominio.com` en las variables de entorno de Vercel y publique el servicio Spring Boot en un host compatible. La API actual no tiene CORS configurado, por lo que deberá permitir explícitamente el dominio web antes de que el navegador pueda consumirla desde producción.
+
 Variables de entorno en `.env` (plantilla en `.env.example`): `VITE_API_URL`, `VITE_APP_NAME`.
 
 ## Estructura
@@ -76,5 +84,6 @@ Las cuentas creadas o modificadas desde Usuarios funcionan en el inicio de sesi�
 - El control de apariencia permite **Claro**, **Oscuro** y **Predeterminado del sistema**. La opción inicial sigue la configuración del dispositivo y la preferencia queda guardada en el navegador.
 - La exportación de pacientes genera un archivo `.xlsx` con encabezado, colores, filtros, filas alternas, columnas ajustadas y fecha de generación de OrtOs.
 - Las cuentas de paciente tienen un portal con próxima cita, tratamiento, pagos y comprobantes, perfil y mensajería con la clínica. No reciben acceso a funciones administrativas.
+- Mientras `VITE_API_URL` esté vacío, la autenticación usa únicamente las cuentas mock incluidas en la web, también en producción. No realiza llamadas a la API.
 
 Estas funciones usan los datos mock actuales. Al conectar la API, las fuentes de citas, pagos, notificaciones y mensajes deberán sustituirse por sus servicios remotos conservando las mismas interfaces de UI.

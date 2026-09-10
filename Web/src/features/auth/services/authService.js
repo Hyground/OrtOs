@@ -15,6 +15,7 @@ function toAuthUser(dto) {
     email: dto.email,
     displayName: dto.displayName ?? dto.email,
     role: dto.role ?? 'paciente',
+    patientId: dto.patientId,
   }
 }
 
@@ -48,10 +49,9 @@ function loginWithDevUser({ email, password }) {
 
 export const authService = {
   async login({ email, password }) {
-    if (env.isDev) {
-      const devUser = findDevUserByEmail(email)
-      if (devUser || !env.apiUrl) return loginWithDevUser({ email, password })
-    }
+    // Las cuentas demo deben seguir funcionando en Vercel mientras no exista API.
+    const devUser = findDevUserByEmail(email)
+    if (!env.apiUrl || devUser) return loginWithDevUser({ email, password })
 
     const data = await httpClient.post('/api/auth/login', { email, password }, { auth: false })
     return { token: data.token, user: toAuthUser(data.user) }
@@ -63,7 +63,7 @@ export const authService = {
   },
 
   async me() {
-    if (env.isDev) {
+    {
       const devUser = getDevUserFromToken(tokenStorage.get())
       if (devUser?.active) return toAuthUser(devUser)
       if (tokenStorage.get()?.startsWith(DEV_TOKEN_PREFIX))
@@ -75,7 +75,7 @@ export const authService = {
   },
 
   async requestPasswordReset({ email }) {
-    if (env.isDev && findDevUserByEmail(email)) return
+    if ((!env.apiUrl || env.isDev) && findDevUserByEmail(email)) return
     await httpClient.post('/api/auth/password-reset', { email }, { auth: false })
   },
 }

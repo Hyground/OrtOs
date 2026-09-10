@@ -23,6 +23,7 @@ let accounts = [
     password: 'Paciente123',
     displayName: 'Paciente Demo',
     role: 'paciente',
+    patientId: 'patient-1',
     active: true,
   },
 ]
