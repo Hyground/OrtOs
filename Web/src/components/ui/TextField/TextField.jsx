@@ -2,7 +2,7 @@ import { useId, useState } from 'react'
 import { IconEye, IconEyeOff } from '@/components/icons/icons'
 import styles from './TextField.module.css'
 
-export function TextField({ label, type = 'text', error, icon: Icon, ...rest }) {
+export function TextField({ label, type = 'text', error, icon: Icon, prefix, ...rest }) {
   const id = useId()
   const errorId = `${id}-error`
   const [reveal, setReveal] = useState(false)
@@ -11,7 +11,7 @@ export function TextField({ label, type = 'text', error, icon: Icon, ...rest }) 
 
   const inputClass = [
     styles.input,
-    Icon && styles.hasIcon,
+    (Icon || prefix) && styles.hasIcon,
     isPassword && styles.hasReveal,
     error && styles.inputError,
   ]
@@ -25,6 +25,11 @@ export function TextField({ label, type = 'text', error, icon: Icon, ...rest }) 
       </label>
       <div className={styles.control}>
         {Icon ? <Icon className={styles.icon} /> : null}
+        {prefix && (
+          <span className={styles.icon} aria-hidden="true">
+            {prefix}
+          </span>
+        )}
         <input
           id={id}
           type={inputType}

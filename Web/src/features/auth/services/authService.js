@@ -2,34 +2,24 @@ import { env } from '@/config/env'
 import { httpClient } from '@/lib/http/httpClient'
 import { tokenStorage } from '@/lib/storage/tokenStorage'
 import { HttpError } from '@/lib/http/HttpError'
+import {
+  findDevAccountByEmail,
+  findDevAccountById,
+} from '@/features/users/services/usersMockService'
 
 const DEV_TOKEN_PREFIX = 'ortos-dev-token:'
-
-const devUsers = [
-  {
-    id: 'dev-admin',
-    email: 'admin@ortos.test',
-    password: 'Admin123',
-    displayName: 'Administrador OrtOs',
-  },
-  {
-    id: 'dev-paciente',
-    email: 'paciente@ortos.test',
-    password: 'Paciente123',
-    displayName: 'Paciente Demo',
-  },
-]
 
 function toAuthUser(dto) {
   return {
     id: dto.id,
     email: dto.email,
     displayName: dto.displayName ?? dto.email,
+    role: dto.role ?? 'paciente',
   }
 }
 
 function findDevUserByEmail(email) {
-  return devUsers.find((user) => user.email.toLowerCase() === String(email).trim().toLowerCase())
+  return findDevAccountByEmail(email)
 }
 
 function createDevSession(user) {
@@ -42,12 +32,12 @@ function createDevSession(user) {
 function getDevUserFromToken(token) {
   if (!token?.startsWith(DEV_TOKEN_PREFIX)) return null
   const id = token.slice(DEV_TOKEN_PREFIX.length)
-  return devUsers.find((user) => user.id === id) ?? null
+  return findDevAccountById(id) ?? null
 }
 
 function loginWithDevUser({ email, password }) {
   const user = findDevUserByEmail(email)
-  if (!user || user.password !== password) {
+  if (!user || !user.active || user.password !== password) {
     throw new HttpError('Correo o contraseña incorrectos.', {
       status: 401,
       code: 'DEV_AUTH_FAILED',
@@ -75,7 +65,9 @@ export const authService = {
   async me() {
     if (env.isDev) {
       const devUser = getDevUserFromToken(tokenStorage.get())
-      if (devUser) return toAuthUser(devUser)
+      if (devUser?.active) return toAuthUser(devUser)
+      if (tokenStorage.get()?.startsWith(DEV_TOKEN_PREFIX))
+        throw new Error('La cuenta no está activa.')
     }
 
     const data = await httpClient.get('/api/auth/me')

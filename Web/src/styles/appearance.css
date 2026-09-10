@@ -1,0 +1,13 @@
+:root[data-theme='dark'] {
+ --color-bg:#0b1220; --color-admin-bg:#0b1220; --color-surface:#152235; --color-surface-alt:#203047;
+ --color-border:#34455d; --color-text:#d1dae7; --color-text-muted:#a0b2c8; --color-ink:#edf4ff; --color-ink-strong:#f8fafc;
+ --color-primary:#38bdf8; --color-primary-dark:#7dd3fc; --color-primary-soft:#173b53; --color-action:#0284c7;
+ --color-success:#86efac; --color-success-soft:#143d2c; --color-warning:#fcd34d; --color-warning-soft:#433516; --color-danger:#fca5a5; --color-danger-soft:#48262e;
+ --color-on-primary:#082338; --color-glass:rgba(21,34,53,.92); --color-scrim:rgba(0,0,0,.7);
+ --shadow-sm:0 1px 4px #0004; --shadow-md:0 12px 30px #0005; --shadow-lg:0 30px 70px #0007;
+ --color-users:#244e9c;
+}
+:root { color-scheme:light; }
+:root[data-theme='dark'] { color-scheme:dark; }
+@media(prefers-reduced-motion:reduce) { *,*::before,*::after { scroll-behavior:auto!important; } }
+

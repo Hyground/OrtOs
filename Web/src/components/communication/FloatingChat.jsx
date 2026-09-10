@@ -30,7 +30,7 @@ const conversations = [
   },
 ]
 
-export function FloatingChat() {
+export function FloatingChat({ placement = 'floating' }) {
   const [open, setOpen] = useState(false)
   const [activeId, setActiveId] = useState(conversations[0].id)
   const [draft, setDraft] = useState('')
@@ -60,7 +60,7 @@ export function FloatingChat() {
   }
 
   return (
-    <div className={styles.root}>
+    <div className={placement === 'toolbar' ? `${styles.root} ${styles.toolbar}` : styles.root}>
       {open ? (
         <section className={styles.panel} aria-label="Chat de pacientes">
           <header className={styles.header}>

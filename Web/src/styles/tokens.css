@@ -1,4 +1,13 @@
 :root {
+  --color-users: #1e3a8a;
+  --color-action: #0088cc;
+  --color-admin-bg: #f1f5f9;
+  --color-sidebar: #0d1726;
+  --color-success: #15803d;
+  --color-success-soft: #dcfce7;
+  --color-warning: #92400e;
+  --color-warning-soft: #fef3c7;
+  --color-danger-soft: #fee2e2;
   --color-white: #ffffff;
 
   --color-primary: #0284c7;

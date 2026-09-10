@@ -12,6 +12,7 @@ import {
   IconTooth,
   IconUser,
   IconUsers,
+  IconMail,
 } from '@/components/icons/icons'
 
 export const publicNavItems = [
@@ -21,6 +22,15 @@ export const publicNavItems = [
   { to: paths.bookAppointment, label: 'Agendar cita', Icon: IconCalendar },
 ]
 
+export const patientMenuItems = [
+  { to: paths.dashboard, label: 'Mi espacio', Icon: IconHome, end: true },
+  { to: paths.myAppointments, label: 'Mis citas', Icon: IconCalendar },
+  { to: paths.myTreatment, label: 'Mi tratamiento', Icon: IconTooth },
+  { to: paths.myPayments, label: 'Mis pagos', Icon: IconCreditCard },
+  { to: paths.messages, label: 'Mensajes', Icon: IconMail },
+  { to: paths.myProfile, label: 'Mi perfil', Icon: IconUser },
+]
+
 export const privateMenuItems = [
   { to: paths.dashboard, label: 'Menu modulos', Icon: IconHome, end: true },
   { to: paths.patients, label: 'Paciente', Icon: IconUser },
@@ -28,6 +38,7 @@ export const privateMenuItems = [
   { to: paths.odontogram, label: 'Odontograma', Icon: IconTooth },
   { to: paths.treatments, label: 'Tratamiento', Icon: IconClipboard },
   { to: paths.payments, label: 'Pagos', Icon: IconCreditCard },
+  { to: paths.users, label: 'Usuarios', Icon: IconUsers, tone: 'users' },
   { to: paths.reports, label: 'Reporte', Icon: IconFileText },
 ]
 
@@ -35,7 +46,8 @@ export const privateModules = [
   {
     id: 'usuarios',
     to: paths.users,
-    title: 'Usuario',
+    title: 'Usuarios',
+    tone: 'users',
     description: 'Control de permiso y accesos del personal',
     Icon: IconUsers,
     assetName: 'icousuario.png',

@@ -4,7 +4,7 @@
   display: grid;
   grid-template-columns: 240px minmax(0, 1fr);
   transition: grid-template-columns 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  background: #f4f7fb;
+  background: var(--color-admin-bg);
 }
 
 .shellCollapsed {
@@ -18,7 +18,7 @@
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(180deg, #111827 0%, #1b2638 44%, #172334 100%);
+  background: var(--color-sidebar);
   color: var(--color-white);
   overflow: hidden;
   z-index: 30;
@@ -29,7 +29,7 @@
   display: flex;
   align-items: center;
   gap: 0;
-  background: #111827;
+  background: var(--color-sidebar);
   flex-shrink: 0;
   height: 72px;
 }
@@ -47,7 +47,9 @@
   color: rgba(255, 255, 255, 0.7);
   font-size: 1.3rem;
   cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
   flex-shrink: 0;
 }
 
@@ -66,7 +68,9 @@
   text-decoration: none;
   white-space: nowrap;
   overflow: hidden;
-  transition: opacity 0.25s ease, transform 0.25s ease;
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
 }
 
 .brand span {
@@ -117,7 +121,10 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  transition: opacity 0.25s ease, height 0.25s ease, margin 0.25s ease;
+  transition:
+    opacity 0.25s ease,
+    height 0.25s ease,
+    margin 0.25s ease;
   white-space: nowrap;
   overflow: hidden;
 }
@@ -179,7 +186,9 @@
 }
 
 .menuLabel {
-  transition: opacity 0.25s ease, transform 0.25s ease;
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -201,6 +210,15 @@
 .menuLinkActive:hover {
   background: linear-gradient(135deg, #0284c7 0%, #0796dc 100%);
   transform: none;
+}
+.usersLink {
+  background: var(--color-users);
+  color: white;
+}
+.usersLink:hover,
+.usersLink.menuLinkActive {
+  background: #172e70;
+  color: white;
 }
 
 /* Collapsed: center icons, hide labels */
@@ -254,7 +272,9 @@
   gap: 2px;
   min-width: 0;
   overflow: hidden;
-  transition: opacity 0.25s ease, width 0.3s ease;
+  transition:
+    opacity 0.25s ease,
+    width 0.3s ease;
 }
 
 .profileInfo strong {
@@ -284,8 +304,13 @@
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
 }
 
 .profile button {
@@ -301,7 +326,9 @@
   color: rgba(255, 255, 255, 0.6);
   font-size: 1.1rem;
   cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
   flex-shrink: 0;
   margin-left: auto;
 }
@@ -347,8 +374,8 @@
   align-items: center;
   gap: 18px;
   padding: 14px 40px;
-  background: #ffffff;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .searchBox,
@@ -356,17 +383,24 @@
 .notification {
   min-height: 38px;
   border-radius: 8px;
-  background: #f4f7fb;
+  background: var(--color-surface-alt);
+}
+
+.topActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .searchBox {
+  border-radius: var(--radius-full);
   display: grid;
   grid-template-columns: auto 1fr;
   align-items: center;
   gap: 12px;
   max-width: 392px;
   padding: 0 12px;
-  color: #101828;
+  color: var(--color-ink);
 }
 
 .searchBox svg {
@@ -377,14 +411,14 @@
   width: 100%;
   border: 0;
   background: transparent;
-  color: #111827;
+  color: var(--color-ink);
   font: inherit;
-  font-weight: 800;
+  font-weight: 400;
   outline: 0;
 }
 
 .searchBox input::placeholder {
-  color: #111827;
+  color: var(--color-text-muted);
   opacity: 1;
 }
 
@@ -395,7 +429,7 @@
   padding: 0 13px;
   color: #111827;
   font-size: 0.87rem;
-  font-weight: 900;
+  font-weight: 600;
   white-space: nowrap;
 }
 
@@ -520,6 +554,10 @@
   .topbar {
     grid-template-columns: 1fr auto;
     padding-inline: 22px;
+  }
+
+  .topActions {
+    gap: 5px;
   }
 
   .dateBox,

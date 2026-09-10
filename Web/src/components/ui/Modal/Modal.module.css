@@ -12,6 +12,8 @@
 }
 
 .dialog {
+  max-height: calc(100dvh - 48px);
+  overflow-y: auto;
   width: 100%;
   max-width: 420px;
   padding: var(--space-6);
@@ -19,6 +21,39 @@
   background: var(--color-surface);
   box-shadow: var(--shadow-lg);
   animation: pop 0.2s ease;
+}
+
+.wide {
+  max-width: 1000px;
+  border-radius: var(--radius-md);
+}
+.document {
+  max-width: 960px;
+  background: var(--color-admin-bg);
+}
+.wide .head,
+.document .head {
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: var(--space-4);
+  align-items: center;
+}
+.wide .head h2,
+.document .head h2 {
+  color: var(--color-primary-dark);
+  font-size: var(--font-size-md);
+  margin-right: auto;
+}
+@media (max-width: 640px) {
+  .overlay {
+    padding: 10px;
+  }
+  .dialog {
+    padding: var(--space-4);
+    max-height: calc(100dvh - 20px);
+  }
+  .head {
+    flex-wrap: wrap;
+  }
 }
 
 .head {

@@ -9,6 +9,33 @@
   pointer-events: none;
 }
 
+/* El chat queda en la barra de acciones y no cubre controles del contenido. */
+.toolbar {
+  position: relative;
+  right: auto;
+  bottom: auto;
+  z-index: 20;
+}
+
+.toolbar .bubble {
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-surface-alt);
+  color: var(--color-ink);
+  box-shadow: none;
+  font-size: 1.2rem;
+}
+
+.toolbar .bubble span { border-color: var(--color-surface); }
+
+.toolbar .panel {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+}
+
 .bubble,
 .panel,
 .header button,
@@ -60,7 +87,7 @@
   overflow: hidden;
   border: 1px solid #dce6f2;
   border-radius: 8px;
-  background: #ffffff;
+  background: var(--color-surface);
   box-shadow: 0 24px 70px rgba(15, 43, 73, 0.22);
 }
 
@@ -306,6 +333,12 @@
 
   .panel {
     width: calc(100vw - 28px);
+  }
+
+  .toolbar .panel {
+    position: fixed;
+    top: 74px;
+    right: 14px;
   }
 
   .body {

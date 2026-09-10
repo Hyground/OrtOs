@@ -2,8 +2,11 @@ import { Link } from 'react-router-dom'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 import { paths } from '@/app/routes/paths'
 import { privateModules } from '@/app/routes/navigation'
+import { useAuth } from '@/features/auth/hooks/useAuth'
+import { canAccess, roleLabels } from '@/features/auth/permissions'
 import { IconCalendar, IconCheckCircle, IconClock, IconUser } from '@/components/icons/icons'
 import styles from './DashboardPage.module.css'
+import { PatientPortal } from '@/features/portal/PatientPortal'
 
 const metrics = [
   { value: '24', label: 'Citas esta semana', tone: 'cyan' },
@@ -25,16 +28,25 @@ const operations = [
 
 export function DashboardPage() {
   useDocumentTitle('Panel')
+  const { user } = useAuth()
+  const isDentist = user?.role === 'odontologo'
+  if (user?.role === 'paciente') return <PatientPortal />
+  const modules = privateModules.filter((module) => canAccess(user, module.to))
 
   return (
     <section className={styles.page}>
       <header className={styles.hero}>
         <div className={styles.heroCopy}>
-          <span className={styles.kicker}>Panel principal</span>
-          <h1>Hola, Admin el OrtOs</h1>
+          <span className={styles.kicker}>
+            {isDentist ? 'Panel del odontólogo' : 'Panel principal'}
+          </span>
+          <h1>Hola, {user?.displayName ?? 'Usuario'}</h1>
           <p>
-            Control integral de pacientes, especialistas, citas, odontogramas, tratamientos y cobros
-            desde un solo espacio de trabajo.
+            {isDentist
+              ? 'Consulta pacientes y expedientes, organiza las citas y registra pagos desde tu espacio de trabajo.'
+              : user?.role === 'admin'
+                ? 'Administra los módulos de la clínica y las cuentas de acceso del equipo.'
+                : 'Bienvenido a tu panel. Las funciones clínicas están reservadas al personal autorizado.'}
           </p>
         </div>
 
@@ -55,17 +67,25 @@ export function DashboardPage() {
               <span>Modulo de gestion</span>
               <h2 id="modules-title">Areas de trabajo</h2>
             </div>
-            <Link to={paths.appointments} className={styles.quickLink}>
-              Nueva cita
-            </Link>
+            {canAccess(user, paths.appointments) && (
+              <Link to={paths.newAppointment} className={styles.quickLink}>
+                Nueva cita
+              </Link>
+            )}
           </div>
 
           <ul className={styles.moduleGrid}>
-            {privateModules.map((module) => {
+            {modules.map((module) => {
               const Icon = module.Icon
               return (
                 <li key={module.id}>
-                  <Link to={module.to} className={styles.moduleCard}>
+                  <Link
+                    to={module.to}
+                    className={[
+                      styles.moduleCard,
+                      module.tone === 'users' ? styles.usersCard : '',
+                    ].join(' ')}
+                  >
                     <span className={styles.moduleIcon} data-asset={module.assetName}>
                       {module.imageSrc ? <img src={module.imageSrc} alt="" /> : <Icon />}
                     </span>
@@ -80,60 +100,62 @@ export function DashboardPage() {
           </ul>
         </section>
 
-        <aside className={styles.sidePanel} aria-label="Resumen operativo">
-          <article className={styles.todayCard}>
-            <div className={styles.panelTitle}>
-              <span className={styles.panelIcon}>
-                <IconCalendar />
-              </span>
-              <div>
-                <h2>Agenda de hoy</h2>
-                <p>Atenciones proximas</p>
+        {canAccess(user, paths.appointments) && (
+          <aside className={styles.sidePanel} aria-label="Resumen operativo">
+            <article className={styles.todayCard}>
+              <div className={styles.panelTitle}>
+                <span className={styles.panelIcon}>
+                  <IconCalendar />
+                </span>
+                <div>
+                  <h2>Agenda de hoy</h2>
+                  <p>Atenciones proximas</p>
+                </div>
               </div>
-            </div>
 
-            <ol className={styles.agendaList}>
-              {agenda.map((item) => (
-                <li key={`${item.time}-${item.patient}`}>
-                  <time>{item.time}</time>
-                  <span>
-                    <strong>{item.patient}</strong>
-                    <small>{item.detail}</small>
-                  </span>
-                </li>
-              ))}
-            </ol>
-          </article>
+              <ol className={styles.agendaList}>
+                {agenda.map((item) => (
+                  <li key={`${item.time}-${item.patient}`}>
+                    <time>{item.time}</time>
+                    <span>
+                      <strong>{item.patient}</strong>
+                      <small>{item.detail}</small>
+                    </span>
+                  </li>
+                ))}
+              </ol>
+            </article>
 
-          <article className={styles.opsCard}>
-            <div className={styles.panelTitle}>
-              <span className={styles.panelIcon}>
-                <IconClock />
-              </span>
-              <div>
-                <h2>Prioridades</h2>
-                <p>Seguimiento administrativo</p>
+            <article className={styles.opsCard}>
+              <div className={styles.panelTitle}>
+                <span className={styles.panelIcon}>
+                  <IconClock />
+                </span>
+                <div>
+                  <h2>Prioridades</h2>
+                  <p>Seguimiento administrativo</p>
+                </div>
               </div>
-            </div>
 
-            <ul className={styles.opsList}>
-              {operations.map((item) => (
-                <li key={item}>
-                  <IconCheckCircle />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
-          </article>
+              <ul className={styles.opsList}>
+                {operations.map((item) => (
+                  <li key={item}>
+                    <IconCheckCircle />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </article>
 
-          <article className={styles.profileCard}>
-            <IconUser />
-            <span>
-              <strong>Administrador</strong>
-              <small>Sesion de desarrollo activa</small>
-            </span>
-          </article>
-        </aside>
+            <article className={styles.profileCard}>
+              <IconUser />
+              <span>
+                <strong>{roleLabels[user?.role]}</strong>
+                <small>Sesion de desarrollo activa</small>
+              </span>
+            </article>
+          </aside>
+        )}
       </div>
     </section>
   )

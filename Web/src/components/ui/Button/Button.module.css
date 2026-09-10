@@ -44,6 +44,16 @@
   color: var(--color-on-primary);
 }
 
+.ghost {
+  background: var(--color-surface-alt);
+  color: var(--color-text);
+  border-color: var(--color-border);
+}
+.ghost:hover {
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+}
+
 .primary:hover {
   background: var(--color-primary-dark);
 }

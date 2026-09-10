@@ -1,0 +1,77 @@
+.field {
+  position: relative;
+  display: grid;
+  gap: 8px;
+  font-size: var(--font-size-sm);
+}
+.field label {
+  color: var(--color-ink);
+  font-weight: 500;
+}
+.control {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  padding-left: 12px;
+  color: var(--color-primary);
+}
+.control input {
+  min-width: 0;
+  width: 100%;
+  padding: 12px;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  color: var(--color-text);
+}
+.control:focus-within {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+.control input:focus {
+  outline: none;
+}
+.control button {
+  border: 0;
+  border-left: 1px solid var(--color-border);
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  align-self: stretch;
+  width: 44px;
+  cursor: pointer;
+  font-size: 20px;
+}
+.dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 5;
+  max-height: 220px;
+  overflow: auto;
+  margin: 4px 0;
+  padding: 5px;
+  list-style: none;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+}
+.dropdown li {
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 6px;
+}
+.dropdown small {
+  display: block;
+  color: var(--color-text-muted);
+}
+.dropdown li:hover,
+.active {
+  background: var(--color-primary-soft);
+}
+.error {
+  color: var(--color-danger);
+}

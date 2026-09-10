@@ -2,10 +2,27 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { tokenStorage } from '@/lib/storage/tokenStorage'
 import { authService } from '../services/authService'
 import { AuthContext } from './AuthContext'
+import { subscribeUsers } from '@/features/users/services/usersMockService'
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [status, setStatus] = useState('loading')
+
+  useEffect(
+    () =>
+      subscribeUsers(() => {
+        if (!tokenStorage.get()?.startsWith('ortos-dev-token:')) return
+        authService
+          .me()
+          .then(setUser)
+          .catch(() => {
+            tokenStorage.clear()
+            setUser(null)
+            setStatus('unauthenticated')
+          })
+      }),
+    [],
+  )
 
   useEffect(() => {
     let active = true

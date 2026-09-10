@@ -1,0 +1,235 @@
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 11px;
+}
+.sheet {
+  max-width: 794px;
+  min-height: 1040px;
+  margin: 18px auto;
+  padding: 38px;
+  background: white;
+  color: #334155;
+  box-shadow: var(--shadow-md);
+  font-size: 11px;
+}
+.hidden {
+  display: none;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  border-bottom: 3px solid var(--color-primary);
+  padding-bottom: 18px;
+  margin-bottom: 24px;
+}
+.brand {
+  font-size: 30px;
+  color: var(--color-primary);
+  font-weight: 700;
+}
+.brand svg {
+  margin-right: 8px;
+}
+.header small {
+  display: block;
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--color-text-muted);
+}
+.heading {
+  text-align: right;
+}
+.heading h3 {
+  font-size: 14px;
+  color: var(--color-primary-dark);
+  margin: 5px 0 8px;
+}
+.heading p {
+  margin: 5px 0;
+}
+.section {
+  margin: 22px 0;
+}
+.section h3 {
+  font-size: 11px;
+  color: var(--color-primary-dark);
+  border-bottom: 1px solid #b8d9eb;
+  padding: 7px 10px;
+  background: #f0f8fc;
+  letter-spacing: 0.05em;
+  margin-bottom: 12px;
+}
+.fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 13px 20px;
+  margin: 0;
+}
+.fields div {
+  min-width: 0;
+}
+.fields dt {
+  font-weight: 600;
+  font-size: 10px;
+  margin-bottom: 3px;
+  color: #64748b;
+}
+.fields dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+.personal {
+  display: flex;
+  align-items: start;
+  gap: 20px;
+}
+.photo {
+  width: 90px;
+  height: 105px;
+  background: var(--color-surface-alt);
+  border-radius: 10px;
+  object-fit: cover;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  font-size: 40px;
+  color: #94a3b8;
+}
+.personal dl {
+  flex: 1;
+}
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 10px;
+}
+.table th {
+  color: var(--color-primary-dark);
+  background: #eff6ff;
+  text-align: left;
+  padding: 10px;
+}
+.table td {
+  border-bottom: 1px solid var(--color-border);
+  padding: 12px 10px;
+  vertical-align: top;
+}
+.table small {
+  display: block;
+  margin-top: 6px;
+  color: var(--color-text-muted);
+}
+.signature {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  margin: 65px 15px 30px;
+  gap: 20px;
+}
+.signature p {
+  border-top: 1px solid #64748b;
+  padding-top: 10px;
+  min-width: 230px;
+}
+.signature small {
+  display: block;
+  margin-top: 5px;
+}
+.qr {
+  width: 95px;
+  height: 95px;
+}
+.confidential {
+  border-top: 1px solid var(--color-border);
+  text-align: center;
+  color: var(--color-text-muted);
+  padding-top: 14px;
+  font-size: 9px;
+  margin-top: 30px;
+}
+@media (max-width: 680px) {
+  .sheet {
+    padding: 18px;
+    min-height: 0;
+  }
+  .header {
+    flex-wrap: wrap;
+  }
+  .heading {
+    text-align: left;
+  }
+  .personal {
+    flex-direction: column;
+  }
+  .fields {
+    grid-template-columns: 1fr;
+  }
+  .signature {
+    margin: 40px 0 20px;
+    flex-wrap: wrap;
+  }
+  .signature p {
+    min-width: 180px;
+  }
+}
+@media print {
+  :global(body):has(.printRoot) {
+    visibility: hidden;
+    background: white !important;
+  }
+  :global(body):has(.printRoot) * {
+    box-shadow: none !important;
+  }
+  .printRoot,
+  .printRoot * {
+    visibility: visible;
+  }
+  .printRoot {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    background: white;
+  }
+  .sheet,
+  .hidden {
+    display: block;
+    width: 190mm;
+    max-width: none;
+    min-height: 267mm;
+    margin: 0;
+    padding: 10mm;
+    break-after: page;
+  }
+  .sheet:last-child {
+    break-after: auto;
+  }
+  .fields {
+    grid-template-columns: 1fr 1fr;
+  }
+  .personal {
+    flex-direction: row;
+  }
+  :global([role='dialog']) {
+    position: static !important;
+    overflow: visible !important;
+    max-height: none !important;
+    padding: 0 !important;
+    background: white !important;
+  }
+  :global([role='dialog']) > div:first-child {
+    display: none !important;
+  }
+  :global(body > div:has([role='dialog'])) {
+    position: absolute !important;
+    inset: 0 !important;
+    display: block !important;
+    padding: 0 !important;
+    background: white !important;
+    backdrop-filter: none !important;
+  }
+}

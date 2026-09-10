@@ -13,6 +13,13 @@ import {
 } from '@/pages'
 import { ProtectedRoute } from './ProtectedRoute'
 import { paths } from './paths'
+import { PatientsPage } from '@/features/patients/components/PatientsPage'
+import { AppointmentsPage } from '@/features/appointments/components/AppointmentsPage'
+import { PaymentsPage } from '@/features/payments/components/PaymentsPage'
+import { UsersPage } from '@/features/users/components/UsersPage'
+import { ModuleAccess } from './ModuleAccess'
+import { PatientPortal } from '@/features/portal/PatientPortal'
+import { MessagesPage } from '@/features/messages/MessagesPage'
 
 export function AppRouter() {
   return (
@@ -27,16 +34,38 @@ export function AppRouter() {
 
       <Route element={<ProtectedRoute />}>
         <Route element={<PrivateLayout />}>
-          <Route path={paths.dashboard} element={<DashboardPage />} />
+          <Route path={paths.dashboard} element={<PatientDashboard />} />
+          {[paths.myAppointments, paths.myPayments, paths.myProfile, paths.myTreatment].map((path) => (
+            <Route key={path} path={path} element={<PatientPortal />} />
+          ))}
+          <Route path={paths.messages} element={<MessagesPage />} />
           {privateModules.map((module) => (
             <Route
               key={module.id}
               path={module.to}
-              element={<PrivateModulePage module={module} />}
+              element={
+                <ModuleAccess path={module.to}>
+                  {module.to === paths.patients ? (
+                    <PatientsPage />
+                  ) : module.to === paths.appointments || module.to === paths.calendar ? (
+                    <AppointmentsPage />
+                  ) : module.to === paths.payments ? (
+                    <PaymentsPage />
+                  ) : module.to === paths.users ? (
+                    <UsersPage />
+                  ) : (
+                    <PrivateModulePage module={module} />
+                  )}
+                </ModuleAccess>
+              }
             />
           ))}
         </Route>
       </Route>
     </Routes>
   )
+}
+
+function PatientDashboard() {
+  return <DashboardPage />
 }

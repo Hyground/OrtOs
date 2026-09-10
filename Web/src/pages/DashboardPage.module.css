@@ -225,6 +225,21 @@
 .moduleCard:focus-visible::before {
   opacity: 1;
 }
+.usersCard,
+.usersCard:hover {
+  background: var(--color-users);
+  border-color: var(--color-users);
+}
+.usersCard .moduleText strong {
+  color: white;
+}
+.usersCard .moduleText span {
+  color: #dbeafe;
+}
+.usersCard .moduleIcon {
+  background: #ffffff20;
+  color: white;
+}
 
 .moduleIcon {
   display: inline-flex;

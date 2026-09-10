@@ -1,0 +1,38 @@
+.page {
+  --color-primary: var(--color-users);
+  --color-primary-dark: #173570;
+}
+.banner {
+  background: linear-gradient(120deg, #122747, var(--color-users));
+  border-radius: var(--radius-md);
+  padding: 25px;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.banner h1 {
+  color: white;
+  margin: 0 0 10px;
+  font-size: 24px;
+}
+.banner p {
+  margin: 0;
+  color: #dbeafe;
+}
+.counts {
+  display: flex;
+  gap: 12px;
+}
+.counts span {
+  display: grid;
+  padding: 12px 18px;
+  background: #ffffff18;
+  border: 1px solid #ffffff30;
+  border-radius: 10px;
+}
+.counts strong {
+  font-size: 24px;
+}

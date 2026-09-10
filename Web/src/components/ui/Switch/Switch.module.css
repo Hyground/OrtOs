@@ -1,0 +1,48 @@
+.label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  position: relative;
+}
+.label input {
+  position: absolute;
+  opacity: 0;
+  width: 42px;
+  height: 24px;
+}
+.track {
+  width: 42px;
+  height: 24px;
+  flex-shrink: 0;
+  background: var(--color-text-muted);
+  border-radius: 24px;
+  padding: 3px;
+  transition: background 0.2s;
+}
+.track::after {
+  content: '';
+  display: block;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: white;
+  transition: transform 0.2s;
+}
+.label input:checked + .track {
+  background: var(--color-action);
+}
+.label input:checked + .track::after {
+  transform: translateX(18px);
+}
+.label input:focus-visible + .track {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .track,
+  .track::after {
+    transition: none;
+  }
+}

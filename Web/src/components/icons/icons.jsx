@@ -10,6 +10,45 @@ const base = {
   'aria-hidden': true,
   focusable: false,
 }
+export function IconSun(props) { return <svg {...base} {...props}><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg> }
+export function IconMoon(props) { return <svg {...base} {...props}><path d="M20.5 13.4A9 9 0 0 1 10.6 3.5a9 9 0 1 0 9.9 9.9Z"/></svg> }
+export function IconMonitor(props) { return <svg {...base} {...props}><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg> }
+
+export function IconEdit(props) {
+  return (
+    <svg {...base} {...props}>
+      <path d="m15 4 5 5M4 20l5-1L21 7a2 2 0 0 0-5-5L4 15v5Z" />
+    </svg>
+  )
+}
+export function IconTrash(props) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7M14 10v7" />
+    </svg>
+  )
+}
+export function IconPrint(props) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M7 8V3h10v5M7 17H3V8h18v9h-4M7 14h10v7H7zM17 11h1" />
+    </svg>
+  )
+}
+export function IconDownload(props) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5" />
+    </svg>
+  )
+}
+export function IconUpload(props) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M7 17H5a4 4 0 0 1-1-8 7 7 0 0 1 13-2 5 5 0 0 1 2 10h-2M12 12v9m-4-5 4-4 4 4" />
+    </svg>
+  )
+}
 
 export function IconHome(props) {
   return (
