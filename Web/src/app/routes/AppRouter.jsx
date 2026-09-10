@@ -20,6 +20,7 @@ import { UsersPage } from '@/features/users/components/UsersPage'
 import { ModuleAccess } from './ModuleAccess'
 import { PatientPortal } from '@/features/portal/PatientPortal'
 import { MessagesPage } from '@/features/messages/MessagesPage'
+import { SpecialtiesPage } from '@/features/specialties/SpecialtiesPage'
 
 export function AppRouter() {
   return (
@@ -53,6 +54,8 @@ export function AppRouter() {
                     <PaymentsPage />
                   ) : module.to === paths.users ? (
                     <UsersPage />
+                  ) : module.to === paths.specialties ? (
+                    <SpecialtiesPage />
                   ) : (
                     <PrivateModulePage module={module} />
                   )}
