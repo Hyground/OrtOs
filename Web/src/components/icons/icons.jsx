@@ -348,3 +348,19 @@ export function IconTikTok(props) {
     </svg>
   )
 }
+
+export function IconChevronLeft(props) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M15 6l-6 6 6 6" />
+    </svg>
+  )
+}
+
+export function IconChevronRight(props) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M9 6l6 6-6 6" />
+    </svg>
+  )
+}

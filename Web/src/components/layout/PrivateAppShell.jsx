@@ -34,20 +34,44 @@ function formatWorkDate(date) {
 }
 
 export function PrivateAppShell() {
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [mobileOpen, setMobileOpen] = useState(false)
+  const [collapsed, setCollapsed] = useState(false)
   const { user, logout } = useAuth()
   const workDate = formatWorkDate(new Date())
 
-  const closeSidebar = () => setSidebarOpen(false)
+  const closeMobile = () => setMobileOpen(false)
+  const toggleCollapsed = () => setCollapsed((prev) => !prev)
+
+  const sidebarClasses = [
+    styles.sidebar,
+    mobileOpen ? styles.sidebarMobileOpen : '',
+    collapsed ? styles.sidebarCollapsed : '',
+  ]
+    .filter(Boolean)
+    .join(' ')
+
+  const shellClasses = [styles.shell, collapsed ? styles.shellCollapsed : '']
+    .filter(Boolean)
+    .join(' ')
 
   return (
-    <div className={styles.shell}>
+    <div className={shellClasses}>
       <SkipLink />
-      <aside
-        className={sidebarOpen ? `${styles.sidebar} ${styles.sidebarOpen}` : styles.sidebar}
-        aria-label="Menú administrativo"
-      >
+      <aside className={sidebarClasses} aria-label="Menú administrativo">
+        {/* ── Header: hamburger + name ───────────────── */}
         <div className={styles.brandRow}>
+          {/* Hamburger toggle (always visible) */}
+          <button
+            type="button"
+            className={styles.toggleBtn}
+            onClick={toggleCollapsed}
+            aria-label={collapsed ? 'Expandir menú' : 'Colapsar menú'}
+            title={collapsed ? 'Expandir menú' : 'Colapsar menú'}
+          >
+            <IconMenu />
+          </button>
+
+          {/* Brand name (hides when collapsed) */}
           <NavLink
             to={paths.dashboard}
             className={styles.brand}
@@ -55,57 +79,80 @@ export function PrivateAppShell() {
           >
             Ort<span>Os</span>
           </NavLink>
+
+          {/* Mobile: close button */}
           <button
             type="button"
             className={styles.closeSidebar}
             aria-label="Cerrar menú"
-            onClick={closeSidebar}
+            onClick={closeMobile}
           >
             <IconClose />
           </button>
         </div>
 
+        <div className={styles.divider} />
+
+        {/* ── Navigation ─────────────────────────────── */}
         <nav className={styles.sideNav}>
           <span className={styles.navKicker}>Panel principal</span>
           <ul>
             {privateMenuItems.map(({ to, label, Icon, end }) => (
               <li key={to}>
-                <NavLink to={to} end={end} className={menuClass} onClick={closeSidebar}>
-                  <Icon />
-                  <span>{label}</span>
+                <NavLink
+                  to={to}
+                  end={end}
+                  className={menuClass}
+                  onClick={closeMobile}
+                  title={collapsed ? label : undefined}
+                >
+                  <span className={styles.menuIconWrap}>
+                    <Icon />
+                  </span>
+                  <span className={styles.menuLabel}>{label}</span>
                 </NavLink>
               </li>
             ))}
           </ul>
         </nav>
 
+        <div className={styles.divider} />
+
+        {/* ── Profile ────────────────────────────────── */}
         <div className={styles.profile}>
-          <span className={styles.avatar}>
+          <span className={styles.avatar} title={collapsed ? (user?.displayName ?? 'Admin') : undefined}>
             <IconUser />
           </span>
-          <strong>{user?.displayName ?? 'Admin el OrtOs'}</strong>
-          <span>En línea (Administrador)</span>
-          <button type="button" onClick={logout} aria-label="Cerrar sesión">
+          <div className={styles.profileInfo}>
+            <strong>{user?.displayName ?? 'Admin el OrtOs'}</strong>
+            <span className={styles.profileStatus}>
+              <span className={styles.statusDot} />
+              En línea
+            </span>
+          </div>
+          <button type="button" onClick={logout} aria-label="Cerrar sesión" title="Cerrar sesión">
             <IconLogOut />
           </button>
         </div>
       </aside>
 
+      {/* ── Scrim (mobile overlay) ────────────────── */}
       <button
         type="button"
-        className={sidebarOpen ? `${styles.scrim} ${styles.scrimOpen}` : styles.scrim}
+        className={mobileOpen ? `${styles.scrim} ${styles.scrimOpen}` : styles.scrim}
         aria-label="Cerrar menú"
-        onClick={closeSidebar}
+        onClick={closeMobile}
       />
 
+      {/* ── Workspace ────────────────────────────── */}
       <div className={styles.workspace}>
         <header className={styles.topbar}>
           <button
             type="button"
             className={styles.mobileMenu}
             aria-label="Abrir menú"
-            aria-expanded={sidebarOpen}
-            onClick={() => setSidebarOpen(true)}
+            aria-expanded={mobileOpen}
+            onClick={() => setMobileOpen(true)}
           >
             <IconMenu />
           </button>
