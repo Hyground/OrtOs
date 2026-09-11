@@ -22,6 +22,9 @@ import { PatientPortal } from '@/features/portal/PatientPortal'
 import { MessagesPage } from '@/features/messages/MessagesPage'
 import { SpecialtiesPage } from '@/features/specialties/SpecialtiesPage'
 import { OdontogramPage } from '@/features/odontogram/OdontogramPage'
+import { DoctorsPage } from '@/features/doctors/components/DoctorsPage'
+import { AppointmentSummaryPage } from '@/features/reports/components/AppointmentSummaryPage'
+import { AppointmentHistoryPage } from '@/features/appointmentHistory/components/AppointmentHistoryPage'
 
 export function AppRouter() {
   return (
@@ -59,6 +62,12 @@ export function AppRouter() {
                     <SpecialtiesPage />
                   ) : module.to === paths.odontogram ? (
                     <OdontogramPage />
+                  ) : module.to === paths.doctors ? (
+                    <DoctorsPage />
+                  ) : module.to === paths.summary ? (
+                    <AppointmentSummaryPage />
+                  ) : module.to === paths.appointmentHistory ? (
+                    <AppointmentHistoryPage />
                   ) : (
                     <PrivateModulePage module={module} />
                   )}
