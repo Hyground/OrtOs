@@ -3,11 +3,11 @@ import { Modal } from '@/components/ui/Modal/Modal'
 import { Button } from '@/components/ui/Button/Button'
 import { TextField } from '@/components/ui/TextField/TextField'
 import { TextAreaField } from '@/components/ui/TextAreaField/TextAreaField'
-import { blankTooth, states, surfaces, toothZone } from './odontogramModel'
+import { blankTooth, dentitionStates, surfaces, toothZone } from './odontogramModel'
 import { ToothDiagram } from './ToothDiagram'
 import styles from './OdontogramPage.module.css'
 
-export function ToothEditor({ number, tooth, onClose, onSave }) {
+export function ToothEditor({ number, tooth, dentition, onClose, onSave }) {
   const [draft, setDraft] = useState(() => {
     const initial = tooth ?? blankTooth()
     return { ...initial, faces: { ...initial.faces } }
@@ -35,7 +35,7 @@ export function ToothEditor({ number, tooth, onClose, onSave }) {
           </div>
           <fieldset className={styles.statePicker}>
             <legend>Superficie: {surfaces.find(({ id }) => id === face).label}</legend>
-            {states.map((state) => (
+            {dentitionStates(dentition).map((state) => (
               <label key={state.id}>
                 <input
                   type="radio"
@@ -71,8 +71,15 @@ export function ToothEditor({ number, tooth, onClose, onSave }) {
           </p>
         )}
         <div className={styles.formActions}>
-          <Button variant="ghost" onClick={onClose}>
-            Cancelar
+          <Button
+            variant="ghost"
+            onClick={() => {
+              setDraft(blankTooth())
+              setFace('center')
+              setError('')
+            }}
+          >
+            Limpiar
           </Button>
           <Button type="submit">Guardar</Button>
         </div>

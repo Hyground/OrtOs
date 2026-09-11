@@ -10,7 +10,7 @@ export function ToothDiagram({ tooth, selectedFace, onSelectFace }) {
       aria-hidden={onSelectFace ? undefined : true}
     >
       {surfaces.map(({ id, label, x, y, width, height, radius }) => {
-        const state = stateById[tooth?.faces[id] ?? 'sinRegistro']
+        const state = stateById[tooth?.faces[id] ?? 'sano']
         return (
           <rect
             key={id}
