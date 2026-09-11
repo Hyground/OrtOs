@@ -1,4 +1,5 @@
 import { httpClient } from '@/lib/http/httpClient'
+import { env } from '@/config/env'
 import { servicesFallback } from './servicesFallback'
 
 const CACHE_KEY = 'ortos.services.cache'
@@ -37,6 +38,8 @@ export const servicesService = {
   async list() {
     const cached = readCache()
     if (cached) return { services: cached, fromFallback: false }
+
+    if (!env.apiUrl) return { services: servicesFallback, fromFallback: true }
 
     try {
       const data = await httpClient.get('/api/services', { auth: false })
