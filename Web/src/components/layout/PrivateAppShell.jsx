@@ -20,7 +20,7 @@ import { ThemeControl } from '@/features/appearance/ThemeControl'
 import { SkipLink, MAIN_ID } from './SkipLink'
 import styles from './PrivateAppShell.module.css'
 
-function menuClass({ isActive }) {
+function menuClass(isActive) {
   return isActive ? `${styles.menuLink} ${styles.menuLinkActive}` : styles.menuLink
 }
 
@@ -56,6 +56,7 @@ export function PrivateAppShell() {
           : { to: paths.newAppointment, label: 'NUEVA CITA' }
   const workDate = formatWorkDate(new Date())
   const menuItems = user?.role === 'paciente' ? patientMenuItems : privateMenuItems
+  const showGlobalSearch = location.pathname !== paths.summary
 
   const closeMobile = () => setMobileOpen(false)
   const toggleCollapsed = () => setCollapsed((prev) => !prev)
@@ -117,13 +118,16 @@ export function PrivateAppShell() {
           <ul>
             {menuItems
               .filter((item) => user?.role === 'paciente' || canAccess(user, item.to))
-              .map(({ to, label, Icon, end, tone }) => (
+              .map(({ to, label, Icon, end, tone, activePaths }) => (
                 <li key={to}>
                   <NavLink
                     to={to}
                     end={end}
                     className={(state) =>
-                      [menuClass(state), tone === 'users' ? styles.usersLink : ''].join(' ')
+                      [
+                        menuClass(state.isActive || activePaths?.includes(location.pathname)),
+                        tone === 'users' ? styles.usersLink : '',
+                      ].join(' ')
                     }
                     onClick={closeMobile}
                     title={collapsed ? label : undefined}
@@ -182,25 +186,27 @@ export function PrivateAppShell() {
             <IconMenu />
           </button>
 
-          <form
-            className={styles.searchBox}
-            onSubmit={(event) => {
-              event.preventDefault()
-              navigate(paths.patients + '?q=' + encodeURIComponent(search))
-            }}
-          >
-            <IconSearch />
-            <label htmlFor="global-patient-search" className={styles.srOnly}>
-              Buscar paciente, expediente o folio
-            </label>
-            <input
-              id="global-patient-search"
-              type="search"
-              placeholder="Buscar paciente, expediente, folio cita..."
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
-            />
-          </form>
+          {showGlobalSearch ? (
+            <form
+              className={styles.searchBox}
+              onSubmit={(event) => {
+                event.preventDefault()
+                navigate(paths.patients + '?q=' + encodeURIComponent(search))
+              }}
+            >
+              <IconSearch />
+              <label htmlFor="global-patient-search" className={styles.srOnly}>
+                Buscar paciente, expediente o folio
+              </label>
+              <input
+                id="global-patient-search"
+                type="search"
+                placeholder="Buscar paciente, expediente, folio cita..."
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+              />
+            </form>
+          ) : null}
 
           <div className={styles.dateBox}>
             <IconCalendar />

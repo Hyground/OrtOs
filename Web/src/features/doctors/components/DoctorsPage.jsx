@@ -100,9 +100,6 @@ export function DoctorsPage() {
               setPage(1)
             }}
           />
-          <Button type="submit" size="sm">
-            <IconSearch /> Aplicar filtros
-          </Button>
           <Button
             type="button"
             size="sm"

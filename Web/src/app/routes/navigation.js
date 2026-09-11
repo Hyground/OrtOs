@@ -32,8 +32,15 @@ export const patientMenuItems = [
 ]
 
 export const privateMenuItems = [
-  { to: paths.dashboard, label: 'Menu modulos', Icon: IconHome, end: true },
+  {
+    to: paths.dashboard,
+    label: 'Menu modulos',
+    Icon: IconHome,
+    end: true,
+    activePaths: [paths.appointmentHistory, paths.summary],
+  },
   { to: paths.patients, label: 'Paciente', Icon: IconUser },
+  { to: paths.doctors, label: 'Médico', Icon: IconSpecialist },
   { to: paths.appointments, label: 'Citas', Icon: IconCalendar },
   { to: paths.odontogram, label: 'Odontograma', Icon: IconTooth },
   { to: paths.treatments, label: 'Tratamiento', Icon: IconClipboard },
