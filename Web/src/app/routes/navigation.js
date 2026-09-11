@@ -40,6 +40,7 @@ export const privateMenuItems = [
     activePaths: [paths.appointmentHistory, paths.summary],
   },
   { to: paths.patients, label: 'Paciente', Icon: IconUser },
+  { to: paths.specialties, label: 'Especialidades', Icon: IconServices },
   { to: paths.doctors, label: 'Médico', Icon: IconSpecialist },
   { to: paths.appointments, label: 'Citas', Icon: IconCalendar },
   { to: paths.odontogram, label: 'Odontograma', Icon: IconTooth },

@@ -1,10 +1,11 @@
 import { displayDate, localDate } from '@/features/clinical/mockStore'
 import {
   detailRows,
+  dentitionNumbers,
   patientFields,
   quadrants,
   stateById,
-  states,
+  dentitionStates,
   summarize,
   surfaces,
 } from './odontogramModel'
@@ -83,7 +84,7 @@ function drawTooth(doc, chart, number, x, y, scale) {
   doc.setTextColor(INK)
   doc.text(String(number), x + 50 * scale, y - 1.5, { align: 'center' })
   surfaces.forEach((surface) => {
-    doc.setFillColor(stateById[chart[number]?.faces[surface.id] ?? 'sinRegistro'].color)
+    doc.setFillColor(stateById[chart[number]?.faces[surface.id] ?? 'sano'].color)
     doc.setDrawColor('#334155')
     doc.setLineWidth(0.15)
     doc.roundedRect(
@@ -98,8 +99,12 @@ function drawTooth(doc, chart, number, x, y, scale) {
   })
 }
 
-function drawChart(doc, chart, start) {
-  const top = heading(doc, 'REPRESENTACIÓN GRÁFICA DEL ODONTOGRAMA', start)
+function drawChart(doc, chart, start, dentition) {
+  const top = heading(
+    doc,
+    `ODONTOGRAMA - ${dentition === 'temporary' ? 'INFANTIL' : 'ADULTO'}`,
+    start,
+  )
   doc.setFillColor('#f8fafc')
   doc.setDrawColor('#dbe5ed')
   doc.setLineWidth(0.25)
@@ -115,19 +120,14 @@ function drawChart(doc, chart, start) {
     doc.setFontSize(7)
     doc.setFont('helvetica', 'bold')
     doc.text(`CUADRANTE ${q.id} (${q.label})`, x + 41, upper ? y + 3 : y + 25, { align: 'center' })
-    q.permanent.forEach((number, i) =>
-      drawTooth(doc, chart, number, x + 1 + i * 10.6, y + (upper ? 8 : 13), 0.052),
+    const numbers = q[dentition]
+    const offset = (85 - numbers.length * 10.6) / 2
+    numbers.forEach((number, i) =>
+      drawTooth(doc, chart, number, x + offset + i * 10.6, y + (upper ? 10 : 7), 0.075),
     )
-    q.temporary.forEach((number, i) =>
-      drawTooth(doc, chart, number, x + 26 + i * 10.6, y + (upper ? 20 : 3), 0.043),
-    )
-    doc.setFont('helvetica', 'normal')
-    doc.setFontSize(6)
-    doc.setTextColor('#64748b')
-    doc.text(`Temp. ${q.temporaryId}:`, x + 8, y + (upper ? 23 : 6))
   })
-  const counts = summarize(chart)
-  states.forEach((state, i) => {
+  const counts = summarize(chart, dentitionNumbers(dentition))
+  dentitionStates(dentition).forEach((state, i) => {
     const x = LEFT + 5 + (i % 3) * 60
     const y = top + 61 + Math.floor(i / 3) * 6
     doc.setFillColor(state.color)
@@ -139,11 +139,11 @@ function drawChart(doc, chart, start) {
   })
   doc.setFontSize(6)
   doc.setTextColor('#64748b')
-  doc.text('Recuento por superficie', RIGHT - 3, top + 75, { align: 'right' })
+  doc.text('Recuento por diente', RIGHT - 3, top + 75, { align: 'right' })
   return top + 79
 }
 
-function drawDetails(doc, chart, patient, date, start) {
+function drawDetails(doc, chart, patient, date, start, dentition) {
   const widths = [14, 37, 25, 42, 64]
   const titles = [
     'Pieza Nº',
@@ -173,7 +173,7 @@ function drawDetails(doc, chart, patient, date, start) {
     header(doc, patient, date)
     y = tableHeader(heading(doc, 'REGISTRO DETALLADO POR PIEZA (CONTINUACIÓN)', 38))
   }
-  const rows = detailRows(chart)
+  const rows = detailRows(chart, dentitionNumbers(dentition))
   if (!rows.length) {
     doc.setFontSize(9)
     doc.text('Sin hallazgos registrados.', LEFT + 3, y + 8)
@@ -184,7 +184,7 @@ function drawDetails(doc, chart, patient, date, start) {
     const values = [
       String(row.number),
       row.zone.replace(' · ', ' - '),
-      stateById[row.state].label,
+      stateById[row.state]?.label ?? 'Observación',
       row.treatment || 'No indicado',
       [row.surfaces, row.notes].filter(Boolean).join('\n') || '—',
     ]
@@ -205,7 +205,7 @@ function drawDetails(doc, chart, patient, date, start) {
         doc.setFillColor(index % 2 ? '#f8fafc' : '#ffffff')
         doc.rect(x, y, widths[i], height, 'FD')
         doc.setTextColor(INK)
-        if (i === 2 && offset === 0) {
+        if (i === 2 && offset === 0 && row.state) {
           doc.setFillColor(stateById[row.state].color)
           doc.circle(x + 2, y + 4.5, 1, 'FD')
         }
@@ -220,7 +220,12 @@ function drawDetails(doc, chart, patient, date, start) {
   })
 }
 
-export async function createOdontogramPDF(patient, chart, date = localDate()) {
+export async function createOdontogramPDF(
+  patient,
+  chart,
+  date = localDate(),
+  dentition = 'permanent',
+) {
   const { jsPDF } = await import('jspdf')
   const doc = new jsPDF({ unit: 'mm', format: 'a4' })
   doc.setProperties({ title: `Odontograma ${patient.folio || patient.id}`, author: 'OrtOs' })
@@ -231,13 +236,13 @@ export async function createOdontogramPDF(patient, chart, date = localDate()) {
     header(doc, patient, date)
     y = 38
   }
-  y = drawChart(doc, chart, y)
+  y = drawChart(doc, chart, y, dentition)
   if (y + 40 > 278) {
     doc.addPage()
     header(doc, patient, date)
     y = 38
   }
-  drawDetails(doc, chart, patient, date, y)
+  drawDetails(doc, chart, patient, date, y, dentition)
   const pages = doc.getNumberOfPages()
   for (let page = 1; page <= pages; page++) {
     doc.setPage(page)
