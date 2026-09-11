@@ -25,6 +25,7 @@ import { OdontogramPage } from '@/features/odontogram/OdontogramPage'
 import { DoctorsPage } from '@/features/doctors/components/DoctorsPage'
 import { AppointmentSummaryPage } from '@/features/reports/components/AppointmentSummaryPage'
 import { AppointmentHistoryPage } from '@/features/appointmentHistory/components/AppointmentHistoryPage'
+import { ReportsPage } from '@/features/reports/ReportsPage'
 
 export function AppRouter() {
   return (
@@ -64,6 +65,8 @@ export function AppRouter() {
                     <OdontogramPage />
                   ) : module.to === paths.doctors ? (
                     <DoctorsPage />
+                  ) : module.to === paths.reports ? (
+                    <ReportsPage />
                   ) : module.to === paths.summary ? (
                     <AppointmentSummaryPage />
                   ) : module.to === paths.appointmentHistory ? (
