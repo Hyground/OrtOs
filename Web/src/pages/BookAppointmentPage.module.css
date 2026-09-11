@@ -1,0 +1,486 @@
+.page {
+  width: min(1100px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 36px 0 54px;
+  color: var(--color-text);
+}
+.header {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.header > span {
+  width: fit-content;
+  padding: 6px 11px;
+  border-radius: var(--radius-full);
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+.header h1 {
+  margin: 0;
+  color: var(--color-ink-strong);
+  font-size: 32px;
+  line-height: 1.15;
+}
+.header p {
+  max-width: 640px;
+  margin: 0;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+.flow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 18px;
+  align-items: start;
+}
+.steps {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+.steps button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 9px 11px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+}
+.steps button:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+.steps span {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--color-admin-bg);
+  color: var(--color-text-muted);
+  flex: 0 0 auto;
+}
+.steps .stepActive {
+  border-color: var(--color-primary);
+  color: var(--color-primary-dark);
+  box-shadow: 0 0 0 3px var(--color-primary-soft);
+}
+.stepActive span {
+  background: var(--color-primary);
+  color: white;
+}
+.card,
+.summary {
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+}
+.card {
+  min-height: 470px;
+  padding: 22px;
+}
+.patientStep,
+.dateStep,
+.timeStep {
+  display: grid;
+  gap: 18px;
+}
+.sectionHead {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--color-border);
+}
+.sectionHead svg {
+  flex: 0 0 auto;
+  color: var(--color-primary);
+  font-size: 24px;
+}
+.sectionHead h2 {
+  margin: 0;
+  color: var(--color-ink);
+  font-size: 20px;
+}
+.sectionHead p {
+  margin: 5px 0 0;
+  color: var(--color-text-muted);
+  font-size: 13px;
+  line-height: 1.55;
+}
+.grid2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+.patientActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
+}
+.calendarGrid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 9px;
+}
+.dayButton,
+.timeButton {
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  cursor: pointer;
+  font: inherit;
+}
+.dayButton {
+  display: grid;
+  gap: 4px;
+  min-height: 104px;
+  padding: 11px;
+  text-align: left;
+}
+.dayButton span,
+.dayButton small,
+.dayButton em {
+  color: var(--color-text-muted);
+  font-size: 11px;
+  font-style: normal;
+}
+.dayButton strong {
+  color: var(--color-ink);
+  font-size: 23px;
+  line-height: 1;
+}
+.dayButton em {
+  align-self: end;
+  font-weight: 800;
+}
+.dayButton:hover,
+.dayButton:focus-visible,
+.timeButton:hover,
+.timeButton:focus-visible {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-soft);
+  outline: 0;
+}
+.daySelected,
+.timeSelected {
+  border-color: var(--color-primary);
+  background: var(--color-primary-soft);
+}
+.dayButton:disabled,
+.timeButton:disabled {
+  cursor: not-allowed;
+  background: var(--color-admin-bg);
+  opacity: 0.52;
+}
+.timeGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+.timeButton {
+  display: grid;
+  gap: 4px;
+  min-height: 58px;
+  padding: 10px;
+  text-align: left;
+}
+.timeButton strong {
+  color: var(--color-ink);
+  font-size: 14px;
+}
+.timeButton span {
+  color: var(--color-text-muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+.emptyState {
+  display: grid;
+  gap: 7px;
+  place-items: center;
+  min-height: 220px;
+  padding: 20px;
+  border-radius: 10px;
+  background: var(--color-admin-bg);
+  text-align: center;
+}
+.emptyState svg {
+  color: var(--color-danger);
+  font-size: 28px;
+}
+.emptyState strong {
+  color: var(--color-ink);
+  font-size: 15px;
+}
+.emptyState span {
+  color: var(--color-text-muted);
+  font-size: 12px;
+}
+.receiptPanel {
+  display: grid;
+  gap: 18px;
+  padding: 0;
+  overflow: hidden;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #f8fafc 0%, #ffffff 48%);
+}
+.receiptHeader {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding: 24px 26px;
+  background: #0f172a;
+  color: white;
+}
+.receiptHeader svg {
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  padding: 10px;
+  border-radius: 10px;
+  background: #0284c7;
+  color: white;
+}
+.receiptHeader span {
+  display: block;
+  margin-bottom: 5px;
+  color: #bae6fd;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+.receiptHeader h2 {
+  margin: 0;
+  color: white;
+  font-size: 28px;
+  line-height: 1.1;
+}
+.receiptHeader p {
+  max-width: 640px;
+  margin: 7px 0 0;
+  color: #cbd5e1;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.receiptBody {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 150px;
+  gap: 16px;
+  padding: 0 26px;
+}
+.receiptMain {
+  display: grid;
+  gap: 14px;
+}
+.receiptCode,
+.receiptSection,
+.receiptQr {
+  border: 1px solid #dbe7f3;
+  border-radius: 10px;
+  background: white;
+  box-shadow: 0 10px 26px rgba(15, 23, 42, 0.07);
+}
+.receiptCode {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-color: #7dd3fc;
+  background: #f0f9ff;
+}
+.receiptCode span,
+.receiptQr span {
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+.receiptCode strong {
+  color: #075985;
+  font-size: 22px;
+  letter-spacing: 0;
+}
+.receiptSection {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+}
+.receiptSection h3 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 15px;
+}
+.receiptSection dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+}
+.receiptSection dl div {
+  display: grid;
+  gap: 4px;
+  min-height: 64px;
+  padding: 11px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #f8fafc;
+}
+.receiptSection dt {
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+.receiptSection dd {
+  margin: 0;
+  color: #0f172a;
+  font-size: 15px;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+.receiptQr {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 10px;
+  min-height: 150px;
+  padding: 14px;
+  text-align: center;
+}
+.qr {
+  width: 96px;
+  height: 96px;
+  padding: 8px;
+  border: 1px solid #dbe7f3;
+  border-radius: 8px;
+  background: white;
+}
+.receiptActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 0 26px 24px;
+}
+.summary {
+  position: sticky;
+  top: 88px;
+  display: grid;
+  gap: 16px;
+  padding: 18px;
+}
+.summary h2 {
+  margin: 0;
+  color: var(--color-ink);
+  font-size: 18px;
+}
+.summary dl {
+  display: grid;
+  gap: 11px;
+  margin: 0;
+}
+.summary dl div {
+  display: grid;
+  gap: 4px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--color-border);
+}
+.summary dt {
+  color: var(--color-text-muted);
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+.summary dd {
+  margin: 0;
+  color: var(--color-ink);
+  font-size: 13px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+.confirmation {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 10px;
+  background: var(--color-success-soft);
+  color: var(--color-success);
+}
+.confirmation svg {
+  flex: 0 0 auto;
+  font-size: 22px;
+}
+.confirmation strong,
+.confirmation span {
+  display: block;
+}
+.confirmation strong {
+  font-size: 13px;
+}
+.confirmation span {
+  margin-top: 3px;
+  font-size: 12px;
+  line-height: 1.4;
+}
+@media (max-width: 920px) {
+  .flow {
+    grid-template-columns: 1fr;
+  }
+  .summary {
+    position: static;
+  }
+}
+@media (max-width: 720px) {
+  .page {
+    width: min(100% - 20px, 1080px);
+    padding: 24px 0 40px;
+  }
+  .header h1 {
+    font-size: 26px;
+  }
+  .steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .card,
+  .summary {
+    padding: 14px;
+  }
+  .grid2,
+  .calendarGrid,
+  .timeGrid,
+  .receiptBody,
+  .receiptSection dl {
+    grid-template-columns: 1fr;
+  }
+  .dayButton {
+    min-height: 78px;
+  }
+  .receiptHeader,
+  .receiptBody,
+  .receiptActions {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .receiptActions,
+  .receiptActions button {
+    width: 100%;
+  }
+}
