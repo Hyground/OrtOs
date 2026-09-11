@@ -55,6 +55,44 @@ export function Tabs({ items, value, onChange }) {
     </div>
   )
 }
+export function StatusToggle({ active, disabled = false, label, onToggle }) {
+  return (
+    <button
+      type="button"
+      className={styles.statusToggle}
+      aria-label={label}
+      aria-pressed={active}
+      disabled={disabled}
+      onClick={onToggle}
+    >
+      <span className={[styles.statusOption, active ? styles.statusOptionSelected : ''].join(' ')}>
+        ON
+      </span>
+      <span className={[styles.statusOption, !active ? styles.statusOptionSelected : ''].join(' ')}>
+        OFF
+      </span>
+    </button>
+  )
+}
+
+export function CenterToast({ notice }) {
+  if (!notice) return null
+  return (
+    <div
+      role="status"
+      className={[
+        styles.centerToast,
+        notice.status === 'Activo' ? styles.centerToastActive : styles.centerToastInactive,
+      ].join(' ')}
+    >
+      <span className={styles.centerToastLabel}>Estado actualizado</span>
+      <strong>{notice.name}</strong>
+      <span className={styles.centerToastStatus}>
+        {notice.status === 'Activo' ? 'Activado' : 'Desactivado'}
+      </span>
+    </div>
+  )
+}
 export function Pagination({ total, page, onChange, size, noun }) {
   const pages = Math.max(1, Math.ceil(total / size))
   const visible = [...new Set([1, page - 1, page, page + 1, pages])]

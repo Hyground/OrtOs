@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useUsers, saveUser, deleteUser } from '../services/usersMockService'
 import { useAuth } from '@/features/auth/hooks/useAuth'
@@ -7,9 +7,8 @@ import { Button } from '@/components/ui/Button/Button'
 import { TextField } from '@/components/ui/TextField/TextField'
 import { SelectField } from '@/components/ui/SelectField/SelectField'
 import { Modal } from '@/components/ui/Modal/Modal'
-import { Badge } from '@/components/ui/Badge/Badge'
 import { IconUsers, IconEdit, IconTrash, IconSearch } from '@/components/icons/icons'
-import { Pagination } from '@/features/clinical/components'
+import { CenterToast, Pagination, StatusToggle } from '@/features/clinical/components'
 import { usePagination } from '@/features/clinical/tableHelpers'
 import { normalize } from '@/features/clinical/mockStore'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
@@ -123,6 +122,8 @@ export function UsersPage() {
   const [notice, setNotice] = useState('')
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
+  const [statusBusy, setStatusBusy] = useState('')
+  const [statusNotice, setStatusNotice] = useState(null)
   const rows = users.filter(
     (u) =>
       normalize(u.displayName + ' ' + u.email).includes(normalize(query)) &&
@@ -139,6 +140,25 @@ export function UsersPage() {
       },
       { replace: true },
     )
+  }
+  useEffect(() => {
+    if (!statusNotice) return undefined
+    const timer = setTimeout(() => setStatusNotice(null), 2200)
+    return () => clearTimeout(timer)
+  }, [statusNotice])
+
+  const toggleUserStatus = async (account) => {
+    const nextActive = !account.active
+    setStatusBusy(account.id)
+    setError('')
+    try {
+      await saveUser({ ...account, active: nextActive, password: '' })
+      setStatusNotice({ name: account.displayName, status: nextActive ? 'Activo' : 'Inactivo' })
+    } catch (e) {
+      setError(e.message)
+    } finally {
+      setStatusBusy('')
+    }
   }
   return (
     <div className={styles.page + ' ' + css.page}>
@@ -164,6 +184,7 @@ export function UsersPage() {
           {notice}
         </p>
       )}
+      <CenterToast notice={statusNotice} />
       <section className={styles.card}>
         <div className={styles.filters}>
           <TextField
@@ -224,7 +245,12 @@ export function UsersPage() {
                         : 'Panel de paciente'}
                   </td>
                   <td>
-                    <Badge>{u.active ? 'Activo' : 'Inactivo'}</Badge>
+                                        <StatusToggle
+                      active={u.active}
+                      disabled={statusBusy === u.id || u.id === user.id}
+                      label={`Cambiar estado de ${u.displayName} a ${u.active ? 'Inactivo' : 'Activo'}`}
+                      onToggle={() => toggleUserStatus(u)}
+                    />
                   </td>
                   <td>
                     <div className={styles.actions}>

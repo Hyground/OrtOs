@@ -11,12 +11,11 @@ import {
 import { Button } from '@/components/ui/Button/Button'
 import { TextField } from '@/components/ui/TextField/TextField'
 import { SelectField } from '@/components/ui/SelectField/SelectField'
-import { Badge } from '@/components/ui/Badge/Badge'
 import { Modal } from '@/components/ui/Modal/Modal'
-import { Banner, Tabs, Avatar, Pagination } from '@/features/clinical/components'
+import { Avatar, Banner, CenterToast, Pagination, StatusToggle, Tabs } from '@/features/clinical/components'
 import { usePagination, exportExcel } from '@/features/clinical/tableHelpers'
 import { useModuleDialogs } from '@/features/clinical/useModuleDialogs'
-import { normalize, age, displayDate, deletePatient } from '@/features/clinical/mockStore'
+import { normalize, age, displayDate, deletePatient, saveRecord } from '@/features/clinical/mockStore'
 import { RecordModal } from '@/features/records/components/RecordModal'
 import { PatientForm } from './PatientForm'
 import { usePatients } from '../hooks/usePatients'
@@ -33,6 +32,8 @@ export function PatientsPage() {
   const [remove, setRemove] = useState(null)
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
+  const [statusBusy, setStatusBusy] = useState('')
+  const [statusNotice, setStatusNotice] = useState(null)
   const rows = patients.filter(
     (p) =>
       normalize(p.name + ' ' + p.dpi + ' ' + p.phone + ' ' + p.folio).includes(normalize(query)) &&
@@ -45,6 +46,11 @@ export function PatientsPage() {
     setQuery(globalQuery)
     setPage(1)
   }, [globalQuery, setPage])
+  useEffect(() => {
+    if (!statusNotice) return undefined
+    const timer = setTimeout(() => setStatusNotice(null), 2200)
+    return () => clearTimeout(timer)
+  }, [statusNotice])
   const exportRows = () =>
     exportExcel(
       rows,
@@ -59,6 +65,19 @@ export function PatientsPage() {
       'pacientes-ortos.xlsx',
       'Directorio de pacientes',
     )
+  const togglePatientStatus = async (patient) => {
+    const nextStatus = patient.status === 'Activo' ? 'Inactivo' : 'Activo'
+    setStatusBusy(patient.id)
+    try {
+      await saveRecord('patients', { ...patient, status: nextStatus })
+      setStatusNotice(`${patient.name} ${nextStatus === 'Activo' ? 'activado' : 'desactivado'}`)
+    } catch (e) {
+      dialog.setNotice('')
+      setError(e.message)
+    } finally {
+      setStatusBusy('')
+    }
+  }
   return (
     <div className={styles.page}>
       <Banner
@@ -77,6 +96,7 @@ export function PatientsPage() {
           {dialog.notice}
         </p>
       )}
+      <CenterToast notice={statusNotice} />
       <section className={styles.card}>
         <Tabs
           items={['LISTA DE PACIENTES', 'NUEVO PACIENTE', 'EXPORTAR']}
@@ -162,7 +182,14 @@ export function PatientsPage() {
                   <td>{p.email || '—'}</td>
                   <td>{displayDate(p.lastAppointment)}</td>
                   <td>
-                    <Badge>{p.status}</Badge>
+                                        <StatusToggle
+                      active={p.status === 'Activo'}
+                      disabled={statusBusy === p.id}
+                      label={`Cambiar estado de ${p.name} a ${
+                        p.status === 'Activo' ? 'Inactivo' : 'Activo'
+                      }`}
+                      onToggle={() => togglePatientStatus(p)}
+                    />
                   </td>
                   <td>
                     <div className={styles.actions}>

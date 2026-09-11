@@ -4,9 +4,8 @@ import { IconEdit, IconMedical, IconSearch, IconTrash } from '@/components/icons
 import { Button } from '@/components/ui/Button/Button'
 import { TextField } from '@/components/ui/TextField/TextField'
 import { SelectField } from '@/components/ui/SelectField/SelectField'
-import { Badge } from '@/components/ui/Badge/Badge'
 import { Modal } from '@/components/ui/Modal/Modal'
-import { Avatar, Banner, Pagination, Tabs } from '@/features/clinical/components'
+import { Avatar, Banner, CenterToast, Pagination, StatusToggle, Tabs } from '@/features/clinical/components'
 import { normalize } from '@/features/clinical/mockStore'
 import { useModuleDialogs } from '@/features/clinical/useModuleDialogs'
 import { usePagination } from '@/features/clinical/tableHelpers'
@@ -25,6 +24,7 @@ export function DoctorsPage() {
   const [query, setQuery] = useState(params.get('q') ?? '')
   const [specialty, setSpecialty] = useState('')
   const [remove, setRemove] = useState(null)
+  const [statusNotice, setStatusNotice] = useState(null)
   const rows = doctors.filter(
     (doctor) =>
       normalize(doctor.name + ' ' + doctor.dpi + ' ' + doctor.specialty + ' ' + doctor.phone).includes(
@@ -39,6 +39,20 @@ export function DoctorsPage() {
     setPage(1)
   }, [params, setPage])
 
+  useEffect(() => {
+    if (!statusNotice) return undefined
+    const timer = setTimeout(() => setStatusNotice(null), 2200)
+    return () => clearTimeout(timer)
+  }, [statusNotice])
+
+
+  const toggleDoctorStatus = (doctor) => {
+    const nextStatus = doctor.status === 'Activo' ? 'Inactivo' : 'Activo'
+    setDoctors((current) =>
+      current.map((item) => (item.id === doctor.id ? { ...item, status: nextStatus } : item)),
+    )
+    setStatusNotice({ name: doctor.name, status: nextStatus })
+  }
   const saveDoctor = (doctor) => {
     setDoctors((current) =>
       current.some((item) => item.id === doctor.id)
@@ -66,6 +80,7 @@ export function DoctorsPage() {
           {dialog.notice}
         </p>
       )}
+      <CenterToast notice={statusNotice} />
       <section className={styles.card}>
         <Tabs
           items={['LISTA DE MÉDICOS', 'NUEVO MÉDICO']}
@@ -141,7 +156,13 @@ export function DoctorsPage() {
                   <td>{doctor.email || '—'}</td>
                   <td>{doctor.phone}</td>
                   <td>
-                    <Badge tone={doctor.status === 'Activo' ? 'green' : 'amber'}>{doctor.status}</Badge>
+                                        <StatusToggle
+                      active={doctor.status === 'Activo'}
+                      label={`Cambiar estado de ${doctor.name} a ${
+                        doctor.status === 'Activo' ? 'Inactivo' : 'Activo'
+                      }`}
+                      onToggle={() => toggleDoctorStatus(doctor)}
+                    />
                   </td>
                   <td>
                     <div className={styles.actions}>
