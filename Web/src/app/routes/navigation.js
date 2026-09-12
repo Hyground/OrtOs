@@ -42,10 +42,11 @@ export const privateMenuItems = [
   { to: paths.patients, label: 'Paciente', Icon: IconUser },
   { to: paths.doctors, label: 'Médico', Icon: IconSpecialist },
   { to: paths.appointments, label: 'Citas', Icon: IconCalendar },
+  { to: paths.calendar, label: 'Calendario', Icon: IconCalendar },
   { to: paths.odontogram, label: 'Odontograma', Icon: IconTooth },
   { to: paths.treatments, label: 'Tratamiento', Icon: IconClipboard },
   { to: paths.payments, label: 'Pagos', Icon: IconCreditCard },
-  { to: paths.users, label: 'Usuarios', Icon: IconUsers, tone: 'users' },
+  { to: paths.users, label: 'Usuarios', Icon: IconUsers },
   { to: paths.reports, label: 'Reporte', Icon: IconFileText },
 ]
 

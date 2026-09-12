@@ -118,16 +118,13 @@ export function PrivateAppShell() {
           <ul>
             {menuItems
               .filter((item) => user?.role === 'paciente' || canAccess(user, item.to))
-              .map(({ to, label, Icon, end, tone, activePaths }) => (
+              .map(({ to, label, Icon, end, activePaths }) => (
                 <li key={to}>
                   <NavLink
                     to={to}
                     end={end}
                     className={(state) =>
-                      [
-                        menuClass(state.isActive || activePaths?.includes(location.pathname)),
-                        tone === 'users' ? styles.usersLink : '',
-                      ].join(' ')
+                      menuClass(state.isActive || activePaths?.includes(location.pathname))
                     }
                     onClick={closeMobile}
                     title={collapsed ? label : undefined}

@@ -211,16 +211,6 @@
   background: linear-gradient(135deg, #0284c7 0%, #0796dc 100%);
   transform: none;
 }
-.usersLink {
-  background: var(--color-users);
-  color: white;
-}
-.usersLink:hover,
-.usersLink.menuLinkActive {
-  background: #172e70;
-  color: white;
-}
-
 /* Collapsed: center icons, hide labels */
 .sidebarCollapsed .menuLink {
   justify-content: center;
