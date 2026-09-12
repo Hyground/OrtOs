@@ -6,7 +6,8 @@ import { Button } from '@/components/ui/Button/Button'
 import { IconTooth, IconDownload } from '@/components/icons/icons'
 import {
   quadrants,
-  states,
+  dentitionNumbers,
+  dentitionStates,
   stateById,
   summarize,
   patientFields,
@@ -27,10 +28,13 @@ export function OdontogramPage() {
   const chart = patient ? storedChart : {}
   const [loadError, setLoadError] = useState('')
   const [editing, setEditing] = useState(null)
+  const [dentition, setDentition] = useState('permanent')
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
-  const counts = summarize(chart)
-  const rows = detailRows(chart)
+  const numbers = dentitionNumbers(dentition)
+  const visibleStates = dentitionStates(dentition)
+  const counts = summarize(chart, patient && !loadError ? numbers : [])
+  const rows = detailRows(chart, numbers)
   const enabled = !!patient && !loadError
 
   function onPatientChange(id) {
@@ -52,7 +56,7 @@ export function OdontogramPage() {
     setBusy(true)
     setError('')
     try {
-      const pdf = await createOdontogramPDF(patient, chart)
+      const pdf = await createOdontogramPDF(patient, chart, undefined, dentition)
       const filename = `Odontograma-${patient.folio || patient.id}`.replace(/[^\w-]/g, '_')
       pdf.save(`${filename}.pdf`)
     } catch {
@@ -77,7 +81,7 @@ export function OdontogramPage() {
               className={styles.tooth}
               disabled={!enabled}
               aria-label={`Diente ${number}`}
-              title={`Diente ${number}: ${labels.join(', ') || 'Sin registro'}`}
+              title={`Diente ${number}: ${labels.join(', ') || 'Sano'}`}
               onClick={() => setEditing(number)}
             >
               <span>{number}</span>
@@ -110,6 +114,27 @@ export function OdontogramPage() {
           value={patient?.id ?? ''}
           onChange={onPatientChange}
         />
+        <button
+          type="button"
+          role="switch"
+          aria-label="Dentadura infantil"
+          aria-checked={dentition === 'temporary'}
+          className={styles.dentitionSwitch}
+          onClick={() => {
+            setDentition(dentition === 'permanent' ? 'temporary' : 'permanent')
+            setEditing(null)
+          }}
+        >
+          <span className={dentition === 'permanent' ? styles.activeDentition : undefined}>
+            Adulto
+          </span>
+          <span className={styles.switchTrack} aria-hidden="true">
+            <span />
+          </span>
+          <span className={dentition === 'temporary' ? styles.activeDentition : undefined}>
+            Infantil
+          </span>
+        </button>
         <Button variant="ghost" onClick={() => onPatientChange('')}>
           Limpiar
         </Button>
@@ -145,12 +170,7 @@ export function OdontogramPage() {
                   <h2>
                     Cuadrante {quadrant.id} <span>({quadrant.label})</span>
                   </h2>
-                  {quadrant.id < 3 && toothRow(quadrant.permanent)}
-                  <div className={styles.temporary}>
-                    <span>Temporal · Cuadrante {quadrant.temporaryId}</span>
-                    {toothRow(quadrant.temporary)}
-                  </div>
-                  {quadrant.id > 2 && toothRow(quadrant.permanent)}
+                  {toothRow(quadrant[dentition])}
                 </section>
               ))}
             </div>
@@ -158,7 +178,7 @@ export function OdontogramPage() {
         </div>
         <aside className={`${styles.card} ${styles.legend}`} aria-label="Estados dentales">
           <h2>Estados</h2>
-          {states.map((state) => (
+          {visibleStates.map((state) => (
             <div key={state.id}>
               <span className={styles.dot} style={{ background: state.color }} />
               {state.label}
@@ -166,14 +186,14 @@ export function OdontogramPage() {
           ))}
         </aside>
       </div>
-      <dl className={styles.summary} aria-label="Resumen de superficies">
-        {states.slice(0, 4).map((state) => (
+      <dl className={styles.summary} aria-label="Resumen de dientes">
+        {visibleStates.map((state) => (
           <div key={state.id}>
             <dt>
               {state.label}
-              <small>Superficies</small>
+              <small>Dientes</small>
             </dt>
-            <dd>{counts[state.id]}</dd>
+            <dd aria-label={`${state.label}: ${counts[state.id]} dientes`}>{counts[state.id]}</dd>
           </div>
         ))}
       </dl>
@@ -204,7 +224,7 @@ export function OdontogramPage() {
                       <button
                         className={styles.pieceLink}
                         onClick={() => setEditing(row.number)}
-                        aria-label={`Editar diente ${row.number}, ${stateById[row.state].label}`}
+                        aria-label={`Editar diente ${row.number}, ${stateById[row.state]?.label ?? 'Observación'}`}
                       >
                         {row.number}
                       </button>
@@ -214,9 +234,9 @@ export function OdontogramPage() {
                       <span className={styles.stateLabel}>
                         <span
                           className={styles.dot}
-                          style={{ background: stateById[row.state].color }}
+                          style={{ background: stateById[row.state]?.color ?? '#ffffff' }}
                         />
-                        {stateById[row.state].label}
+                        {stateById[row.state]?.label ?? 'Observación'}
                       </span>
                     </td>
                     <td>{row.treatment || '—'}</td>
@@ -235,6 +255,7 @@ export function OdontogramPage() {
         <ToothEditor
           key={editing}
           number={editing}
+          dentition={dentition}
           tooth={chart[editing]}
           onClose={() => setEditing(null)}
           onSave={(tooth) => {

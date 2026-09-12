@@ -4,7 +4,6 @@ export const states = [
   { id: 'protesis', label: 'Prótesis', color: '#929aa5' },
   { id: 'extraccion', label: 'Extracción', color: '#1a2332' },
   { id: 'sano', label: 'Sano', color: '#ffffff' },
-  { id: 'sinRegistro', label: 'Sin registro', color: '#e7edf3' },
 ]
 
 export const surfaces = [
@@ -21,28 +20,24 @@ export const quadrants = [
     label: 'Superior derecho',
     permanent: [18, 17, 16, 15, 14, 13, 12, 11],
     temporary: [55, 54, 53, 52, 51],
-    temporaryId: 5,
   },
   {
     id: 2,
     label: 'Superior izquierdo',
     permanent: [21, 22, 23, 24, 25, 26, 27, 28],
     temporary: [61, 62, 63, 64, 65],
-    temporaryId: 6,
   },
   {
     id: 4,
     label: 'Inferior derecho',
     permanent: [48, 47, 46, 45, 44, 43, 42, 41],
     temporary: [85, 84, 83, 82, 81],
-    temporaryId: 8,
   },
   {
     id: 3,
     label: 'Inferior izquierdo',
     permanent: [31, 32, 33, 34, 35, 36, 37, 38],
     temporary: [71, 72, 73, 74, 75],
-    temporaryId: 7,
   },
 ]
 
@@ -51,7 +46,7 @@ export const stateById = Object.fromEntries(states.map((state) => [state.id, sta
 
 export function blankTooth() {
   return {
-    faces: Object.fromEntries(surfaces.map(({ id }) => [id, 'sinRegistro'])),
+    faces: Object.fromEntries(surfaces.map(({ id }) => [id, 'sano'])),
     treatment: '',
     notes: '',
   }
@@ -62,25 +57,38 @@ export function toothZone(number) {
     (item) => item.permanent.includes(number) || item.temporary.includes(number),
   )
   const temporary = q.temporary.includes(number)
-  return `Cuadrante ${temporary ? q.temporaryId : q.id} · ${q.label}${temporary ? ' (temporal)' : ''}`
+  return `Cuadrante ${q.id} · ${q.label}${temporary ? ' (temporal)' : ''}`
 }
 
-export function summarize(chart) {
+export function dentitionNumbers(dentition = 'permanent') {
+  return quadrants.flatMap((quadrant) => quadrant[dentition])
+}
+
+export function dentitionStates(dentition = 'permanent') {
+  return states.filter(({ id }) => dentition !== 'temporary' || id !== 'protesis')
+}
+
+export function summarize(chart, numbers = toothNumbers) {
   const counts = Object.fromEntries(states.map(({ id }) => [id, 0]))
-  toothNumbers.forEach((number) =>
-    surfaces.forEach(({ id }) => {
-      counts[chart[number]?.faces[id] ?? 'sinRegistro']++
-    }),
-  )
+  numbers.forEach((number) => {
+    const toothStates = new Set(surfaces.map(({ id }) => chart[number]?.faces[id] ?? 'sano'))
+    if (toothStates.size === 1 && toothStates.has('sano')) {
+      counts.sano++
+    } else {
+      toothStates.forEach((state) => {
+        if (state !== 'sano') counts[state]++
+      })
+    }
+  })
   return counts
 }
 
-export function detailRows(chart) {
-  return toothNumbers.flatMap((number) => {
+export function detailRows(chart, numbers = toothNumbers) {
+  return numbers.flatMap((number) => {
     const tooth = chart[number]
     if (!tooth) return []
     const groups = states
-      .filter(({ id }) => id !== 'sinRegistro')
+      .filter(({ id }) => id !== 'sano')
       .flatMap((state) => {
         const faces = surfaces.filter(({ id }) => tooth.faces[id] === state.id)
         return faces.length
@@ -100,7 +108,7 @@ export function detailRows(chart) {
       groups.push({
         number,
         zone: toothZone(number),
-        state: 'sinRegistro',
+        state: null,
         surfaces: '',
         treatment: tooth.treatment,
         notes: tooth.notes,

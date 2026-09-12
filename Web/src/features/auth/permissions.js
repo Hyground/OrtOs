@@ -11,6 +11,13 @@ export function canAccess(user, path) {
   if (user.role === 'admin') return true
   return (
     (user.role === 'odontologo' || user.role === 'asistente') &&
-    [paths.patients, paths.appointments, paths.payments].includes(path)
+    [
+      paths.patients,
+      paths.appointments,
+      paths.payments,
+      paths.specialties,
+      paths.odontogram,
+      paths.reports,
+    ].includes(path)
   )
 }
