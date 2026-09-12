@@ -89,8 +89,8 @@ function UserForm({ account, onClose, onSaved }) {
             onChange={(e) => set('password', e.target.value)}
           />
           <p className={styles.muted}>
-            {account ? 'Deja la contraseña vacía para conservarla. ' : ''}El odontólogo accede
-            únicamente a Pacientes, Citas y Pagos.
+            {account ? 'Deja la contraseña vacía para conservarla. ' : ''}El odontólogo y el
+            asistente acceden únicamente a Pacientes, Citas y Pagos.
           </p>
         </fieldset>
         {error && (
@@ -219,7 +219,7 @@ export function UsersPage() {
                   <td>
                     {u.role === 'admin'
                       ? 'Todos los módulos'
-                      : u.role === 'odontologo'
+                      : u.role === 'odontologo' || u.role === 'asistente'
                         ? 'Pacientes · Citas · Pagos'
                         : 'Panel de paciente'}
                   </td>

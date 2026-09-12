@@ -21,6 +21,8 @@ import { ModuleAccess } from './ModuleAccess'
 import { PatientPortal } from '@/features/portal/PatientPortal'
 import { MessagesPage } from '@/features/messages/MessagesPage'
 import { SpecialtiesPage } from '@/features/specialties/SpecialtiesPage'
+import { TreatmentsPage } from '@/features/treatments/TreatmentsPage'
+import { CalendarPage } from '@/features/calendar/CalendarPage'
 import { OdontogramPage } from '@/features/odontogram/OdontogramPage'
 import { DoctorsPage } from '@/features/doctors/components/DoctorsPage'
 import { AppointmentSummaryPage } from '@/features/reports/components/AppointmentSummaryPage'
@@ -52,14 +54,18 @@ export function AppRouter() {
                 <ModuleAccess path={module.to}>
                   {module.to === paths.patients ? (
                     <PatientsPage />
-                  ) : module.to === paths.appointments || module.to === paths.calendar ? (
+                  ) : module.to === paths.appointments ? (
                     <AppointmentsPage />
+                  ) : module.to === paths.calendar ? (
+                    <CalendarPage />
                   ) : module.to === paths.payments ? (
                     <PaymentsPage />
                   ) : module.to === paths.users ? (
                     <UsersPage />
                   ) : module.to === paths.specialties ? (
                     <SpecialtiesPage />
+                  ) : module.to === paths.treatments ? (
+                    <TreatmentsPage />
                   ) : module.to === paths.odontogram ? (
                     <OdontogramPage />
                   ) : module.to === paths.doctors ? (

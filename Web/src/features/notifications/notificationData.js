@@ -4,7 +4,7 @@ export function notificationsFor(clinic,messages,user){
  if(!user)return []
  const personal=user.role==='paciente'
  if(personal&&!user.patientId)return []
- if(!['admin','odontologo','paciente'].includes(user.role))return []
+ if(!['admin','odontologo','asistente','paciente'].includes(user.role))return []
  const appointments=clinic.appointments.filter(a=>(!personal||a.patientId===user.patientId)&&a.status==='Pendiente').sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time))
  const payments=clinic.payments.filter(p=>!personal||p.patientId===user.patientId)
  const incoming=messages.filter(m=>(!personal||m.patientId===user.patientId)&&m.from===(personal?'clinic':'patient'))

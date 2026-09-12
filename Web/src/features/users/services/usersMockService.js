@@ -63,7 +63,7 @@ export async function saveUser(data) {
   if (!data.displayName?.trim()) throw new Error('Ingresa el nombre del usuario.')
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email ?? ''))
     throw new Error('Ingresa un correo válido.')
-  if (!['admin', 'odontologo', 'paciente'].includes(data.role))
+  if (!['admin', 'odontologo', 'asistente', 'paciente'].includes(data.role))
     throw new Error('Selecciona un rol válido.')
   if ((!data.id || data.password) && (!data.password || data.password.length < 8))
     throw new Error('La contraseña debe tener al menos 8 caracteres.')

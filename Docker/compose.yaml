@@ -1,7 +1,33 @@
 services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ortos
+      POSTGRES_USER: ortos
+      POSTGRES_PASSWORD: ortos
+    volumes:
+      - ortos_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ortos -d ortos"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    ports:
+      - "5432:5432"
+
   api:
     build:
       context: ../API
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ortos
+      SPRING_DATASOURCE_USERNAME: ortos
+      SPRING_DATASOURCE_PASSWORD: ortos
+      ORTOS_JWT_SECRET: ${ORTOS_JWT_SECRET:?Define ORTOS_JWT_SECRET before running docker compose}
+      ORTOS_CORS_ALLOWED_ORIGINS: http://localhost:3000
     ports:
       - "8080:8080"
 
@@ -12,3 +38,6 @@ services:
       - api
     ports:
       - "3000:80"
+
+volumes:
+  ortos_pgdata:

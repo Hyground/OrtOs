@@ -59,22 +59,46 @@
   color: white !important;
 }
 .chip {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 5px;
   width: 100%;
   border: 0;
   border-left: 3px solid var(--color-primary);
   background: var(--color-primary-soft);
   color: var(--color-primary-dark);
   border-radius: 4px;
-  padding: 5px 4px;
+  padding: 4px 5px;
   margin: 3px 0;
   text-align: left;
   font: inherit;
   font-size: 9px;
+  cursor: pointer;
+}
+.chipDot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 8px;
+  font-weight: 700;
+  line-height: 1;
+  font-style: normal;
+}
+.chipBody {
+  flex: 1;
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  cursor: pointer;
+}
+.chipBody strong {
+  font-weight: 700;
+  margin-right: 3px;
 }
 .Alta {
   background: var(--color-danger-soft);
@@ -94,10 +118,15 @@
 .legend {
   display: flex;
   flex-wrap: wrap;
-  gap: 14px;
+  gap: 20px;
   padding: 15px;
   font-size: 10px;
   color: var(--color-text-muted);
+}
+.legendGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
 }
 .legend span {
   display: flex;
@@ -164,11 +193,82 @@
 .dayView {
   padding: 18px;
   display: grid;
+  gap: 14px;
+}
+.dayViewHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: 12px;
 }
-.dayView button {
-  font-size: 12px;
-  padding: 15px;
+.timeline {
+  display: flex;
+  gap: 10px;
+}
+.timelineHours {
+  position: relative;
+  width: 48px;
+  flex-shrink: 0;
+}
+.timelineHours span {
+  position: absolute;
+  left: 0;
+  right: 0;
+  transform: translateY(-6px);
+  font-size: 10px;
+  color: var(--color-text-muted);
+  text-align: right;
+  padding-right: 6px;
+}
+.timelineTrack {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  border-left: 1px solid var(--color-border);
+  border-radius: 4px;
+  background: var(--color-admin-bg);
+}
+.timelineLine {
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-top: 1px dashed var(--color-border);
+}
+.timelineCard {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  border: 0;
+  border-left: 3px solid var(--color-primary);
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+  border-radius: 8px;
+  padding: 6px 10px;
+  margin: 2px 4px;
+  text-align: left;
+  font: inherit;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+}
+.timelineCard strong {
+  font-size: 11px;
+}
+.timelineCard span {
+  font-size: 10px;
+}
+.timelineCard small {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: auto;
+  font-size: 9px;
+  color: var(--color-text-muted);
+}
+.cardTime {
+  font-size: 10px;
+  font-weight: 700;
 }
 @media (max-width: 680px) {
   .calendar {
@@ -179,5 +279,12 @@
   }
   .toolbar {
     padding: 12px;
+  }
+  .timelineHours {
+    width: 38px;
+  }
+  .timelineCard {
+    padding: 4px 6px;
+    margin: 2px;
   }
 }

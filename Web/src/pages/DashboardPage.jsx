@@ -30,6 +30,7 @@ export function DashboardPage() {
   useDocumentTitle('Panel')
   const { user } = useAuth()
   const isDentist = user?.role === 'odontologo'
+  const isAssistant = user?.role === 'asistente'
   if (user?.role === 'paciente') return <PatientPortal />
   const modules = privateModules.filter((module) => canAccess(user, module.to))
 
@@ -38,15 +39,17 @@ export function DashboardPage() {
       <header className={styles.hero}>
         <div className={styles.heroCopy}>
           <span className={styles.kicker}>
-            {isDentist ? 'Panel del odontólogo' : 'Panel principal'}
+            {isDentist ? 'Panel del odontólogo' : isAssistant ? 'Panel del asistente' : 'Panel principal'}
           </span>
           <h1>Hola, {user?.displayName ?? 'Usuario'}</h1>
           <p>
             {isDentist
               ? 'Consulta pacientes y expedientes, organiza las citas y registra pagos desde tu espacio de trabajo.'
-              : user?.role === 'admin'
-                ? 'Administra los módulos de la clínica y las cuentas de acceso del equipo.'
-                : 'Bienvenido a tu panel. Las funciones clínicas están reservadas al personal autorizado.'}
+              : isAssistant
+                ? 'Gestiona pacientes, organiza la agenda de citas y registra pagos desde tu espacio de trabajo.'
+                : user?.role === 'admin'
+                  ? 'Administra los módulos de la clínica y las cuentas de acceso del equipo.'
+                  : 'Bienvenido a tu panel. Las funciones clínicas están reservadas al personal autorizado.'}
           </p>
         </div>
 

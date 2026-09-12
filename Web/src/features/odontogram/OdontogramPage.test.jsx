@@ -97,7 +97,7 @@ describe('Odontograma', () => {
     expect(localStorage.getItem('ortos.odontogram.v1.patient-1')).toBe('datos dañados')
   })
 
-  it.each(['odontologo', 'paciente'])('conserva la restricción actual para el rol %s', (role) => {
+  it.each(['odontologo', 'asistente', 'paciente'])('conserva la restricción actual para el rol %s', (role) => {
     render(
       <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <AuthContext.Provider value={{ user: { role } }}>

@@ -10,7 +10,7 @@ export function useMessages(){return useSyncExternalStore(subscribe,()=>messages
 export function sendMessage(user,patientId,text){
  if(!text.trim())throw new Error('Escribe un mensaje.')
  if(user?.role==='paciente'&&user.patientId!==patientId)throw new Error('Conversación no autorizada.')
- if(!['admin','odontologo','paciente'].includes(user?.role)||!patientId)throw new Error('Conversación no autorizada.')
+ if(!['admin','odontologo','asistente','paciente'].includes(user?.role)||!patientId)throw new Error('Conversación no autorizada.')
  messages=[...messages,{id:crypto.randomUUID(),patientId,from:user.role==='paciente'?'patient':'clinic',text:text.trim(),createdAt:new Date().toISOString()}];listeners.forEach(fn=>fn())
 }
 

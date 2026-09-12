@@ -10,6 +10,7 @@ import { DashboardPage } from '@/pages/DashboardPage'
 import { UsersPage } from './components/UsersPage'
 import { saveUser, deleteUser, findDevAccountByEmail } from './services/usersMockService'
 const dentist = { id: 'dev-odontologo', displayName: 'Dra. Ana Morales', role: 'odontologo' }
+const assistant = { id: 'dev-asistente', displayName: 'Asistente de Prueba', role: 'asistente' }
 const admin = { id: 'dev-admin', displayName: 'Administrador OrtOs', role: 'admin' }
 function mount(component, user) {
   return render(
@@ -37,6 +38,25 @@ it('el panel del odontólogo muestra solo sus tres módulos', () => {
   expect(
     screen.queryByRole('link', { name: /Usuarios|Odontograma|Reporte/ }),
   ).not.toBeInTheDocument()
+})
+it('el panel del asistente muestra solo Pacientes, Citas y Pagos', () => {
+  mount(<DashboardPage />, assistant)
+  expect(screen.getByText('Panel del asistente')).toBeInTheDocument()
+  expect(screen.getByRole('link', { name: /Paciente/ })).toHaveAttribute('href', paths.patients)
+  expect(screen.getByRole('link', { name: /Citas/ })).toHaveAttribute('href', paths.appointments)
+  expect(screen.getByRole('link', { name: /Pagos/ })).toHaveAttribute('href', paths.payments)
+  expect(
+    screen.queryByRole('link', { name: /Usuarios|Odontograma|Especialidades|Tratamiento|Reporte/ }),
+  ).not.toBeInTheDocument()
+})
+it('bloquea el acceso directo del asistente a Usuarios y Odontograma', () => {
+  mount(
+    <ModuleAccess path={paths.users}>
+      <div>Contenido privado de usuarios</div>
+    </ModuleAccess>,
+    assistant,
+  )
+  expect(screen.getByRole('heading', { name: 'Acceso restringido' })).toBeInTheDocument()
 })
 it('bloquea el acceso directo del odontólogo a Usuarios', () => {
   mount(
