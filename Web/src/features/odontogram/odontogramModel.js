@@ -119,13 +119,13 @@ export function detailRows(chart, numbers = toothNumbers) {
 
 export function patientFields(patient) {
   return [
-    ['DPI / ID', patient.dpi],
-    ['Tratamiento', patient.treatment],
     ['Nombre', patient.name],
-    ['Alergias', patient.allergies],
-    ['Correo', patient.email],
-    ['Antecedentes', patient.diseases],
-    ['Teléfono', patient.phone],
     ['Expediente', patient.folio],
+    ['DPI', patient.dpi],
+    ['Teléfono', patient.phone],
+    ['Correo', patient.email],
+    ['Alergias', patient.allergies],
+    ['Antecedentes', patient.diseases],
+    ['Tratamiento', patient.treatment],
   ].map(([label, value]) => [label, value || 'No registrado'])
 }

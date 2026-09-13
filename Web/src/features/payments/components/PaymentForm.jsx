@@ -3,13 +3,17 @@ import { TextField } from '@/components/ui/TextField/TextField'
 import { Switch } from '@/components/ui/Switch/Switch'
 import { nextReceipt } from '@/features/clinical/mockStore'
 import { useEntryForm } from '@/features/clinical/useEntryForm'
-import { PatientFields, Field, Section, FormFooter } from '@/features/clinical/components'
+import { Avatar, PatientFields, Field, Section, FormFooter } from '@/features/clinical/components'
 import { treatments } from '@/features/appointments/mockData/appointments'
+import { usePatients } from '@/features/patients/hooks/usePatients'
 import { concepts, paymentMethods } from '../mockData/payments'
 import styles from '@/features/clinical/Clinical.module.css'
 import { initialPayment } from '../mockData/initialPayment'
-export function PaymentForm({ payment, onClose, onSaved, onAdd, onRecord }) {
+export function PaymentForm({ payment, compactPatient = false, onClose, onSaved, onAdd, onRecord }) {
+  const patients = usePatients()
   const form = useEntryForm('payments', payment ?? initialPayment(), onSaved)
+  const patient = patients.find((p) => p.id === form.values.patientId)
+  const requiresReference = /Tarjeta|Transferencia/.test(form.values.method)
   const f = (name, label, props = {}) => <Field form={form} name={name} label={label} {...props} />
   return (
     <Modal
@@ -22,14 +26,20 @@ export function PaymentForm({ payment, onClose, onSaved, onAdd, onRecord }) {
     >
       <form className={styles.form} onSubmit={form.submit} noValidate>
         <fieldset disabled={form.saving} className={styles.stack}>
-          <PatientFields form={form} folio onAdd={() => onAdd(form)} onRecord={onRecord} />
-          <Section title="DETALLES DEL PAGO">
+          {compactPatient && patient ? (
+            <section className={styles.quickPatient} aria-label="Paciente seleccionado">
+              <Avatar patient={patient} />
+              <div>
+                <strong>{patient.name}</strong>
+                <small>{patient.folio}</small>
+              </div>
+            </section>
+          ) : (
+            <PatientFields form={form} folio onAdd={() => onAdd(form)} onRecord={onRecord} />
+          )}
+          <Section title={compactPatient ? 'REGISTRAR PAGO' : 'DETALLES DEL PAGO'}>
             <div className={styles.cols3}>
               {f('concept', 'Concepto *', { options: concepts, required: true })}
-              {f('treatment', 'Tratamiento / Procedimiento', { options: treatments })}
-              {f('date', 'Fecha de pago *', { type: 'date', required: true })}
-            </div>
-            <div className={styles.cols4}>
               {f(
                 'amount',
                 'Monto * (' +
@@ -53,27 +63,30 @@ export function PaymentForm({ payment, onClose, onSaved, onAdd, onRecord }) {
                   required: true,
                 },
               )}
-              {f('currency', 'Moneda', {
-                required: true,
-                options: [
-                  { value: 'GTQ', label: 'GTQ - Quetzal' },
-                  { value: 'EUR', label: 'EUR - Euro' },
-                  { value: 'USD', label: 'USD - Dólar' },
-                ],
-              })}
               {f('method', 'Método de pago *', { options: paymentMethods, required: true })}
-              {f(
-                'reference',
-                'Referencia / No. transacción' +
-                  (/Tarjeta|Transferencia/.test(form.values.method) ? ' *' : ''),
-                { required: /Tarjeta|Transferencia/.test(form.values.method) },
-              )}
+            </div>
+            <div className={compactPatient ? styles.cols2 : styles.cols4}>
+              {!compactPatient &&
+                f('currency', 'Moneda', {
+                  required: true,
+                  options: [
+                    { value: 'GTQ', label: 'GTQ - Quetzal' },
+                    { value: 'EUR', label: 'EUR - Euro' },
+                    { value: 'USD', label: 'USD - Dólar' },
+                  ],
+                })}
+              {!compactPatient && f('treatment', 'Tratamiento / Procedimiento', { options: treatments })}
+              {f('date', 'Fecha de pago *', { type: 'date', required: true })}
+              {f('reference', 'Referencia' + (requiresReference ? ' *' : ''), {
+                required: requiresReference,
+                placeholder: requiresReference ? 'No. transacción' : 'Opcional',
+              })}
             </div>
             {f('notes', 'Descripción / Notas', { type: 'textarea' })}
             {payment?.id && f('status', 'Estado', { options: ['Completado', 'Pendiente'] })}
           </Section>
           <Section title="COMPROBANTE">
-            <div className={styles.cols2}>
+            <div className={compactPatient ? styles.quickReceipt : styles.cols2}>
               <div className={styles.section}>
                 <span>Generar comprobante *</span>
                 <Switch
@@ -86,16 +99,18 @@ export function PaymentForm({ payment, onClose, onSaved, onAdd, onRecord }) {
                   onChange={(v) => form.set('receipt', v)}
                 />
               </div>
-              <div>
-                <TextField
-                  label="Número de comprobante"
-                  readOnly
-                  value={
-                    form.values.receipt ? payment?.receiptNumber || nextReceipt() : 'No se generará'
-                  }
-                />
-                <small className={styles.muted}>Se generará automáticamente al guardar</small>
-              </div>
+              {!compactPatient && (
+                <div>
+                  <TextField
+                    label="Número de comprobante"
+                    readOnly
+                    value={
+                      form.values.receipt ? payment?.receiptNumber || nextReceipt() : 'No se generará'
+                    }
+                  />
+                  <small className={styles.muted}>Se generará automáticamente al guardar</small>
+                </div>
+              )}
             </div>
           </Section>
         </fieldset>

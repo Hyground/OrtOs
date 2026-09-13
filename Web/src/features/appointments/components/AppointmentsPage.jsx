@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { IconCalendar, IconChevronLeft, IconChevronRight } from '@/components/icons/icons'
 import { Button } from '@/components/ui/Button/Button'
+import { Modal } from '@/components/ui/Modal/Modal'
 import { SelectField } from '@/components/ui/SelectField/SelectField'
 import { Badge } from '@/components/ui/Badge/Badge'
 import { Banner, Avatar } from '@/features/clinical/components'
@@ -75,6 +76,7 @@ export function AppointmentsPage() {
   const [dentist, setDentist] = useState('')
   const [priority, setPriority] = useState('')
   const [all, setAll] = useState(false)
+  const [focusedDay, setFocusedDay] = useState('')
   const date = new Date(cursor + 'T12:00:00')
   const month = cursor.slice(0, 7)
   const monthLabel = date
@@ -122,11 +124,17 @@ export function AppointmentsPage() {
     setCursor(dateKey(d))
   }
   const patient = (id) => patients.find((p) => p.id === id)
+  const appointmentsForDay = (day) =>
+    filtered.filter((a) => a.date === day).sort((a, b) => a.time.localeCompare(b.time))
+  const focusedAppointments = focusedDay ? appointmentsForDay(focusedDay) : []
   const chip = (a) => (
     <button
       className={calendar.chip + ' ' + calendar[a.priority]}
       key={a.id}
-      onClick={() => dialog.setEditing(a)}
+      onClick={(event) => {
+        event.stopPropagation()
+        dialog.setEditing(a)
+      }}
       title={a.time + ' · ' + patient(a.patientId)?.name + ' · ' + a.treatment + ' · ' + a.dentist}
     >
       <i className={calendar.chipDot} style={{ background: dentistColor(a.dentist) }}>
@@ -305,6 +313,15 @@ export function AppointmentsPage() {
                   {days.map((day) => (
                     <div
                       key={day}
+                      role="button"
+                      tabIndex={0}
+                      aria-label={'Ver citas del ' + displayDate(day)}
+                      onClick={() => setFocusedDay(day)}
+                      onKeyDown={(event) => {
+                        if (event.key !== 'Enter' && event.key !== ' ') return
+                        event.preventDefault()
+                        setFocusedDay(day)
+                      }}
                       className={
                         calendar.day + ' ' + (!day.startsWith(month) ? calendar.outside : '')
                       }
@@ -314,9 +331,9 @@ export function AppointmentsPage() {
                           calendar.dayNumber + ' ' + (day === cursor ? calendar.selected : '')
                         }
                         aria-label={'Ver agenda del ' + displayDate(day)}
-                        onClick={() => {
-                          setCursor(day)
-                          setView('Día')
+                        onClick={(event) => {
+                          event.stopPropagation()
+                          setFocusedDay(day)
                         }}
                       >
                         {Number(day.slice(-2))}
@@ -328,9 +345,9 @@ export function AppointmentsPage() {
                       {filtered.filter((a) => a.date === day).length > 3 && (
                         <button
                           className={calendar.chip}
-                          onClick={() => {
-                            setCursor(day)
-                            setView('Día')
+                          onClick={(event) => {
+                            event.stopPropagation()
+                            setFocusedDay(day)
                           }}
                         >
                           + {filtered.filter((a) => a.date === day).length - 3} más
@@ -436,6 +453,42 @@ export function AppointmentsPage() {
           </section>
         </aside>
       </div>
+      <Modal
+        open={!!focusedDay}
+        size="wide"
+        title={focusedDay ? 'CITAS DEL ' + displayDate(focusedDay) : 'CITAS DEL DIA'}
+        onClose={() => setFocusedDay('')}
+      >
+        <div className={calendar.focusList}>
+          {focusedAppointments.map((appointment) => (
+            <button
+              type="button"
+              key={appointment.id}
+              className={calendar.focusCard + ' ' + calendar[appointment.priority]}
+              onClick={() => {
+                setFocusedDay('')
+                dialog.setEditing(appointment)
+              }}
+            >
+              <span className={calendar.focusTime}>{appointment.time}</span>
+              <div>
+                <strong>{patient(appointment.patientId)?.name}</strong>
+                <small>{appointment.treatment}</small>
+                <small>
+                  <i className={calendar.chipDot} style={{ background: dentistColor(appointment.dentist) }}>
+                    {dentistInitial(appointment.dentist)}
+                  </i>
+                  {appointment.dentist} - {appointment.chair}
+                </small>
+              </div>
+              <Badge tone={appointment.priority === 'Alta' ? 'red' : appointment.priority === 'Media' ? 'amber' : 'green'}>
+                {appointment.priority}
+              </Badge>
+            </button>
+          ))}
+          {!focusedAppointments.length && <p className={styles.empty}>No hay citas para este dia.</p>}
+        </div>
+      </Modal>
       {dialog.open && (
         <AppointmentForm
           appointment={dialog.editing}
@@ -464,3 +517,5 @@ export function AppointmentsPage() {
     </div>
   )
 }
+
+

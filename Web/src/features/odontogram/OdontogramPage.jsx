@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { usePatients } from '@/features/patients/hooks/usePatients'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 import { SearchSelect } from '@/components/ui/SearchSelect/SearchSelect'
@@ -21,6 +22,7 @@ import styles from './OdontogramPage.module.css'
 
 export function OdontogramPage() {
   useDocumentTitle('Odontograma')
+  const [params] = useSearchParams()
   const patients = usePatients()
   const [patientId, setPatientId] = useState('')
   const patient = patients.find(({ id }) => id === patientId)
@@ -37,11 +39,16 @@ export function OdontogramPage() {
   const rows = detailRows(chart, numbers)
   const enabled = !!patient && !loadError
 
+  useEffect(() => {
+    const requestedPatientId = params.get('paciente') ?? ''
+    if (!requestedPatientId || requestedPatientId === patientId) return
+    onPatientChange(requestedPatientId)
+  }, [params, patientId])
   function onPatientChange(id) {
     setPatientId(id)
     setEditing(null)
-    setError('')
     setLoadError('')
+    setError('')
     try {
       setChart(id ? readOdontogram(id) : {})
     } catch {
@@ -65,7 +72,6 @@ export function OdontogramPage() {
       setBusy(false)
     }
   }
-
   function toothRow(numbers) {
     return (
       <div className={styles.teethRow}>
@@ -114,34 +120,36 @@ export function OdontogramPage() {
           value={patient?.id ?? ''}
           onChange={onPatientChange}
         />
-        <button
-          type="button"
-          role="switch"
-          aria-label="Dentadura infantil"
-          aria-checked={dentition === 'temporary'}
-          className={styles.dentitionSwitch}
-          onClick={() => {
-            setDentition(dentition === 'permanent' ? 'temporary' : 'permanent')
-            setEditing(null)
-          }}
-        >
-          <span className={dentition === 'permanent' ? styles.activeDentition : undefined}>
-            Adulto
-          </span>
-          <span className={styles.switchTrack} aria-hidden="true">
-            <span />
-          </span>
-          <span className={dentition === 'temporary' ? styles.activeDentition : undefined}>
-            Infantil
-          </span>
-        </button>
-        <Button variant="ghost" onClick={() => onPatientChange('')}>
-          Limpiar
-        </Button>
-        <Button disabled={!enabled || busy} onClick={download}>
-          <IconDownload />
-          {busy ? 'Generando…' : 'PDF'}
-        </Button>
+        <div className={styles.toolbarActions}>
+          <button
+            type="button"
+            role="switch"
+            aria-label="Dentadura infantil"
+            aria-checked={dentition === 'temporary'}
+            className={styles.dentitionSwitch}
+            onClick={() => {
+              setDentition(dentition === 'permanent' ? 'temporary' : 'permanent')
+              setEditing(null)
+            }}
+          >
+            <span className={dentition === 'permanent' ? styles.activeDentition : undefined}>
+              Adulto
+            </span>
+            <span className={styles.switchTrack} aria-hidden="true">
+              <span />
+            </span>
+            <span className={dentition === 'temporary' ? styles.activeDentition : undefined}>
+              Infantil
+            </span>
+          </button>
+          <Button variant="ghost" onClick={() => onPatientChange('')}>
+            Limpiar
+          </Button>
+          <Button disabled={!enabled || busy} onClick={download}>
+            <IconDownload />
+            {busy ? 'Generando...' : 'PDF'}
+          </Button>
+        </div>
       </div>
       {(loadError || error) && (
         <p role="alert" className={styles.error}>

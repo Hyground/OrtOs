@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { IconEdit, IconMedical, IconSearch, IconTrash } from '@/components/icons/icons'
+import { IconChevronRight, IconEdit, IconEye, IconMedical, IconSearch, IconTrash } from '@/components/icons/icons'
 import { Button } from '@/components/ui/Button/Button'
 import { TextField } from '@/components/ui/TextField/TextField'
 import { SelectField } from '@/components/ui/SelectField/SelectField'
 import { Modal } from '@/components/ui/Modal/Modal'
-import { Avatar, Banner, CenterToast, Pagination, StatusToggle, Tabs } from '@/features/clinical/components'
+import { Avatar, Banner, CenterToast, Pagination, StatusToggle } from '@/features/clinical/components'
 import { normalize } from '@/features/clinical/mockStore'
 import { useModuleDialogs } from '@/features/clinical/useModuleDialogs'
 import { usePagination } from '@/features/clinical/tableHelpers'
@@ -24,7 +24,9 @@ export function DoctorsPage() {
   const [query, setQuery] = useState(params.get('q') ?? '')
   const [specialty, setSpecialty] = useState('')
   const [remove, setRemove] = useState(null)
+  const [viewing, setViewing] = useState(null)
   const [statusNotice, setStatusNotice] = useState(null)
+  const [expandedId, setExpandedId] = useState('')
   const rows = doctors.filter(
     (doctor) =>
       normalize(doctor.name + ' ' + doctor.dpi + ' ' + doctor.specialty + ' ' + doctor.phone).includes(
@@ -44,6 +46,11 @@ export function DoctorsPage() {
     const timer = setTimeout(() => setStatusNotice(null), 2200)
     return () => clearTimeout(timer)
   }, [statusNotice])
+
+  useEffect(() => {
+    if (visible.some((doctor) => doctor.id === expandedId)) return
+    setExpandedId('')
+  }, [expandedId, visible])
 
 
   const toggleDoctorStatus = (doctor) => {
@@ -82,11 +89,6 @@ export function DoctorsPage() {
       )}
       <CenterToast notice={statusNotice} />
       <section className={styles.card}>
-        <Tabs
-          items={['LISTA DE MÉDICOS', 'NUEVO MÉDICO']}
-          value="LISTA DE MÉDICOS"
-          onChange={(value) => (value === 'NUEVO MÉDICO' ? dialog.create() : null)}
-        />
         <form
           className={styles.filters}
           onSubmit={(event) => {
@@ -142,50 +144,93 @@ export function DoctorsPage() {
               </tr>
             </thead>
             <tbody>
-              {visible.map((doctor) => (
-                <tr key={doctor.id}>
-                  <td>
-                    <div className={styles.person}>
-                      <Avatar patient={doctor} />
-                      <strong>{doctor.name}</strong>
-                    </div>
-                  </td>
-                  <td>{doctor.dpi}</td>
-                  <td>{doctor.specialty}</td>
-                  <td>{doctor.address || '—'}</td>
-                  <td>{doctor.email || '—'}</td>
-                  <td>{doctor.phone}</td>
-                  <td>
-                                        <StatusToggle
-                      active={doctor.status === 'Activo'}
-                      label={`Cambiar estado de ${doctor.name} a ${
-                        doctor.status === 'Activo' ? 'Inactivo' : 'Activo'
-                      }`}
-                      onToggle={() => toggleDoctorStatus(doctor)}
-                    />
-                  </td>
-                  <td>
-                    <div className={styles.actions}>
-                      <button
-                        type="button"
-                        className={styles.iconButton}
-                        aria-label={'Editar ' + doctor.name}
-                        onClick={() => dialog.setEditing(doctor)}
-                      >
-                        <IconEdit />
-                      </button>
-                      <button
-                        type="button"
-                        className={styles.iconButton + ' ' + styles.danger}
-                        aria-label={'Eliminar ' + doctor.name}
-                        onClick={() => setRemove(doctor)}
-                      >
-                        <IconTrash />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+              {visible.map((doctor) => {
+                const expanded = expandedId === doctor.id
+                return (
+                  <Fragment key={doctor.id}>
+                    <tr
+                      className={expanded ? styles.activeRow : styles.clickableRow}
+                      tabIndex={0}
+                      aria-expanded={expanded}
+                      aria-controls={'doctor-actions-' + doctor.id}
+                      onClick={() => setExpandedId(expanded ? '' : doctor.id)}
+                      onKeyDown={(event) => {
+                        if (event.key !== 'Enter' && event.key !== ' ') return
+                        event.preventDefault()
+                        setExpandedId(expanded ? '' : doctor.id)
+                      }}
+                    >
+                      <td>
+                        <div className={styles.personButton}>
+                          <Avatar patient={doctor} />
+                          <span>
+                            <strong>{doctor.name}</strong>
+                            <small>{doctor.specialty}</small>
+                          </span>
+                        </div>
+                      </td>
+                      <td>{doctor.dpi}</td>
+                      <td>{doctor.specialty}</td>
+                      <td>{doctor.address || '-'}</td>
+                      <td>{doctor.email || '-'}</td>
+                      <td>{doctor.phone}</td>
+                      <td onClick={(event) => event.stopPropagation()}>
+                        <StatusToggle
+                          active={doctor.status === 'Activo'}
+                          label={'Cambiar estado de ' + doctor.name + ' a ' + (doctor.status === 'Activo' ? 'Inactivo' : 'Activo')}
+                          onToggle={() => toggleDoctorStatus(doctor)}
+                        />
+                      </td>
+                      <td onClick={(event) => event.stopPropagation()}>
+                        <button
+                          type="button"
+                          className={styles.optionButton}
+                          aria-expanded={expanded}
+                          aria-controls={'doctor-actions-' + doctor.id}
+                          onClick={() => setExpandedId(expanded ? '' : doctor.id)}
+                        >
+                          Opciones
+                          <IconChevronRight />
+                        </button>
+                      </td>
+                    </tr>
+                    {expanded && (
+                      <tr className={styles.detailRow}>
+                        <td colSpan={8}>
+                          <div className={styles.patientDrawer} id={'doctor-actions-' + doctor.id}>
+                            <div className={styles.drawerActions + ' ' + styles.doctorDrawerActions} aria-label={'Acciones de ' + doctor.name}>
+                              <button
+                                type="button"
+                                className={styles.actionCard}
+                                onClick={() => setViewing(doctor)}
+                              >
+                                <IconEye />
+                                <span>Ver</span>
+                              </button>
+                              <button
+                                type="button"
+                                className={styles.actionCard + " " + styles.actionEdit}
+                                onClick={() => dialog.setEditing(doctor)}
+                              >
+                                <IconEdit />
+                                <span>Editar</span>
+                              </button>
+                              <button
+                                type="button"
+                                className={styles.actionCard + " " + styles.actionDanger}
+                                onClick={() => setRemove(doctor)}
+                              >
+                                <IconTrash />
+                                <span>Eliminar</span>
+                              </button>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  </Fragment>
+                )
+              })}
             </tbody>
           </table>
           {!rows.length && <p className={styles.empty}>No se encontraron médicos con estos filtros.</p>}
@@ -193,6 +238,43 @@ export function DoctorsPage() {
         <Pagination total={rows.length} page={page} onChange={setPage} size={7} noun="médicos" />
       </section>
       {dialog.open && <DoctorForm doctor={dialog.editing} onClose={dialog.close} onSaved={saveDoctor} />}
+      <Modal open={!!viewing} title="Detalle del médico" onClose={() => setViewing(null)} size="wide">
+        <div className={styles.cardBody}>
+          <div className={styles.patientCard}>
+            <Avatar patient={viewing} />
+            <div>
+              <strong>{viewing?.name}</strong>
+              <small>{viewing?.specialty}</small>
+            </div>
+          </div>
+          <div className={styles.cols2}>
+            <div className={styles.metricRow}>
+              <span>DPI</span>
+              <strong>{viewing?.dpi || '-'}</strong>
+            </div>
+            <div className={styles.metricRow}>
+              <span>Estado</span>
+              <strong>{viewing?.status || '-'}</strong>
+            </div>
+            <div className={styles.metricRow}>
+              <span>Teléfono</span>
+              <strong>{viewing?.phone || '-'}</strong>
+            </div>
+            <div className={styles.metricRow}>
+              <span>Email</span>
+              <strong>{viewing?.email || '-'}</strong>
+            </div>
+            <div className={styles.metricRow}>
+              <span>Dirección</span>
+              <strong>{viewing?.address || '-'}</strong>
+            </div>
+            <div className={styles.metricRow}>
+              <span>Especialidad</span>
+              <strong>{viewing?.specialty || '-'}</strong>
+            </div>
+          </div>
+        </div>
+      </Modal>
       <Modal open={!!remove} title="Eliminar médico" onClose={() => setRemove(null)}>
         <p>¿Eliminar a {remove?.name}? Esta acción solo afecta los datos de demostración.</p>
         <div className={styles.footer}>
@@ -213,3 +295,5 @@ export function DoctorsPage() {
     </div>
   )
 }
+
+

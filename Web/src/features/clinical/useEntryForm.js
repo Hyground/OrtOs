@@ -60,7 +60,7 @@ export function validateEntry(collection, v) {
     collection === 'patients'
       ? ['names', 'surnames', 'birthDate', 'phone']
       : collection === 'appointments'
-        ? ['patientId', 'date', 'time', 'dentist', 'treatment']
+        ? ['patientId', 'date', 'time', 'dentist', 'treatment', 'priority']
         : ['patientId', 'concept', 'date', 'amount', 'method', 'currency']
   required.forEach((k) => {
     if (!String(v[k] ?? '').trim()) errors[k] = 'Campo obligatorio'
@@ -115,3 +115,4 @@ export function validateEntry(collection, v) {
   }
   return errors
 }
+

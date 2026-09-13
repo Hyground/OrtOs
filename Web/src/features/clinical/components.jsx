@@ -101,8 +101,7 @@ export function Pagination({ total, page, onChange, size, noun }) {
   return (
     <footer className={styles.pagination}>
       <span>
-        Mostrando {total ? (page - 1) * size + 1 : 0} a {Math.min(page * size, total)} de {total}{' '}
-        {noun}
+        {total ? (page - 1) * size + 1 : 0}-{Math.min(page * size, total)} de {total} {noun}
       </span>
       <div className={styles.pages}>
         <button
