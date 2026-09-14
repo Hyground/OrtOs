@@ -1,19 +1,542 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?android:attr/colorBackground"
     tools:context=".ui.cita.CitaFragment">
 
-    <TextView
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingHorizontal="12dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="92dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="18dp">
+
+            <LinearLayout
+                android:id="@+id/card_next"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_cita_hero"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/text_countdown_label"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/cita_countdown_label"
+                        android:textAllCaps="true"
+                        android:textAppearance="?attr/textAppearanceLabelMedium"
+                        android:textColor="?attr/colorPrimary"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/text_next_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_cita_accent_pill"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="5dp"
+                        android:textAppearance="?attr/textAppearanceLabelMedium"
+                        android:textColor="@color/cita_accent_on"
+                        android:textStyle="bold"
+                        tools:text="Confirmada" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/text_countdown_value"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textAppearance="?attr/textAppearanceHeadlineMedium"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textStyle="bold"
+                    tools:text="Cita en 4 días" />
+
+                <TextView
+                    android:id="@+id/text_next_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textAppearance="?attr/textAppearanceTitleMedium"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textStyle="bold"
+                    tools:text="Control y entrega de alineadores" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/bg_cita_hero_inner"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="12dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/text_next_time"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?attr/textAppearanceTitleSmall"
+                            android:textColor="?attr/colorOnSurface"
+                            android:textStyle="bold"
+                            tools:text="Vie 18 Sep - 10:00 AM" />
+
+                        <TextView
+                            android:id="@+id/text_next_meta"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:textColor="?attr/colorPrimary"
+                            tools:text="Dra. Ana Lopez - Consultorio 3" />
+                    </LinearLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/button_reschedule_next"
+                        style="@style/Widget.Material3.Button.TextButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:minHeight="40dp"
+                        android:text="@string/cita_reschedule"
+                        android:textColor="?attr/colorOnSurface" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.OrtOs.Card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                app:contentPadding="14dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/text_month_label"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/Widget.OrtOs.SectionLabel"
+                                tools:text="SEPTIEMBRE 2026" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="@string/cita_select_day"
+                                android:textAppearance="?attr/textAppearanceTitleSmall"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <HorizontalScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:clipToPadding="false"
+                        android:fillViewport="false"
+                        android:overScrollMode="never"
+                        android:scrollbars="none">
+
+                        <LinearLayout
+                            android:id="@+id/layout_calendar_weeks"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal" />
+                    </HorizontalScrollView>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/button_prev_month"
+                            style="@style/Widget.Material3.Button.IconButton.Outlined"
+                            android:layout_width="38dp"
+                            android:layout_height="38dp"
+                            android:contentDescription="@string/cita_previous_month"
+                            app:icon="@drawable/ic_double_chevron_left_24"
+                            app:iconGravity="textStart" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/button_prev_week"
+                            style="@style/Widget.Material3.Button.IconButton.Outlined"
+                            android:layout_width="38dp"
+                            android:layout_height="38dp"
+                            android:layout_marginStart="6dp"
+                            android:contentDescription="@string/cita_previous_week"
+                            app:icon="@drawable/ic_chevron_left_24"
+                            app:iconGravity="textStart" />
+
+                        
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/button_today"
+                            style="@style/Widget.Material3.Button.OutlinedButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="38dp"
+                            android:layout_marginHorizontal="8dp"
+                            android:minHeight="38dp"
+                            android:minWidth="54dp"
+                            android:paddingHorizontal="12dp"
+                            android:text="@string/cita_today" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/button_next_week"
+                            style="@style/Widget.Material3.Button.IconButton.Outlined"
+                            android:layout_width="38dp"
+                            android:layout_height="38dp"
+                            android:contentDescription="@string/cita_next_week"
+                            app:icon="@drawable/ic_chevron_right_24"
+                            app:iconGravity="textStart" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/button_next_month"
+                            style="@style/Widget.Material3.Button.IconButton.Outlined"
+                            android:layout_width="38dp"
+                            android:layout_height="38dp"
+                            android:layout_marginStart="6dp"
+                            android:contentDescription="@string/cita_next_month"
+                            app:icon="@drawable/ic_double_chevron_right_24"
+                            app:iconGravity="textStart" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/text_selected_day_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/cita_upcoming_title"
+                        android:textAppearance="?attr/textAppearanceTitleMedium"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/text_upcoming_subtitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="@string/cita_upcoming_subtitle"
+                        android:textColor="?attr/colorOnSurfaceVariant" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/text_upcoming_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_cita_accent_pill"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="6dp"
+                    android:textAppearance="?attr/textAppearanceLabelMedium"
+                    android:textColor="@color/cita_accent_on"
+                    android:textStyle="bold"
+                    tools:text="2 citas" />
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_appointments"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:nestedScrollingEnabled="false"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:itemCount="2"
+                tools:listitem="@layout/item_cita_appointment" />
+
+            <TextView
+                android:id="@+id/text_empty_day"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:gravity="center"
+                android:padding="14dp"
+                android:text="@string/cita_empty_upcoming"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:visibility="gone"
+                tools:visibility="visible" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/button_schedule"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/menu_cita"
-        android:textAppearance="?attr/textAppearanceHeadlineSmall"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:contentDescription="@string/cita_schedule"
+        app:backgroundTint="@color/brand_primary"
+        app:srcCompat="@drawable/ic_add_24"
+        app:tint="@color/brand_on_primary" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <FrameLayout
+        android:id="@+id/panel_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/scrim_panel"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/appointment_panel"
+            style="@style/Widget.OrtOs.Card"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            app:cardCornerRadius="0dp"
+            app:contentPadding="18dp"
+            tools:layout_width="360dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/text_panel_title"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textAppearance="?attr/textAppearanceTitleLarge"
+                        android:textStyle="bold"
+                        tools:text="Agendar" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/button_panel_close"
+                        style="@style/Widget.Material3.Button.IconButton.Outlined"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:contentDescription="@android:string/cancel"
+                        app:icon="@drawable/ic_chevron_right_24"
+                        app:iconGravity="textStart" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/field_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="74dp"
+                    android:layout_marginTop="18dp"
+                    android:background="@drawable/bg_panel_header"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="14dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/cita_date_label"
+                            android:textAppearance="@style/Widget.OrtOs.SectionLabel" />
+
+                        <TextView
+                            android:id="@+id/text_panel_date"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:textAppearance="?attr/textAppearanceTitleMedium"
+                            android:textColor="@color/brand_on_container"
+                            android:textStyle="bold"
+                            tools:text="18 septiembre 2026" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="&gt;"
+                        android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                        android:textColor="@color/brand_on_container" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/field_treatment"
+                    android:layout_width="match_parent"
+                    android:layout_height="68dp"
+                    android:layout_marginTop="14dp"
+                    android:background="@drawable/bg_field"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="14dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/cita_treatment_label"
+                            android:textAppearance="@style/Widget.OrtOs.SectionLabel" />
+
+                        <TextView
+                            android:id="@+id/text_panel_treatment"
+                            style="@style/Widget.OrtOs.SelectValue"
+                            tools:text="Control de alineadores" />
+                    </LinearLayout>
+
+                    <TextView style="@style/Widget.OrtOs.SelectChevron" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/field_doctor"
+                    android:layout_width="match_parent"
+                    android:layout_height="68dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/bg_field"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="14dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/cita_doctor_label"
+                            android:textAppearance="@style/Widget.OrtOs.SectionLabel" />
+
+                        <TextView
+                            android:id="@+id/text_panel_doctor"
+                            style="@style/Widget.OrtOs.SelectValue"
+                            tools:text="Dra. Ana Lopez" />
+                    </LinearLayout>
+
+                    <TextView style="@style/Widget.OrtOs.SelectChevron" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/field_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="68dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/bg_field"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="14dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/cita_time_label"
+                            android:textAppearance="@style/Widget.OrtOs.SectionLabel" />
+
+                        <TextView
+                            android:id="@+id/text_panel_time"
+                            style="@style/Widget.OrtOs.SelectValue"
+                            tools:text="9:30 AM" />
+                    </LinearLayout>
+
+                    <TextView style="@style/Widget.OrtOs.SelectChevron" />
+                </LinearLayout>
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_panel_confirm"
+                    style="@style/Widget.OrtOs.Button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/cita_schedule" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </FrameLayout>
+
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:indeterminate="true"
+        android:visibility="gone"
+        tools:visibility="visible" />
+</FrameLayout>

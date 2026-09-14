@@ -1,0 +1,47 @@
+<resources>
+    <string name="cita_empty_next">No tienes citas proximas.</string>
+    <string name="cita_previous_month">Mes anterior</string>
+    <string name="cita_next_month">Mes siguiente</string>
+    <string name="cita_previous_week">Semana anterior</string>
+    <string name="cita_next_week">Semana siguiente</string>
+    <string name="cita_today">Hoy</string>
+    <string name="cita_status_scheduled">Programada</string>
+    <string name="cita_status_confirmed">Confirmada</string>
+    <string name="cita_status_completed">Completada</string>
+    <string name="cita_status_cancelled">Cancelada</string>
+    <string name="cita_schedule">Agendar</string>
+    <string name="cita_reschedule">Reagendar</string>
+    <string name="cita_cancel">Cancelar</string>
+    <string name="cita_cancel_title">Cancelar cita</string>
+    <string name="cita_cancel_message">Esta cita quedara marcada como cancelada.</string>
+    <string name="cita_keep">Mantener</string>
+    <string name="cita_scheduled_message">Cita agregada al dia seleccionado.</string>
+    <string name="cita_rescheduled_message">Cita movida.</string>
+    <string name="cita_cancelled_message">Cita cancelada.</string>
+    <string name="cita_date_label">Fecha</string>
+    <string name="cita_treatment_label">Tratamiento</string>
+    <string name="cita_doctor_label">Doctor</string>
+    <string name="cita_time_label">Horario disponible</string>
+    <string name="cita_countdown_label">Proxima cita</string>
+    <string name="cita_countdown_value">Cita en %1$s</string>
+    <string name="cita_select_day">Selecciona un dia de la semana</string>
+    <string name="cita_upcoming_title">Proximas citas</string>
+    <string name="cita_upcoming_subtitle">Agenda activa del paciente</string>
+    <string name="cita_empty_upcoming">No tienes proximas citas.</string>
+    <plurals name="cita_upcoming_count">
+        <item quantity="one">%1$d cita</item>
+        <item quantity="other">%1$d citas</item>
+    </plurals>
+    <plurals name="cita_countdown_months">
+        <item quantity="one">%1$d mes</item>
+        <item quantity="other">%1$d meses</item>
+    </plurals>
+    <plurals name="cita_countdown_days">
+        <item quantity="one">%1$d dia</item>
+        <item quantity="other">%1$d dias</item>
+    </plurals>
+    <plurals name="cita_countdown_hours">
+        <item quantity="one">%1$d hora</item>
+        <item quantity="other">%1$d horas</item>
+    </plurals>
+</resources>

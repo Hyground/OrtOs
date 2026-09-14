@@ -10,6 +10,10 @@ import com.wave.gt.ortos.auth.domain.usecase.GetRememberedEmailUseCase
 import com.wave.gt.ortos.auth.domain.usecase.LoginWithEmailUseCase
 import com.wave.gt.ortos.auth.domain.usecase.LoginWithGoogleUseCase
 import com.wave.gt.ortos.auth.domain.usecase.RecoverPasswordUseCase
+import com.wave.gt.ortos.cita.data.CitaRepositoryImpl
+import com.wave.gt.ortos.cita.data.local.LocalCitaDataSource
+import com.wave.gt.ortos.cita.domain.CitaRepository
+import com.wave.gt.ortos.cita.domain.usecase.GetMyAppointmentsUseCase
 import com.wave.gt.ortos.chat.data.ChatRepositoryImpl
 import com.wave.gt.ortos.chat.data.local.LocalChatDataSource
 import com.wave.gt.ortos.chat.domain.ChatRepository
@@ -57,6 +61,14 @@ class AppContainer(context: Context) {
 
     val getHomeDashboardUseCase: GetHomeDashboardUseCase
         get() = GetHomeDashboardUseCase(homeRepository)
+
+
+    private val localCitaDataSource by lazy { LocalCitaDataSource() }
+
+    private val citaRepository: CitaRepository by lazy { CitaRepositoryImpl(localCitaDataSource) }
+
+    val getMyAppointmentsUseCase: GetMyAppointmentsUseCase
+        get() = GetMyAppointmentsUseCase(citaRepository)
 
     private val localChatDataSource by lazy { LocalChatDataSource() }
 

@@ -458,6 +458,18 @@ export function AppointmentsPage() {
         size="wide"
         title={focusedDay ? 'CITAS DEL ' + displayDate(focusedDay) : 'CITAS DEL DIA'}
         onClose={() => setFocusedDay('')}
+        toolbar={
+          <Button
+            size="sm"
+            onClick={() => {
+              setCursor(focusedDay)
+              setFocusedDay('')
+              dialog.create()
+            }}
+          >
+            + Crear cita
+          </Button>
+        }
       >
         <div className={calendar.focusList}>
           {focusedAppointments.map((appointment) => (

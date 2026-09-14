@@ -33,4 +33,8 @@
     <color name="dark_on_surface">#FFE2E2E6</color>
     <color name="dark_on_surface_variant">#FFC4C6CF</color>
     <color name="dark_outline">#FF3A3D42</color>
+    <color name="scrim_panel">#99070D12</color>
+    <color name="cita_accent">#FF0284C7</color>
+    <color name="cita_accent_soft">#FFE0F2FE</color>
+    <color name="cita_accent_on">#FF075985</color>
 </resources>

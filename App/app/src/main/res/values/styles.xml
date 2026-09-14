@@ -41,4 +41,30 @@
     <style name="TextAppearance.OrtOs.HeaderSubtitle" parent="TextAppearance.Material3.BodyMedium">
         <item name="android:textColor">@color/brand_on_primary_muted</item>
     </style>
+
+    <style name="Widget.OrtOs.CalendarWeekday" parent="TextAppearance.Material3.LabelSmall">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">?attr/colorOnSurfaceVariant</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Widget.OrtOs.SelectValue" parent="TextAppearance.Material3.TitleSmall">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">2dp</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Widget.OrtOs.SelectChevron" parent="TextAppearance.Material3.HeadlineSmall">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:text">&gt;</item>
+        <item name="android:textColor">?attr/colorOnSurfaceVariant</item>
+    </style>
 </resources>

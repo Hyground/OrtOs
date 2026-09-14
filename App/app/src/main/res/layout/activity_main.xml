@@ -16,15 +16,19 @@
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
+            android:background="@color/brand_primary"
+            android:elevation="0dp"
             android:fitsSystemWindows="true"
+            app:elevation="0dp"
+            app:liftOnScroll="false"
+            app:liftOnScrollColor="@color/brand_primary"
             android:theme="@style/ThemeOverlay.OrtOs.Toolbar">
 
             <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="@android:color/transparent"
+                android:background="@color/brand_primary"
                 app:title="@string/app_name" />
         </com.google.android.material.appbar.AppBarLayout>
 
