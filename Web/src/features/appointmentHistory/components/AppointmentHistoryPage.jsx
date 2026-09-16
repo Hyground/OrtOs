@@ -1,12 +1,11 @@
 import { useMemo, useState } from 'react'
-import { IconCalendar, IconClock, IconSearch } from '@/components/icons/icons'
+import { IconCalendar, IconClock } from '@/components/icons/icons'
 import { Button } from '@/components/ui/Button/Button'
 import { TextField } from '@/components/ui/TextField/TextField'
 import { SelectField } from '@/components/ui/SelectField/SelectField'
 import { Badge } from '@/components/ui/Badge/Badge'
-import { Avatar, Banner, Pagination } from '@/features/clinical/components'
-import { displayDate, money, normalize } from '@/features/clinical/mockStore'
-import { usePagination } from '@/features/clinical/tableHelpers'
+import { Avatar, Banner } from '@/features/clinical/components'
+import { displayDate, money } from '@/features/clinical/mockStore'
 import { useAppointments } from '@/features/appointments/hooks/useAppointments'
 import { usePatients } from '@/features/patients/hooks/usePatients'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
@@ -33,7 +32,6 @@ export function AppointmentHistoryPage() {
   useDocumentTitle('Historial de citas')
   const appointments = useAppointments()
   const patients = usePatients()
-  const [query, setQuery] = useState('')
   const [date, setDate] = useState('')
   const [status, setStatus] = useState('')
   const [patientId, setPatientId] = useState('')
@@ -53,21 +51,12 @@ export function AppointmentHistoryPage() {
       paid: appointment.status === 'Completada' ? cost : Math.round(cost * 0.65),
     }
   })
-  const rows = history.filter((appointment) => {
-    const searchable = [
-      appointment.treatment,
-      appointment.dentist,
-      appointment.patient?.name,
-      appointment.status,
-    ].join(' ')
-    return (
-      normalize(searchable).includes(normalize(query)) &&
+  const rows = history.filter(
+    (appointment) =>
       (!date || appointment.date === date) &&
       (!status || appointment.status === status) &&
-      (!patientId || appointment.patientId === patientId)
-    )
-  })
-  const { page, setPage, visible } = usePagination(rows, 8)
+      (!patientId || appointment.patientId === patientId),
+  )
 
   return (
     <div className={styles.page}>
@@ -85,20 +74,8 @@ export function AppointmentHistoryPage() {
           className={styles.filters}
           onSubmit={(event) => {
             event.preventDefault()
-            setPage(1)
           }}
         >
-          <TextField
-            label="Buscar médico o paciente"
-            icon={IconSearch}
-            type="search"
-            placeholder="Buscar por médico, paciente o tratamiento..."
-            value={query}
-            onChange={(event) => {
-              setQuery(event.target.value)
-              setPage(1)
-            }}
-          />
           <TextField
             label="Por fecha"
             icon={IconCalendar}
@@ -106,7 +83,6 @@ export function AppointmentHistoryPage() {
             value={date}
             onChange={(event) => {
               setDate(event.target.value)
-              setPage(1)
             }}
           />
           <SelectField
@@ -116,7 +92,6 @@ export function AppointmentHistoryPage() {
             value={status}
             onChange={(event) => {
               setStatus(event.target.value)
-              setPage(1)
             }}
           />
           <SelectField
@@ -126,7 +101,6 @@ export function AppointmentHistoryPage() {
             value={patientId}
             onChange={(event) => {
               setPatientId(event.target.value)
-              setPage(1)
             }}
           />
           <Button
@@ -134,17 +108,15 @@ export function AppointmentHistoryPage() {
             size="sm"
             variant="ghost"
             onClick={() => {
-              setQuery('')
               setDate('')
               setStatus('')
               setPatientId('')
-              setPage(1)
             }}
           >
             Limpiar
           </Button>
         </form>
-        <div className={styles.tableScroll}>
+        <div className={styles.tableContainerScroll}>
           <table className={styles.table}>
             <thead>
               <tr>
@@ -158,7 +130,7 @@ export function AppointmentHistoryPage() {
               </tr>
             </thead>
             <tbody>
-              {visible.map((appointment) => (
+              {rows.map((appointment) => (
                 <tr key={appointment.id}>
                   <td>{appointment.index}</td>
                   <td>{appointment.treatment}</td>
@@ -182,7 +154,6 @@ export function AppointmentHistoryPage() {
           </table>
           {!rows.length && <p className={styles.empty}>No se encontraron citas con estos filtros.</p>}
         </div>
-        <Pagination total={rows.length} page={page} onChange={setPage} size={8} noun="historiales" />
       </section>
     </div>
   )

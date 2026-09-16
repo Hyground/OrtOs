@@ -1,45 +1,24 @@
 import { Fragment, useEffect, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
-import { IconChevronRight, IconEdit, IconEye, IconMedical, IconSearch, IconTrash } from '@/components/icons/icons'
+import { IconChevronRight, IconEdit, IconEye, IconMedical, IconTrash } from '@/components/icons/icons'
 import { Button } from '@/components/ui/Button/Button'
-import { TextField } from '@/components/ui/TextField/TextField'
-import { SelectField } from '@/components/ui/SelectField/SelectField'
 import { Modal } from '@/components/ui/Modal/Modal'
-import { Avatar, Banner, CenterToast, Pagination, StatusToggle } from '@/features/clinical/components'
-import { normalize } from '@/features/clinical/mockStore'
+import { Avatar, Banner, CenterToast, StatusToggle } from '@/features/clinical/components'
 import { useModuleDialogs } from '@/features/clinical/useModuleDialogs'
-import { usePagination } from '@/features/clinical/tableHelpers'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 import { useDoctors } from '../hooks/useDoctors'
-import { specialties } from '../mockData/doctors'
 import { DoctorForm } from './DoctorForm'
 import styles from '@/features/clinical/Clinical.module.css'
 
 export function DoctorsPage() {
   useDocumentTitle('Médicos')
-  const [params] = useSearchParams()
   const dialog = useModuleDialogs()
   const initialDoctors = useDoctors()
   const [doctors, setDoctors] = useState(initialDoctors)
-  const [query, setQuery] = useState(params.get('q') ?? '')
-  const [specialty, setSpecialty] = useState('')
   const [remove, setRemove] = useState(null)
   const [viewing, setViewing] = useState(null)
   const [statusNotice, setStatusNotice] = useState(null)
   const [expandedId, setExpandedId] = useState('')
-  const rows = doctors.filter(
-    (doctor) =>
-      normalize(doctor.name + ' ' + doctor.dpi + ' ' + doctor.specialty + ' ' + doctor.phone).includes(
-        normalize(query),
-      ) &&
-      (!specialty || doctor.specialty === specialty),
-  )
-  const { page, setPage, visible } = usePagination(rows, 7)
-
-  useEffect(() => {
-    setQuery(params.get('q') ?? '')
-    setPage(1)
-  }, [params, setPage])
+  const rows = doctors
 
   useEffect(() => {
     if (!statusNotice) return undefined
@@ -48,10 +27,9 @@ export function DoctorsPage() {
   }, [statusNotice])
 
   useEffect(() => {
-    if (visible.some((doctor) => doctor.id === expandedId)) return
+    if (rows.some((doctor) => doctor.id === expandedId)) return
     setExpandedId('')
-  }, [expandedId, visible])
-
+  }, [expandedId, rows])
 
   const toggleDoctorStatus = (doctor) => {
     const nextStatus = doctor.status === 'Activo' ? 'Inactivo' : 'Activo'
@@ -89,48 +67,7 @@ export function DoctorsPage() {
       )}
       <CenterToast notice={statusNotice} />
       <section className={styles.card}>
-        <form
-          className={styles.filters}
-          onSubmit={(event) => {
-            event.preventDefault()
-            setPage(1)
-          }}
-        >
-          <TextField
-            label="Buscar médico"
-            icon={IconSearch}
-            type="search"
-            placeholder="Buscar por nombre, DPI o teléfono..."
-            value={query}
-            onChange={(event) => {
-              setQuery(event.target.value)
-              setPage(1)
-            }}
-          />
-          <SelectField
-            label="Especialidad"
-            placeholder="Todas las especialidades"
-            options={specialties}
-            value={specialty}
-            onChange={(event) => {
-              setSpecialty(event.target.value)
-              setPage(1)
-            }}
-          />
-          <Button
-            type="button"
-            size="sm"
-            variant="ghost"
-            onClick={() => {
-              setQuery('')
-              setSpecialty('')
-              setPage(1)
-            }}
-          >
-            Limpiar
-          </Button>
-        </form>
-        <div className={styles.tableScroll}>
+        <div className={styles.tableContainerScroll}>
           <table className={styles.table}>
             <thead>
               <tr>
@@ -144,7 +81,7 @@ export function DoctorsPage() {
               </tr>
             </thead>
             <tbody>
-              {visible.map((doctor) => {
+              {rows.map((doctor) => {
                 const expanded = expandedId === doctor.id
                 return (
                   <Fragment key={doctor.id}>
@@ -235,7 +172,6 @@ export function DoctorsPage() {
           </table>
           {!rows.length && <p className={styles.empty}>No se encontraron médicos con estos filtros.</p>}
         </div>
-        <Pagination total={rows.length} page={page} onChange={setPage} size={7} noun="médicos" />
       </section>
       {dialog.open && <DoctorForm doctor={dialog.editing} onClose={dialog.close} onSaved={saveDoctor} />}
       <Modal open={!!viewing} title="Detalle del médico" onClose={() => setViewing(null)} size="wide">
@@ -295,5 +231,3 @@ export function DoctorsPage() {
     </div>
   )
 }
-
-

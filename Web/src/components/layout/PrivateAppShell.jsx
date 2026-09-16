@@ -56,7 +56,8 @@ export function PrivateAppShell() {
           : { to: paths.newAppointment, label: 'NUEVA CITA' }
   const workDate = formatWorkDate(new Date())
   const menuItems = user?.role === 'paciente' ? patientMenuItems : privateMenuItems
-  const showGlobalSearch = location.pathname !== paths.summary
+  const showGlobalSearch =
+    location.pathname !== paths.summary && !location.pathname.startsWith(paths.doctors)
 
   const closeMobile = () => setMobileOpen(false)
   const toggleCollapsed = () => setCollapsed((prev) => !prev)
