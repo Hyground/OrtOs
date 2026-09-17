@@ -5,7 +5,8 @@
   min-width: 0;
 }
 .banner {
-  display: flex;
+  display: grid;
+  grid-template-columns: 68px minmax(180px, 1fr) minmax(0, 600px);
   align-items: center;
   gap: 22px;
   padding: 25px;
@@ -13,6 +14,9 @@
   color: var(--color-white);
   background: linear-gradient(110deg, var(--color-banner-start), var(--color-primary), var(--color-banner-end));
   box-shadow: var(--shadow-sm);
+}
+.bannerCopy {
+  min-width: 0;
 }
 .banner h1 {
   color: var(--color-white);
@@ -205,13 +209,11 @@
 }
 .summary {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 12px;
-  padding: 8px 14px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+  min-width: 0;
   margin: 0;
   color: var(--color-white);
-  background: #0284c7;
-  border-radius: var(--radius-md);
 }
 .summary > div {
   display: grid;
@@ -356,6 +358,12 @@
 }
 
 @media (max-width: 1200px) {
+  .banner {
+    grid-template-columns: 68px minmax(0, 1fr);
+  }
+  .summary {
+    grid-column: 1 / -1;
+  }
   .chartLayout {
     grid-template-columns: 1fr;
   }
@@ -371,6 +379,7 @@
 }
 @media (max-width: 680px) {
   .banner {
+    grid-template-columns: 48px minmax(0, 1fr);
     padding: 20px;
     gap: 14px;
   }
@@ -402,8 +411,8 @@
     padding: 10px 12px;
   }
   .summary {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 18px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
   }
   .editorGrid {
     grid-template-columns: 90px minmax(0, 1fr);

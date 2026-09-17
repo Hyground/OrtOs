@@ -109,10 +109,21 @@ export function OdontogramPage() {
         <span className={styles.moduleIcon}>
           <IconTooth />
         </span>
-        <div>
+        <div className={styles.bannerCopy}>
           <h1>Odontograma</h1>
           <p>Registro dental y seguimiento por pieza.</p>
         </div>
+        <dl className={styles.summary} aria-label="Resumen de dientes">
+          {visibleStates.map((state) => (
+            <div key={state.id}>
+              <dt>
+                {state.label}
+                <small>Dientes</small>
+              </dt>
+              <dd aria-label={`${state.label}: ${counts[state.id]} dientes`}>{counts[state.id]}</dd>
+            </div>
+          ))}
+        </dl>
       </header>
       <div className={styles.toolbar}>
         <SearchSelect
@@ -195,17 +206,6 @@ export function OdontogramPage() {
           ))}
         </aside>
       </div>
-      <dl className={styles.summary} aria-label="Resumen de dientes">
-        {visibleStates.map((state) => (
-          <div key={state.id}>
-            <dt>
-              {state.label}
-              <small>Dientes</small>
-            </dt>
-            <dd aria-label={`${state.label}: ${counts[state.id]} dientes`}>{counts[state.id]}</dd>
-          </div>
-        ))}
-      </dl>
       {patient && rows.length > 0 && (
         <section className={styles.card}>
           <h2 className={styles.sectionTitle}>Registro detallado por pieza</h2>
