@@ -44,7 +44,7 @@ export function PrivateAppShell() {
   const { user, logout } = useAuth()
   const action = user?.role === 'paciente' ? null :
     location.pathname === paths.users
-      ? { to: paths.users + '?nuevo=1', label: 'NUEVO USUARIO' }
+      ? { to: paths.newAppointment, label: 'NUEVA CITA' }
       : location.pathname === paths.patients
         ? { to: paths.newPatient, label: 'NUEVO PACIENTE' }
         : location.pathname === paths.doctors

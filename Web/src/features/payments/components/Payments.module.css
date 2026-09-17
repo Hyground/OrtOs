@@ -10,32 +10,40 @@
   min-width: 745px;
   white-space: normal;
 }
+.tableScroll {
+  max-height: 693px;
+  overflow-y: auto;
+}
+.paymentTable tbody tr {
+  height: 65px;
+}
 .paymentTable th {
-  font-size: 8px;
+  font-size: 10px;
   padding: 12px 7px;
   overflow-wrap: anywhere;
 }
 .paymentTable td {
   padding: 14px 7px;
-  font-size: 10px;
+  font-size: 11px;
   overflow-wrap: anywhere;
 }
 .paymentTable small {
-  font-size: 9px;
+  font-size: 10px;
 }
 .paymentTable td:nth-child(6) {
   white-space: nowrap;
 }
-.paymentTable td button {
-  width: 22px;
-  height: 25px;
-  font-size: 13px;
+.paymentTable td:last-child button {
+  width: 28px;
+  height: 30px;
+  padding: 0;
+  font-size: 17px;
 }
 .paymentTable td:last-child > div {
   gap: 3px;
 }
 .paymentTable td:nth-child(7) span {
-  font-size: 9px;
+  font-size: 10px;
   padding: 4px 6px;
 }
 .donut {
@@ -124,6 +132,24 @@
 .quickForm button {
   font-size: 11px;
 }
+.quickPatient {
+  min-width: 0;
+}
+.quickPatient ul {
+  top: auto;
+  bottom: 100%;
+}
+.paymentContent {
+  display: grid;
+  gap: 20px;
+  min-width: 0;
+}
+.analytics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: start;
+  gap: 20px;
+}
 @media (max-width: 1200px) {
   .quick {
     position: static;
@@ -133,6 +159,9 @@
   }
 }
 @media (max-width: 680px) {
+  .analytics {
+    grid-template-columns: 1fr;
+  }
   .quickForm {
     grid-template-columns: 1fr;
   }

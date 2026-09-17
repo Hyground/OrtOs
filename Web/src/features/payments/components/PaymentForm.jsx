@@ -1,4 +1,6 @@
+import { useState } from 'react'
 import { Modal } from '@/components/ui/Modal/Modal'
+import { Button } from '@/components/ui/Button/Button'
 import { TextField } from '@/components/ui/TextField/TextField'
 import { Switch } from '@/components/ui/Switch/Switch'
 import { nextReceipt } from '@/features/clinical/mockStore'
@@ -9,9 +11,31 @@ import { usePatients } from '@/features/patients/hooks/usePatients'
 import { concepts, paymentMethods } from '../mockData/payments'
 import styles from '@/features/clinical/Clinical.module.css'
 import { initialPayment } from '../mockData/initialPayment'
-export function PaymentForm({ payment, compactPatient = false, onClose, onSaved, onAdd, onRecord }) {
+import { PaymentPatientFields } from './PaymentPatientFields'
+export function PaymentForm({
+  payment,
+  compactPatient = false,
+  paymentPage = false,
+  onClose,
+  onSaved,
+  onAdd,
+  onRecord,
+}) {
   const patients = usePatients()
-  const form = useEntryForm('payments', payment ?? initialPayment(), onSaved)
+  const [initialValues] = useState(() => payment ?? initialPayment())
+  const [confirmClose, setConfirmClose] = useState(false)
+  const form = useEntryForm('payments', initialValues, onSaved)
+  const hasUnsavedData = payment?.id
+    ? Object.keys(form.values).some((key) => form.values[key] !== initialValues[key])
+    : Object.keys(form.values).some((key) => form.values[key] !== initialValues[key]) ||
+      ['patientId', 'concept', 'treatment', 'amount', 'reference', 'notes'].some((key) =>
+        String(form.values[key] ?? '').trim(),
+      )
+  const requestClose = () => {
+    if (form.saving) return
+    if (paymentPage && hasUnsavedData) setConfirmClose(true)
+    else onClose()
+  }
   const patient = patients.find((p) => p.id === form.values.patientId)
   const requiresReference = /Tarjeta|Transferencia/.test(form.values.method)
   const f = (name, label, props = {}) => <Field form={form} name={name} label={label} {...props} />
@@ -20,9 +44,7 @@ export function PaymentForm({ payment, compactPatient = false, onClose, onSaved,
       open
       size="wide"
       title={payment?.id ? 'DETALLE / EDITAR PAGO' : 'REGISTRAR NUEVO PAGO'}
-      onClose={() => {
-        if (!form.saving) onClose()
-      }}
+      onClose={requestClose}
     >
       <form className={styles.form} onSubmit={form.submit} noValidate>
         <fieldset disabled={form.saving} className={styles.stack}>
@@ -34,6 +56,8 @@ export function PaymentForm({ payment, compactPatient = false, onClose, onSaved,
                 <small>{patient.folio}</small>
               </div>
             </section>
+          ) : paymentPage ? (
+            <PaymentPatientFields form={form} onAdd={() => onAdd(form)} onRecord={onRecord} />
           ) : (
             <PatientFields form={form} folio onAdd={() => onAdd(form)} onRecord={onRecord} />
           )}
@@ -75,7 +99,8 @@ export function PaymentForm({ payment, compactPatient = false, onClose, onSaved,
                     { value: 'USD', label: 'USD - Dólar' },
                   ],
                 })}
-              {!compactPatient && f('treatment', 'Tratamiento / Procedimiento', { options: treatments })}
+              {!compactPatient &&
+                f('treatment', 'Tratamiento / Procedimiento', { options: treatments })}
               {f('date', 'Fecha de pago *', { type: 'date', required: true })}
               {f('reference', 'Referencia' + (requiresReference ? ' *' : ''), {
                 required: requiresReference,
@@ -105,7 +130,9 @@ export function PaymentForm({ payment, compactPatient = false, onClose, onSaved,
                     label="Número de comprobante"
                     readOnly
                     value={
-                      form.values.receipt ? payment?.receiptNumber || nextReceipt() : 'No se generará'
+                      form.values.receipt
+                        ? payment?.receiptNumber || nextReceipt()
+                        : 'No se generará'
                     }
                   />
                   <small className={styles.muted}>Se generará automáticamente al guardar</small>
@@ -114,8 +141,23 @@ export function PaymentForm({ payment, compactPatient = false, onClose, onSaved,
             </div>
           </Section>
         </fieldset>
-        <FormFooter form={form} onClose={onClose} label="Guardar Pago" />
+        <FormFooter form={form} onClose={requestClose} label="Guardar Pago" />
       </form>
+      <Modal
+        open={confirmClose}
+        title="¿Cerrar sin guardar?"
+        onClose={() => setConfirmClose(false)}
+      >
+        <p>
+          Hay datos sin guardar. Si cierras esta ventana, perderás los datos o cambios ingresados.
+        </p>
+        <div className={styles.footer}>
+          <Button variant="ghost" onClick={() => setConfirmClose(false)}>
+            Seguir editando
+          </Button>
+          <Button onClick={onClose}>Cerrar sin guardar</Button>
+        </div>
+      </Modal>
     </Modal>
   )
 }
