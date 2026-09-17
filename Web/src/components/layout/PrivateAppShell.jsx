@@ -240,7 +240,7 @@ export function PrivateAppShell() {
           </Button> : null}
           <div className={styles.topActions}>
             <ThemeControl />
-            <FloatingChat placement="toolbar" />
+            <FloatingChat />
             <Notifications />
           </div>
         </header>

@@ -720,7 +720,7 @@
   }
 
   .topActions > button,
-  .topActions .toolbar .bubble {
+  .topActions > div > button {
     width: 36px;
     height: 36px;
   }
