@@ -10,7 +10,12 @@
   gap: 22px;
   padding: 25px;
   border-radius: var(--radius-md);
-  background: linear-gradient(110deg, var(--color-banner-start), var(--color-primary), var(--color-banner-end));
+  background: linear-gradient(
+    110deg,
+    var(--color-banner-start),
+    var(--color-primary),
+    var(--color-banner-end)
+  );
   color: var(--color-white);
   box-shadow: var(--shadow-sm);
 }
@@ -102,41 +107,110 @@
 .table strong {
   color: var(--color-ink);
 }
-.table tbody tr:hover {
+.clickableRow,
+.activeRow {
+  cursor: pointer;
+}
+.clickableRow:hover td,
+.clickableRow:focus-visible td,
+.activeRow td {
   background: var(--color-surface-alt);
 }
-.inactive {
-  opacity: 0.55;
-}
-.requested {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 10px;
-  border-radius: var(--radius-full);
-  background: var(--color-admin-bg);
-  color: var(--color-text-muted);
-  font-weight: 600;
-}
-.actions {
-  display: flex;
-  gap: 8px;
-}
-.actions button {
-  display: grid;
-  place-items: center;
-  width: 32px;
-  height: 32px;
-  border: 0;
-  border-radius: var(--radius-full);
-  cursor: pointer;
-  font-size: 17px;
-}
-.edit {
-  background: var(--color-primary-soft);
+.clickableRow:hover strong,
+.clickableRow:focus-visible strong,
+.activeRow strong {
   color: var(--color-primary);
 }
-.delete {
+.clickableRow:focus-visible,
+.activeRow:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
+}
+.optionButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 104px;
+  min-height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  background: var(--color-surface);
+  color: var(--color-primary);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.optionButton svg {
+  font-size: 14px;
+  transition: transform 0.16s ease;
+}
+.optionButton[aria-expanded='true'] {
+  border-color: var(--color-primary);
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+}
+.optionButton[aria-expanded='true'] svg {
+  transform: rotate(90deg);
+}
+.optionButton:focus-visible,
+.actionCard:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+}
+.detailRow td {
+  padding: 0 16px 16px;
+  background: #f8fcff;
+}
+.drawer {
+  padding: 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+  white-space: normal;
+}
+.drawerActions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(140px, 210px));
+  gap: 8px;
+}
+.actionCard {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface);
+  color: var(--color-ink);
+  box-shadow: var(--shadow-sm);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.actionCard:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary-dark);
+}
+.actionCard svg {
+  flex: 0 0 auto;
+  color: var(--color-primary);
+  font-size: 18px;
+}
+.deleteAction svg {
+  color: var(--color-danger);
+}
+.deleteAction:hover {
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+}
+.deleteConfirm {
   background: var(--color-danger-soft);
   color: var(--color-danger);
 }
@@ -145,9 +219,99 @@
   padding: 36px 20px;
   color: var(--color-text-muted);
 }
+.categoryManager {
+  display: grid;
+  gap: 18px;
+}
+.categoryForm {
+  display: flex;
+  align-items: end;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.categoryForm > div {
+  flex: 1 1 220px;
+}
+.categoryList {
+  display: grid;
+  gap: 8px;
+  max-height: 320px;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+.categoryList li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  color: var(--color-ink);
+}
+.categoryInfo {
+  display: grid;
+  gap: 2px;
+}
+.categoryInfo small {
+  color: var(--color-text-muted);
+  font-size: 11px;
+}
+.categoryList li > div {
+  display: flex;
+  gap: 6px;
+}
+.categoryList li button {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface);
+  color: var(--color-primary);
+  cursor: pointer;
+}
+.categoryList li button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.categoryList li button:not(:disabled):hover,
+.categoryList li button:focus-visible {
+  border-color: var(--color-primary);
+  background: var(--color-primary-soft);
+}
+.categoryList li button:last-child:not(:disabled) {
+  color: var(--color-danger);
+}
 .form {
   display: grid;
   gap: 20px;
+}
+.categoryField {
+  position: relative;
+  min-width: 0;
+}
+.addCategoryButton {
+  position: absolute;
+  top: -2px;
+  right: 0;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--color-primary);
+  border-radius: 6px;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  cursor: pointer;
+}
+.addCategoryButton:hover,
+.addCategoryButton:focus-visible {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
 }
 .formGrid {
   display: grid;
@@ -157,13 +321,6 @@
 .form p {
   margin: 0;
   line-height: 1.7;
-}
-.checkboxField {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 14px;
-  color: var(--color-ink);
 }
 .formActions {
   display: flex;
@@ -220,5 +377,8 @@
   }
   .formGrid {
     grid-template-columns: 1fr;
+  }
+  .drawerActions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }

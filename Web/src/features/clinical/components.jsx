@@ -49,14 +49,14 @@ export function Avatar({ patient, variant }) {
     </span>
   )
 }
-export function Banner({ title, description, Icon, metrics }) {
+export function Banner({ title, description, Icon, metrics, titleAction }) {
   return (
     <header className={styles.banner}>
       <span className={styles.bannerIcon}>
         <Icon />
       </span>
       <div className={styles.bannerText}>
-        <h1>{title}</h1>
+        <div className={styles.bannerHeading}><h1>{title}</h1>{titleAction}</div>
         <p>{description}</p>
       </div>
       <div className={styles.kpis}>

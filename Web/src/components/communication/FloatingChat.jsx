@@ -3,12 +3,15 @@ import { IconChevronLeft, IconClose, IconMail, IconSend, IconUser } from '@/comp
 import { useAuth } from '@/features/auth/hooks/useAuth'
 import { useClinic } from '@/features/clinical/mockStore'
 import { sendMessage, useMessages } from '@/features/messages/messageStore'
+import { incomingMessages, markConversationRead, useReadMessageIds } from '@/features/messages/messageReadStore'
 import styles from './FloatingChat.module.css'
 
 export function FloatingChat() {
   const { user } = useAuth()
   const { patients } = useClinic()
   const messages = useMessages()
+  const readIds = useReadMessageIds(user?.id)
+  const unreadMessages = incomingMessages(messages, user).filter((message) => !readIds.includes(message.id))
   const [open, setOpen] = useState(false)
   const [mobileView, setMobileView] = useState('list')
   const [selectedId, setSelectedId] = useState(null)
@@ -32,7 +35,7 @@ export function FloatingChat() {
   const visibleConversations = conversations.filter(({ patient }) =>
     `${patient.name} ${patient.folio ?? ''}`.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase()),
   )
-  const current = conversations.find(({ patient }) => patient.id === selectedId)?.patient ?? conversations[0]?.patient
+  const current = conversations.find(({ patient }) => patient.id === selectedId)?.patient
   const currentMessages = current
     ? messages.filter((message) => message.patientId === current.id)
     : []
@@ -40,6 +43,12 @@ export function FloatingChat() {
   useEffect(() => {
     if (open && mobileView === 'conversation') endRef.current?.scrollIntoView?.({ block: 'end' })
   }, [open, mobileView, current?.id, messages])
+
+  useEffect(() => {
+    if (open && mobileView === 'conversation' && selectedId) {
+      markConversationRead(user, selectedId, messages)
+    }
+  }, [open, mobileView, selectedId, messages, user])
 
   useEffect(() => {
     if (!open || !window.visualViewport) return undefined
@@ -77,6 +86,7 @@ export function FloatingChat() {
 
   const selectConversation = (patientId) => {
     setSelectedId(patientId)
+    markConversationRead(user, patientId, messages)
     setMobileView('conversation')
     setDraft('')
     setError('')
@@ -99,11 +109,12 @@ export function FloatingChat() {
       <button
         type="button"
         className={styles.trigger}
-        aria-label={open ? 'Cerrar mensajes' : 'Abrir mensajes'}
+        aria-label={open ? 'Cerrar mensajes' : unreadMessages.length ? 'Abrir mensajes, ' + unreadMessages.length + ' sin leer' : 'Abrir mensajes'}
         aria-expanded={open}
         onClick={() => (open ? close() : setOpen(true))}
       >
         <IconMail />
+        {unreadMessages.length > 0 && <span className={styles.unreadBadge}>{unreadMessages.length > 99 ? '99+' : unreadMessages.length}</span>}
       </button>
 
       {open && (
@@ -155,6 +166,7 @@ export function FloatingChat() {
                       <strong>{patient.name}</strong>
                       <small>{lastMessage?.text ?? 'Sin mensajes todavía'}</small>
                     </span>
+                    {unreadMessages.some((message) => message.patientId === patient.id) && <span className={styles.unreadDot} aria-label='Mensajes sin leer' />}
                     {lastMessage && (
                       <time dateTime={lastMessage.createdAt}>
                         {new Date(lastMessage.createdAt).toLocaleDateString('es-GT', {
@@ -216,7 +228,7 @@ export function FloatingChat() {
                   {error && <p role="alert" className={styles.error}>{error}</p>}
                 </>
               ) : (
-                <p className={styles.empty}>No hay pacientes disponibles.</p>
+                <p className={styles.empty}>{conversations.length ? 'Selecciona una conversación.' : 'No hay pacientes disponibles.'}</p>
               )}
             </div>
           </div>

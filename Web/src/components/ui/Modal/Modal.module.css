@@ -27,6 +27,38 @@
   max-width: 1000px;
   border-radius: var(--radius-md);
 }
+.review {
+  max-width: 760px;
+  padding: 20px;
+}
+
+.review .head {
+  align-items: center;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 14px;
+}
+
+.review .head h2 {
+  margin-right: auto;
+  color: var(--color-primary-dark);
+  font-size: var(--font-size-md);
+}
+.notifications {
+  max-width: 560px;
+  padding: 20px;
+}
+
+.notifications .head {
+  align-items: center;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 14px;
+}
+
+.notifications .head h2 {
+  margin-right: auto;
+  color: var(--color-primary-dark);
+  font-size: var(--font-size-md);
+}
 .document {
   max-width: 960px;
   background: var(--color-admin-bg);

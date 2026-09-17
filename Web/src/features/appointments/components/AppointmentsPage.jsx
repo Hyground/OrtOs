@@ -21,6 +21,7 @@ import { AppointmentForm } from './AppointmentForm'
 import { useAppointments } from '../hooks/useAppointments'
 import { useDoctors } from '@/features/doctors/hooks/useDoctors'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
+import { ReviewInbox } from '@/features/clinical/ReviewInbox'
 import styles from '@/features/clinical/Clinical.module.css'
 import calendar from './Calendar.module.css'
 const dateKey = (d) =>
@@ -183,6 +184,7 @@ export function AppointmentsPage() {
         title="MÓDULO DE CITAS"
         description="Organiza la agenda de la clínica, coordina tratamientos y da seguimiento a cada paciente."
         Icon={IconCalendar}
+        titleAction={<ReviewInbox kind="appointments" onApproved={(appointment) => { setCursor(appointment.date); setView('Día') }} />}
         metrics={[
           [monthly.length, 'Citas este mes'],
           [daily.length, 'Citas el ' + displayDate(cursor)],

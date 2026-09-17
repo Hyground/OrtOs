@@ -33,6 +33,17 @@
   flex: 1;
   min-width: 180px;
 }
+.bannerHeading {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.banner .bannerHeading h1 {
+  margin: 0;
+}
 .banner h1 {
   font-size: 23px;
   margin: 0 0 8px;
@@ -556,7 +567,7 @@
   color: var(--color-ink);
 }
 @media (min-width: 1600px) {
-  .banner h1 {
+.banner h1 {
     font-size: 26px;
   }
   .table {
@@ -587,7 +598,7 @@
   .bannerIcon {
     display: none;
   }
-  .banner h1 {
+.banner h1 {
     font-size: 19px;
   }
   .tabs {

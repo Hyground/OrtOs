@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { IconEye } from '@/components/icons/icons'
 import { Button } from '@/components/ui/Button/Button'
 import { Modal } from '@/components/ui/Modal/Modal'
+import { ConfirmDialog } from '@/components/ui/ConfirmDialog/ConfirmDialog'
 import { localDate, displayDate, getClinic } from '@/features/clinical/mockStore'
 import { useEntryForm } from '@/features/clinical/useEntryForm'
 import { Avatar, PatientFields, Field, Section, FormFooter } from '@/features/clinical/components'
@@ -190,21 +191,16 @@ export function AppointmentForm({
         </fieldset>
         <FormFooter form={form} onClose={requestClose} label="Guardar Cita" />
       </form>
-      <Modal
+      <ConfirmDialog
         open={confirmClose}
         title="¿Cerrar sin guardar?"
+        message="¿Estás seguro de cerrar sin guardar?"
+        confirmLabel="Cerrar sin guardar"
+        cancelLabel="Seguir editando"
+        danger
         onClose={() => setConfirmClose(false)}
-      >
-        <p>
-          Hay datos sin guardar. Si cierras esta ventana, perderás los datos o cambios ingresados.
-        </p>
-        <div className={styles.footer}>
-          <Button variant="ghost" onClick={() => setConfirmClose(false)}>
-            Seguir editando
-          </Button>
-          <Button onClick={onClose}>Cerrar sin guardar</Button>
-        </div>
-      </Modal>
+        onConfirm={onClose}
+      />
     </Modal>
   )
 }

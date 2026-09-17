@@ -78,6 +78,8 @@ it('pide confirmación antes de desactivar y permite cancelar', async () => {
   await waitFor(() => expect(toggle).toHaveAttribute('aria-pressed', 'false'))
   expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
   await user.click(toggle)
+  expect(screen.getByRole('dialog', { name: 'Activar usuario' })).toBeInTheDocument()
+  await user.click(screen.getByRole('button', { name: 'Activar', exact: true }))
   await waitFor(() => expect(toggle).toHaveAttribute('aria-pressed', 'true'))
 })
 it('inicia sesión como odontólogo y restaura el rol desde su token', async () => {

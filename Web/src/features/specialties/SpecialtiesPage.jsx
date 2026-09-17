@@ -3,6 +3,7 @@ import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 import { IconServices, IconSearch, IconPlus, IconEdit, IconTrash } from '@/components/icons/icons'
 import { Button } from '@/components/ui/Button/Button'
 import { Modal } from '@/components/ui/Modal/Modal'
+import { ConfirmDialog } from '@/components/ui/ConfirmDialog/ConfirmDialog'
 import { TextField } from '@/components/ui/TextField/TextField'
 import { TextAreaField } from '@/components/ui/TextAreaField/TextAreaField'
 import { normalizeName, readSpecialties, saveSpecialties } from './specialtiesData'
@@ -195,37 +196,21 @@ export function SpecialtiesPage() {
           </form>
         )}
       </Modal>
-      <Modal open={!!deleting} onClose={() => setDeleting(null)} title="Eliminar especialidad">
-        <div className={styles.form}>
-          <p>
-            ¿Deseas eliminar la especialidad <strong>{deleting?.name}</strong>?
-          </p>
-          {error && (
-            <p role="alert" className={styles.error}>
-              {error}
-            </p>
-          )}
-          <div className={styles.formActions}>
-            <Button variant="ghost" onClick={() => setDeleting(null)}>
-              Cancelar
-            </Button>
-            <Button
-              className={styles.delete}
-              onClick={() => {
-                if (
-                  persist(
-                    items.filter((item) => item.id !== deleting.id),
-                    'Especialidad eliminada.',
-                  )
-                )
-                  setDeleting(null)
-              }}
-            >
-              Eliminar
-            </Button>
-          </div>
-        </div>
-      </Modal>
+      <ConfirmDialog
+        open={!!deleting}
+        title="Eliminar especialidad"
+        message={`¿Estás seguro de eliminar ${deleting?.name}?`}
+        confirmLabel="Eliminar"
+        danger
+        error={error}
+        onClose={() => setDeleting(null)}
+        onConfirm={() => {
+          if (persist(
+            items.filter((item) => item.id !== deleting.id),
+            'Especialidad eliminada.',
+          )) setDeleting(null)
+        }}
+      />
     </section>
   )
 }

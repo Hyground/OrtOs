@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useAuth } from '@/features/auth/hooks/useAuth'
 import { useClinic } from '@/features/clinical/mockStore'
 import { sendMessage, useMessages } from './messageStore'
+import { markConversationRead } from './messageReadStore'
 import { TextField } from '@/components/ui/TextField/TextField'
 import { Button } from '@/components/ui/Button/Button'
 import { IconMail, IconSend } from '@/components/icons/icons'
@@ -26,6 +27,7 @@ export function MessagesPage() {
   const messages = current ? all.filter((message) => message.patientId === patientId) : []
 
   useEffect(() => { end.current?.scrollIntoView?.({ block: 'nearest' }) }, [all, patientId])
+  useEffect(() => { markConversationRead(user, patientId, all) }, [user, patientId, all])
 
   function submit(event) {
     event.preventDefault()

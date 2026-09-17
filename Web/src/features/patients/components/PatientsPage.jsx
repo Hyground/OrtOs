@@ -12,6 +12,7 @@ import {
   IconChevronRight,
 } from '@/components/icons/icons'
 import { Button } from '@/components/ui/Button/Button'
+import { ConfirmDialog } from '@/components/ui/ConfirmDialog/ConfirmDialog'
 import { TextField } from '@/components/ui/TextField/TextField'
 import { SelectField } from '@/components/ui/SelectField/SelectField'
 import { Avatar, Banner, CenterToast, Pagination, StatusToggle } from '@/features/clinical/components'
@@ -37,6 +38,8 @@ export function PatientsPage() {
   const [status, setStatus] = useState('')
   const [gender, setGender] = useState('')
   const [statusBusy, setStatusBusy] = useState('')
+  const [confirmingStatus, setConfirmingStatus] = useState(null)
+  const [statusError, setStatusError] = useState('')
   const [statusNotice, setStatusNotice] = useState(null)
   const [expandedId, setExpandedId] = useState('')
   const [quickPayment, setQuickPayment] = useState(null)
@@ -83,7 +86,7 @@ export function PatientsPage() {
       await saveRecord('patients', { ...patient, status: nextStatus })
       setStatusNotice(`${patient.name} ${nextStatus === 'Activo' ? 'activado' : 'desactivado'}`)
     } catch (e) {
-      dialog.setNotice(e.message)
+      setStatusError(e.message)
     } finally {
       setStatusBusy('')
     }
@@ -212,7 +215,10 @@ export function PatientsPage() {
                           label={`Cambiar estado de ${p.name} a ${
                             p.status === 'Activo' ? 'Inactivo' : 'Activo'
                           }`}
-                          onToggle={() => togglePatientStatus(p)}
+                          onToggle={() => {
+                            setStatusError('')
+                            setConfirmingStatus(p)
+                          }}
                         />
                       </td>
                       <td data-label="ACCIONES" onClick={(event) => event.stopPropagation()}>
@@ -289,6 +295,17 @@ export function PatientsPage() {
         </div>
         <Pagination total={rows.length} page={page} onChange={setPage} size={5} noun="pacientes" />
       </section>
+      <ConfirmDialog
+        open={!!confirmingStatus}
+        title={confirmingStatus?.status === 'Activo' ? 'Desactivar paciente' : 'Activar paciente'}
+        message={`¿Estás seguro de ${confirmingStatus?.status === 'Activo' ? 'desactivar' : 'activar'} ${confirmingStatus?.name}?`}
+        confirmLabel={confirmingStatus?.status === 'Activo' ? 'Desactivar' : 'Activar'}
+        danger={confirmingStatus?.status === 'Activo'}
+        busy={!!statusBusy}
+        error={statusError}
+        onClose={() => setConfirmingStatus(null)}
+        onConfirm={() => togglePatientStatus(confirmingStatus)}
+      />
       {dialog.open && (
         <PatientForm patient={dialog.editing} onClose={dialog.close} onSaved={dialog.onSaved} />
       )}

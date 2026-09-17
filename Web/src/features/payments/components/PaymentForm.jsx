@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Modal } from '@/components/ui/Modal/Modal'
-import { Button } from '@/components/ui/Button/Button'
+import { ConfirmDialog } from '@/components/ui/ConfirmDialog/ConfirmDialog'
 import { TextField } from '@/components/ui/TextField/TextField'
 import { Switch } from '@/components/ui/Switch/Switch'
 import { nextReceipt } from '@/features/clinical/mockStore'
@@ -143,21 +143,16 @@ export function PaymentForm({
         </fieldset>
         <FormFooter form={form} onClose={requestClose} label="Guardar Pago" />
       </form>
-      <Modal
+      <ConfirmDialog
         open={confirmClose}
         title="¿Cerrar sin guardar?"
+        message="¿Estás seguro de cerrar sin guardar?"
+        confirmLabel="Cerrar sin guardar"
+        cancelLabel="Seguir editando"
+        danger
         onClose={() => setConfirmClose(false)}
-      >
-        <p>
-          Hay datos sin guardar. Si cierras esta ventana, perderás los datos o cambios ingresados.
-        </p>
-        <div className={styles.footer}>
-          <Button variant="ghost" onClick={() => setConfirmClose(false)}>
-            Seguir editando
-          </Button>
-          <Button onClick={onClose}>Cerrar sin guardar</Button>
-        </div>
-      </Modal>
+        onConfirm={onClose}
+      />
     </Modal>
   )
 }

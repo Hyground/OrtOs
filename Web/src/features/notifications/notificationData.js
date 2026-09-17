@@ -1,18 +1,55 @@
 import { paths } from '@/app/routes/paths'
-import { localDate,displayDate,money } from '@/features/clinical/mockStore'
-export function notificationsFor(clinic,messages,user){
- if(!user)return []
- const personal=user.role==='paciente'
- if(personal&&!user.patientId)return []
- if(!['admin','odontologo','asistente','paciente'].includes(user.role))return []
- const appointments=clinic.appointments.filter(a=>(!personal||a.patientId===user.patientId)&&a.status==='Pendiente').sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time))
- const payments=clinic.payments.filter(p=>!personal||p.patientId===user.patientId)
- const incoming=messages.filter(m=>(!personal||m.patientId===user.patientId)&&m.from===(personal?'clinic':'patient'))
- const items=[]
- for(const a of appointments){const name=clinic.patients.find(p=>p.id===a.patientId)?.name??'Paciente';items.push({id:'appointment-'+a.id+'-'+a.date+'-'+a.time,title:(a.date>=localDate()?'Cita programada':'Cita pendiente de actualizar'),detail:(personal?'':name+' · ')+displayDate(a.date)+' '+a.time+' · '+a.treatment,href:personal?paths.myAppointments:paths.appointments+'?fecha='+a.date,kind:'citas'})}
- for(const p of payments.filter(p=>p.status==='Pendiente')){items.push({id:'pending-'+p.id+'-'+p.amount,title:'Pago pendiente',detail:(personal?'':(clinic.patients.find(a=>a.id===p.patientId)?.name??'Paciente')+' · ')+p.concept+' · '+money(p.amount,p.currency),href:personal?paths.myPayments:paths.payments+'?estado=Pendiente',kind:'pagos'})}
- for(const p of [...payments].filter(p=>p.status==='Completado').sort((a,b)=>b.date.localeCompare(a.date)).slice(0,3)){items.push({id:'paid-'+p.id+'-'+p.amount,title:'Pago registrado',detail:displayDate(p.date)+' · '+p.concept+' · '+money(p.amount,p.currency),href:personal?paths.myPayments:paths.payments+'?mes='+p.date.slice(0,7),kind:'pagos'})}
- for(const m of incoming){items.unshift({id:'message-'+m.id,title:personal?'Mensaje de la clínica':'Mensaje de '+(clinic.patients.find(p=>p.id===m.patientId)?.name??'paciente'),detail:m.text,href:paths.messages+'?paciente='+m.patientId,kind:'mensajes'})}
- return items
-}
+import { localDate, displayDate, money } from '@/features/clinical/mockStore'
 
+export function notificationsFor(clinic, user, reviewInbox = { appointmentRequests: [], paymentReports: [] }) {
+  if (!user || !['admin', 'odontologo', 'asistente', 'paciente'].includes(user.role)) return []
+  const personal = user.role === 'paciente'
+  if (personal && !user.patientId) return []
+
+  if (!personal) {
+    const requests = reviewInbox.appointmentRequests
+      .filter((item) => item.status === 'Por aprobar')
+      .map((item) => ({
+        id: 'review-appointment-' + item.id,
+        title: 'Solicitud de cita por aprobar',
+        detail: (clinic.patients.find((patient) => patient.id === item.patientId)?.name ?? 'Paciente') + ' · ' + displayDate(item.date) + ' ' + item.time,
+        href: paths.appointments + '#solicitudes',
+        kind: 'citas',
+      }))
+    const reports = reviewInbox.paymentReports
+      .filter((item) => item.status === 'Por verificar')
+      .map((item) => ({
+        id: 'review-payment-' + item.id,
+        title: 'Transferencia por verificar',
+        detail: (clinic.patients.find((patient) => patient.id === item.patientId)?.name ?? 'Paciente') + ' · ' + money(item.amount),
+        href: paths.payments + '#verificaciones',
+        kind: 'pagos',
+      }))
+    return [...requests, ...reports]
+  }
+
+  const appointments = clinic.appointments
+    .filter((item) => item.patientId === user.patientId && item.status === 'Pendiente')
+    .sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time))
+  const payments = clinic.payments.filter((item) => item.patientId === user.patientId)
+  const items = []
+  for (const appointment of appointments) {
+    items.push({
+      id: 'appointment-' + appointment.id + '-' + appointment.date + '-' + appointment.time,
+      title: appointment.date >= localDate() ? 'Cita programada' : 'Cita pendiente de actualizar',
+      detail: displayDate(appointment.date) + ' ' + appointment.time + ' · ' + appointment.treatment,
+      href: paths.myAppointments,
+      kind: 'citas',
+    })
+  }
+  for (const payment of payments.filter((item) => item.status === 'Pendiente')) {
+    items.push({
+      id: 'pending-' + payment.id + '-' + payment.amount,
+      title: 'Pago pendiente',
+      detail: payment.concept + ' · ' + money(payment.amount, payment.currency),
+      href: paths.myPayments,
+      kind: 'pagos',
+    })
+  }
+  return items
+}

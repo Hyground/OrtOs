@@ -19,6 +19,7 @@ import { PaymentMethodIcon } from './PaymentMethodIcon'
 import { concepts, paymentMethods } from '../mockData/payments'
 import { usePayments } from '../hooks/usePayments'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
+import { ReviewInbox } from '@/features/clinical/ReviewInbox'
 import styles from '@/features/clinical/Clinical.module.css'
 import css from './Payments.module.css'
 export function PaymentsPage() {
@@ -87,6 +88,7 @@ export function PaymentsPage() {
         title="MÓDULO DE PAGOS"
         description="Administra los ingresos, abonos y comprobantes de tu clínica en un solo lugar."
         Icon={IconCreditCard}
+        titleAction={<ReviewInbox kind="payments" onApproved={() => { setFrom(''); setTo(''); setTab('REGISTRO DE PAGOS') }} />}
         metrics={[
           [
             money(

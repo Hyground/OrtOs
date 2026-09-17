@@ -47,6 +47,14 @@
   line-height: 1.05;
 }
 
+.heroSummary {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+  min-width: 0;
+}
 .metricsBlock {
   min-width: 0;
 }
@@ -105,6 +113,145 @@
   line-height: 1;
 }
 
+.taskLauncher {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 132px;
+  padding: 10px;
+  border: 2px solid #ffffff;
+  border-radius: 9px;
+  background: #ffffff;
+  color: #075985;
+  box-shadow: 0 8px 20px rgba(0, 36, 66, 0.24);
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 900;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.16s ease, box-shadow 0.16s ease;
+}
+.taskLauncher:hover,
+.taskLauncher:focus-visible {
+  transform: translateY(-1px);
+  box-shadow: 0 11px 24px rgba(0, 36, 66, 0.32);
+}
+
+.taskLauncher:focus-visible {
+  outline: 3px solid #fbbf24;
+  outline-offset: 3px;
+}
+
+.taskLauncher strong {
+  display: grid;
+  place-items: center;
+  min-width: 25px;
+  height: 25px;
+  padding: 0 4px;
+  border-radius: 7px;
+  background: #b91c1c;
+  color: #ffffff;
+  font-size: 0.85rem;
+}
+
+.taskLauncher strong[data-empty='true'] {
+  background: #e2e8f0;
+  color: #334155;
+}
+.attentionPanel {
+  display: grid;
+  gap: 12px;
+}
+
+.taskIntro {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+.attentionGrid {
+  display: grid;
+  align-content: start;
+  max-height: min(60dvh, 520px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.attentionLink {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface-alt);
+  color: var(--color-ink);
+  text-decoration: none;
+}
+
+.attentionLink:hover,
+.attentionLink:focus-visible {
+  border-color: var(--color-primary);
+  background: var(--color-primary-soft);
+}
+
+.attentionLink > svg {
+  color: var(--color-primary);
+  font-size: 1.3rem;
+}
+
+.attentionLink > span:nth-child(2) {
+  display: grid;
+  gap: 3px;
+}
+
+.attentionLink strong {
+  font-size: 0.85rem;
+}
+
+.attentionLink small {
+  color: var(--color-text-muted);
+  font-size: 0.72rem;
+}
+
+.previewAction {
+  padding: 7px 9px;
+  border: 0;
+  border-radius: 7px;
+  background: var(--color-primary);
+  color: #ffffff;
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 800;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.previewAction:hover,
+.previewAction:focus-visible {
+  background: var(--color-primary-dark);
+}
+.reviewAction {
+  color: var(--color-primary);
+  font-size: 0.75rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.taskEmpty {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.82rem;
+}
 .contentGrid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 286px;
@@ -423,6 +570,36 @@
 }
 
 @media (max-width: 620px) {
+  .heroSummary {
+    display: block;
+  }
+
+  .metricsBlock h2 {
+    display: flex;
+    align-items: center;
+    min-height: 38px;
+    padding-right: 138px;
+  }
+
+  .taskLauncher {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: auto;
+    min-height: 34px;
+    flex-direction: row;
+    gap: 6px;
+    padding: 4px 6px 4px 9px;
+    font-size: 0.7rem;
+  }
+
+  .taskLauncher strong {
+    min-width: 21px;
+    height: 21px;
+    font-size: 0.75rem;
+  }
+}
+@media (max-width: 620px) {
   .hero,
   .modulesSection,
   .sidePanel article {
@@ -486,5 +663,11 @@
 @media (min-width: 520px) and (max-width: 620px) {
   .moduleGrid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 620px) {
+  .attentionGrid {
+    grid-template-columns: 1fr;
   }
 }

@@ -2,6 +2,7 @@ import { Fragment, useEffect, useState } from 'react'
 import { IconChevronRight, IconEdit, IconEye, IconMedical, IconTrash } from '@/components/icons/icons'
 import { Button } from '@/components/ui/Button/Button'
 import { Modal } from '@/components/ui/Modal/Modal'
+import { ConfirmDialog } from '@/components/ui/ConfirmDialog/ConfirmDialog'
 import { TextField } from '@/components/ui/TextField/TextField'
 import { SelectField } from '@/components/ui/SelectField/SelectField'
 import { Avatar, Banner, CenterToast, StatusToggle } from '@/features/clinical/components'
@@ -19,6 +20,7 @@ export function DoctorsPage() {
   const initialDoctors = useDoctors()
   const [doctors, setDoctors] = useState(initialDoctors)
   const [remove, setRemove] = useState(null)
+  const [confirmingStatus, setConfirmingStatus] = useState(null)
   const [viewing, setViewing] = useState(null)
   const [statusNotice, setStatusNotice] = useState(null)
   const [expandedId, setExpandedId] = useState('')
@@ -144,7 +146,7 @@ export function DoctorsPage() {
                         <StatusToggle
                           active={doctor.status === 'Activo'}
                           label={'Cambiar estado de ' + doctor.name + ' a ' + (doctor.status === 'Activo' ? 'Inactivo' : 'Activo')}
-                          onToggle={() => toggleDoctorStatus(doctor)}
+                          onToggle={() => setConfirmingStatus(doctor)}
                         />
                       </td>
                       <td onClick={(event) => event.stopPropagation()}>
@@ -240,23 +242,31 @@ export function DoctorsPage() {
           </div>
         </div>
       </Modal>
-      <Modal open={!!remove} title="Eliminar médico" onClose={() => setRemove(null)}>
-        <p>¿Eliminar a {remove?.name}? Esta acción solo afecta los datos de demostración.</p>
-        <div className={styles.footer}>
-          <Button variant="ghost" onClick={() => setRemove(null)}>
-            Cancelar
-          </Button>
-          <Button
-            onClick={() => {
-              setDoctors((current) => current.filter((doctor) => doctor.id !== remove.id))
-              setRemove(null)
-              dialog.setNotice('Médico eliminado.')
-            }}
-          >
-            Eliminar
-          </Button>
-        </div>
-      </Modal>
+      <ConfirmDialog
+        open={!!confirmingStatus}
+        title={confirmingStatus?.status === 'Activo' ? 'Desactivar médico' : 'Activar médico'}
+        message={`¿Estás seguro de ${confirmingStatus?.status === 'Activo' ? 'desactivar' : 'activar'} ${confirmingStatus?.name}?`}
+        confirmLabel={confirmingStatus?.status === 'Activo' ? 'Desactivar' : 'Activar'}
+        danger={confirmingStatus?.status === 'Activo'}
+        onClose={() => setConfirmingStatus(null)}
+        onConfirm={() => {
+          toggleDoctorStatus(confirmingStatus)
+          setConfirmingStatus(null)
+        }}
+      />
+      <ConfirmDialog
+        open={!!remove}
+        title="Eliminar médico"
+        message={`¿Estás seguro de eliminar ${remove?.name}?`}
+        confirmLabel="Eliminar"
+        danger
+        onClose={() => setRemove(null)}
+        onConfirm={() => {
+          setDoctors((current) => current.filter((doctor) => doctor.id !== remove.id))
+          setRemove(null)
+          dialog.setNotice('Médico eliminado.')
+        }}
+      />
     </div>
   )
 }

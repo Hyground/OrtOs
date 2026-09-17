@@ -1,0 +1,32 @@
+.content {
+  display: grid;
+  gap: 20px;
+}
+.message {
+  margin: 0;
+  color: var(--color-ink);
+  line-height: 1.6;
+}
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border);
+}
+.danger {
+  background: var(--color-danger);
+  color: var(--color-white);
+}
+.danger:hover {
+  background: var(--color-danger);
+  filter: brightness(0.9);
+}
+.error {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--color-danger-soft);
+  color: var(--color-danger);
+}

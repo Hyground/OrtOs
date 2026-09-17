@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/Button/Button'
 import { TextField } from '@/components/ui/TextField/TextField'
 import { SelectField } from '@/components/ui/SelectField/SelectField'
 import { Modal } from '@/components/ui/Modal/Modal'
+import { ConfirmDialog } from '@/components/ui/ConfirmDialog/ConfirmDialog'
 import { IconUsers, IconEdit, IconTrash, IconSearch } from '@/components/icons/icons'
 import { CenterToast, Pagination, StatusToggle } from '@/features/clinical/components'
 import { usePagination } from '@/features/clinical/tableHelpers'
@@ -40,40 +41,13 @@ function UserForm({ account, onClose, onSaved }) {
     }
   }
   return (
-    <Modal
-      open
-      size="wide"
-      title={
-        confirmDeactivate ? 'Desactivar usuario' : account ? 'EDITAR USUARIO' : 'NUEVO USUARIO'
-      }
-      onClose={() => {
-        if (!busy) {
-          if (confirmDeactivate) setConfirmDeactivate(false)
-          else onClose()
-        }
-      }}
-    >
-      {confirmDeactivate ? (
-        <>
-          <p>
-            ¿Desactivar la cuenta de {account.displayName}? No podrá iniciar sesión hasta que la
-            actives nuevamente.
-          </p>
-          {error && (
-            <p role="alert" className={styles.error}>
-              {error}
-            </p>
-          )}
-          <div className={styles.footer}>
-            <Button variant="ghost" disabled={busy} onClick={() => setConfirmDeactivate(false)}>
-              Cancelar
-            </Button>
-            <Button disabled={busy} onClick={submit}>
-              {busy ? 'Guardando…' : 'Desactivar y guardar'}
-            </Button>
-          </div>
-        </>
-      ) : (
+    <>
+      <Modal
+        open
+        size="wide"
+        title={account ? 'EDITAR USUARIO' : 'NUEVO USUARIO'}
+        onClose={() => !busy && onClose()}
+      >
         <form
           className={styles.form}
           onSubmit={(e) => {
@@ -165,8 +139,19 @@ function UserForm({ account, onClose, onSaved }) {
             </Button>
           </div>
         </form>
-      )}
-    </Modal>
+      </Modal>
+      <ConfirmDialog
+        open={confirmDeactivate}
+        title="Desactivar usuario"
+        message={`¿Estás seguro de desactivar ${account?.displayName}?`}
+        confirmLabel="Desactivar y guardar"
+        danger
+        busy={busy}
+        error={error}
+        onClose={() => setConfirmDeactivate(false)}
+        onConfirm={submit}
+      />
+    </>
   )
 }
 export function UsersPage() {
@@ -321,12 +306,8 @@ export function UsersPage() {
                       disabled={!!statusBusy}
                       label={`Cambiar estado de ${u.displayName} a ${u.active ? 'Inactivo' : 'Activo'}`}
                       onToggle={() => {
-                        if (u.active) {
-                          setError('')
-                          setDeactivate(u)
-                        } else {
-                          toggleUserStatus(u)
-                        }
+                        setError('')
+                        setDeactivate(u)
                       }}
                     />
                   </td>
@@ -375,67 +356,39 @@ export function UsersPage() {
           }}
         />
       )}
-      <Modal
+      <ConfirmDialog
         open={!!deactivate}
-        title="Desactivar usuario"
-        onClose={() => {
-          if (!statusBusy) setDeactivate(null)
-        }}
-      >
-        <p>
-          ¿Desactivar la cuenta de {deactivate?.displayName}? No podrá iniciar sesión hasta que la
-          actives nuevamente.
-        </p>
-        {error && (
-          <p role="alert" className={styles.error}>
-            {error}
-          </p>
-        )}
-        <div className={styles.footer}>
-          <Button variant="ghost" disabled={!!statusBusy} onClick={() => setDeactivate(null)}>
-            Cancelar
-          </Button>
-          <Button disabled={!!statusBusy} onClick={() => toggleUserStatus(deactivate)}>
-            {statusBusy ? 'Desactivando…' : 'Desactivar'}
-          </Button>
-        </div>
-      </Modal>
-      <Modal
+        title={deactivate?.active ? 'Desactivar usuario' : 'Activar usuario'}
+        message={`¿Estás seguro de ${deactivate?.active ? 'desactivar' : 'activar'} ${deactivate?.displayName}?`}
+        confirmLabel={deactivate?.active ? 'Desactivar' : 'Activar'}
+        danger={!!deactivate?.active}
+        busy={!!statusBusy}
+        error={error}
+        onClose={() => setDeactivate(null)}
+        onConfirm={() => toggleUserStatus(deactivate)}
+      />
+      <ConfirmDialog
         open={!!remove}
         title="Eliminar usuario"
-        onClose={() => {
-          if (!busy) setRemove(null)
+        message={`¿Estás seguro de eliminar ${remove?.displayName}?`}
+        confirmLabel="Eliminar"
+        danger
+        busy={busy}
+        error={error}
+        onClose={() => setRemove(null)}
+        onConfirm={async () => {
+          setBusy(true)
+          try {
+            await deleteUser(remove.id)
+            setRemove(null)
+            setNotice('Usuario eliminado.')
+          } catch (e) {
+            setError(e.message)
+          } finally {
+            setBusy(false)
+          }
         }}
-      >
-        <p>¿Eliminar la cuenta de {remove?.displayName}? Ya no podrá iniciar sesión.</p>
-        {error && (
-          <p role="alert" className={styles.error}>
-            {error}
-          </p>
-        )}
-        <div className={styles.footer}>
-          <Button variant="ghost" disabled={busy} onClick={() => setRemove(null)}>
-            Cancelar
-          </Button>
-          <Button
-            disabled={busy}
-            onClick={async () => {
-              setBusy(true)
-              try {
-                await deleteUser(remove.id)
-                setRemove(null)
-                setNotice('Usuario eliminado.')
-              } catch (e) {
-                setError(e.message)
-              } finally {
-                setBusy(false)
-              }
-            }}
-          >
-            {busy ? 'Eliminando…' : 'Eliminar'}
-          </Button>
-        </div>
-      </Modal>
+      />
     </div>
   )
 }
