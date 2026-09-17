@@ -18,7 +18,6 @@ export const paths = {
   newPayment: '/panel/pagos?nuevo=1',
   reports: '/panel/reportes',
   summary: '/panel/resumen',
-  calendar: '/panel/calendario',
   messages: '/panel/mensajes',
   myAppointments: '/panel/mis-citas',
   myPayments: '/panel/mis-pagos',

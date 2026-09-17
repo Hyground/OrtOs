@@ -383,6 +383,8 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  min-width: 0;
+  flex-shrink: 0;
 }
 
 .searchBox {
@@ -420,14 +422,14 @@
   align-items: center;
   gap: 12px;
   padding: 0 13px;
-  color: #111827;
+  color: var(--color-ink);
   font-size: 0.87rem;
   font-weight: 600;
   white-space: nowrap;
 }
 
 .dateBox svg {
-  color: #0f9fe0;
+  color: var(--color-primary);
   font-size: 1.2rem;
 }
 
@@ -449,7 +451,7 @@
   justify-content: center;
   width: 42px;
   border: 0;
-  color: #101828;
+  color: var(--color-ink);
   font-size: 1.3rem;
   cursor: pointer;
 }
@@ -547,7 +549,7 @@
   }
 
   .topbar {
-    grid-template-columns: 1fr auto;
+    grid-template-columns: minmax(0, 1fr) auto auto;
     padding-inline: 22px;
   }
 
@@ -555,8 +557,7 @@
     gap: 5px;
   }
 
-  .dateBox,
-  .newButton {
+  .dateBox {
     display: none;
   }
 
@@ -576,7 +577,7 @@
     position: fixed;
     left: 0;
     z-index: 50;
-    width: 260px;
+    width: min(280px, calc(100vw - 52px));
     transform: translateX(-100%);
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
@@ -587,9 +588,12 @@
 
   /* On mobile, always expanded (ignore collapsed state) */
   .sidebarCollapsed {
-    width: 260px;
+    width: min(280px, calc(100vw - 52px));
   }
 
+  .brand,
+  .menuLabel,
+  .profileInfo,
   .sidebarCollapsed .brand,
   .sidebarCollapsed .menuLabel,
   .sidebarCollapsed .profileInfo {
@@ -599,22 +603,26 @@
     pointer-events: auto;
   }
 
+  .navKicker,
   .sidebarCollapsed .navKicker {
     opacity: 1;
     height: auto;
     margin: 0 0 12px 8px;
   }
 
+  .menuLink,
   .sidebarCollapsed .menuLink {
     justify-content: flex-start;
     padding: 8px 12px;
   }
 
+  .profile,
   .sidebarCollapsed .profile {
     justify-content: flex-start;
     padding: 14px 16px;
   }
 
+  .profile button,
   .sidebarCollapsed .profile button {
     position: static;
     opacity: 1;
@@ -671,10 +679,12 @@
   }
 
   .topbar {
-    grid-template-columns: auto 1fr auto;
-    gap: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    gap: 6px;
     min-height: 64px;
-    padding: 14px;
+    padding: 10px 8px;
   }
 
   .mobileMenu {
@@ -685,23 +695,42 @@
     height: 38px;
     border: 1px solid var(--color-border);
     border-radius: 8px;
-    background: #ffffff;
-    color: #111827;
+    background: var(--color-surface);
+    color: var(--color-ink);
     font-size: 1.25rem;
     cursor: pointer;
     transition: background 0.2s ease;
+    flex: 0 0 38px;
   }
 
   .mobileMenu:hover {
-    background: #f4f7fb;
+    background: var(--color-surface-alt);
   }
 
   .searchBox {
+    flex: 1 1 auto;
     min-width: 0;
+    max-width: none;
+    gap: 6px;
+    padding-inline: 8px;
   }
 
   .searchBox input::placeholder {
     color: transparent;
+  }
+
+  .newButton {
+    display: none;
+  }
+
+  .topActions {
+    gap: 4px;
+  }
+
+  .topActions > button,
+  .topActions .toolbar .bubble {
+    width: 36px;
+    height: 36px;
   }
 
   .main {

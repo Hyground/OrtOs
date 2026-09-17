@@ -28,6 +28,8 @@ export function AppointmentHistoryPage() {
   const [to, setTo] = useState('')
   const [status, setStatus] = useState('')
   const [patientId, setPatientId] = useState('')
+  const [dentist, setDentist] = useState('')
+  const dentists = [...new Set(appointments.map((appointment) => appointment.dentist))].sort()
 
   const patientMap = useMemo(
     () => new Map(patients.map((patient) => [patient.id, patient])),
@@ -51,7 +53,8 @@ export function AppointmentHistoryPage() {
           ? appointment.date === from
           : appointment.date >= from && appointment.date <= to) &&
       (!status || appointment.status === status) &&
-      (!patientId || appointment.patientId === patientId),
+      (!patientId || appointment.patientId === patientId) &&
+      (!dentist || appointment.dentist === dentist),
   )
   const { page, setPage, visible } = usePagination(rows, 25)
   const invalidRange = from && to && from > to
@@ -119,6 +122,16 @@ export function AppointmentHistoryPage() {
               setPage(1)
             }}
           />
+          <SelectField
+            label="Por médico / odontólogo"
+            placeholder="Todos los médicos"
+            options={dentists}
+            value={dentist}
+            onChange={(event) => {
+              setDentist(event.target.value)
+              setPage(1)
+            }}
+          />
           <Button
             type="button"
             size="sm"
@@ -128,6 +141,7 @@ export function AppointmentHistoryPage() {
               setTo('')
               setStatus('')
               setPatientId('')
+              setDentist('')
               setPage(1)
             }}
           >
@@ -141,7 +155,7 @@ export function AppointmentHistoryPage() {
         )}
         <div
           className={styles.tableScroll + ' ' + css.tableScroll}
-          key={`${page}-${from}-${to}-${status}-${patientId}`}
+          key={`${page}-${from}-${to}-${status}-${patientId}-${dentist}`}
         >
           <table className={styles.table + ' ' + css.historyTable}>
             <colgroup>

@@ -187,8 +187,6 @@ export function AppointmentsPage() {
           [monthly.length, 'Citas este mes'],
           [daily.length, 'Citas el ' + displayDate(cursor)],
         ]}
-        onNew={dialog.create}
-        newLabel="NUEVA CITA"
       />
       {dialog.notice && (
         <p role="status" className={styles.success}>
@@ -291,9 +289,6 @@ export function AppointmentsPage() {
               <div className={calendar.dayView}>
                 <div className={calendar.dayViewHeader}>
                   <strong>Agenda del {displayDate(cursor)}</strong>
-                  <Button size="sm" onClick={dialog.create}>
-                    + Agendar cita
-                  </Button>
                 </div>
                 {dayItems.length ? (
                   <div className={calendar.timeline}>

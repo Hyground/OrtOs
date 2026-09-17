@@ -31,26 +31,6 @@ export const patientMenuItems = [
   { to: paths.myProfile, label: 'Mi perfil', Icon: IconUser },
 ]
 
-export const privateMenuItems = [
-  {
-    to: paths.dashboard,
-    label: 'Menu modulos',
-    Icon: IconHome,
-    end: true,
-    activePaths: [paths.appointmentHistory, paths.summary],
-  },
-  { to: paths.patients, label: 'Paciente', Icon: IconUser },
-  { to: paths.specialties, label: 'Especialidades', Icon: IconServices },
-  { to: paths.doctors, label: 'Médico', Icon: IconSpecialist },
-  { to: paths.appointments, label: 'Citas', Icon: IconCalendar },
-  { to: paths.calendar, label: 'Calendario', Icon: IconCalendar },
-  { to: paths.odontogram, label: 'Odontograma', Icon: IconTooth },
-  { to: paths.treatments, label: 'Tratamiento', Icon: IconClipboard },
-  { to: paths.payments, label: 'Pagos', Icon: IconCreditCard },
-  { to: paths.users, label: 'Usuarios', Icon: IconUsers },
-  { to: paths.reports, label: 'Reporte', Icon: IconFileText },
-]
-
 export const privateModules = [
   {
     id: 'usuarios',
@@ -118,14 +98,6 @@ export const privateModules = [
     assetName: 'icohistorialcitas.png',
   },
   {
-    id: 'calendario',
-    to: paths.calendar,
-    title: 'Calendario',
-    description: 'Vista General mensual de la clinica',
-    Icon: IconCalendar,
-    assetName: 'icocalendario.png',
-  },
-  {
     id: 'pagos',
     to: paths.payments,
     title: 'Pagos',
@@ -149,4 +121,9 @@ export const privateModules = [
     Icon: IconChart,
     assetName: 'icoresumen.png',
   },
+]
+
+export const privateMenuItems = [
+  { to: paths.dashboard, label: 'Menu modulos', Icon: IconHome, end: true },
+  ...privateModules.map(({ to, title, Icon }) => ({ to, label: title, Icon })),
 ]

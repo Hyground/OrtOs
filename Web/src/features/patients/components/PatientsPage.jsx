@@ -152,6 +152,9 @@ export function PatientsPage() {
           <Button type="submit" size="sm">
             <IconSearch /> Buscar
           </Button>
+          <Button type="button" size="sm" onClick={dialog.create}>
+            + NUEVO PACIENTE
+          </Button>
           <Button size="sm" variant="ghost" onClick={exportRows} aria-label="Exportar pacientes">
             <IconDownload />
           </Button>

@@ -49,7 +49,7 @@ export function Avatar({ patient, variant }) {
     </span>
   )
 }
-export function Banner({ title, description, Icon, metrics, onNew, newLabel }) {
+export function Banner({ title, description, Icon, metrics }) {
   return (
     <header className={styles.banner}>
       <span className={styles.bannerIcon}>
@@ -67,9 +67,6 @@ export function Banner({ title, description, Icon, metrics, onNew, newLabel }) {
           </div>
         ))}
       </div>
-      <Button size="sm" onClick={onNew} className={styles.bannerAction}>
-        + {newLabel}
-      </Button>
     </header>
   )
 }

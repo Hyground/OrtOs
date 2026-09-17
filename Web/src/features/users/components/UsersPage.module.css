@@ -1,9 +1,5 @@
-.page {
-  --color-primary: var(--color-users);
-  --color-primary-dark: #173570;
-}
 .banner {
-  background: linear-gradient(120deg, #122747, var(--color-users));
+  background: linear-gradient(110deg, var(--color-banner-start), var(--color-primary), var(--color-banner-end));
   border-radius: var(--radius-md);
   padding: 25px;
   color: white;
@@ -20,7 +16,7 @@
 }
 .banner p {
   margin: 0;
-  color: #dbeafe;
+  color: rgba(255, 255, 255, 0.88);
 }
 .counts {
   display: flex;
@@ -36,10 +32,6 @@
 }
 .counts strong {
   font-size: 24px;
-}
-.newUserButton {
-  --color-primary: var(--color-action);
-  --color-primary-dark: var(--color-ink);
 }
 .tableScroll {
   /* Encabezado de 43px y diez filas de 65px. */

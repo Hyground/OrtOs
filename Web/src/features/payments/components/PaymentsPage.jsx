@@ -178,6 +178,9 @@ export function PaymentsPage() {
           <Button type="submit" size="sm">
             <IconSearch /> Buscar
           </Button>
+          <Button type="button" size="sm" onClick={dialog.create}>
+            + NUEVO PAGO
+          </Button>
           <Button size="sm" variant="ghost" onClick={clear}>
             Limpiar
           </Button>

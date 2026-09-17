@@ -12,6 +12,7 @@ import { CenterToast, Pagination, StatusToggle } from '@/features/clinical/compo
 import { usePagination } from '@/features/clinical/tableHelpers'
 import { normalize } from '@/features/clinical/mockStore'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
+import { specialties } from '@/features/doctors/mockData/doctors'
 import styles from '@/features/clinical/Clinical.module.css'
 import css from './UsersPage.module.css'
 const roles = Object.entries(roleLabels).map(([value, label]) => ({ value, label }))
@@ -19,7 +20,7 @@ function UserForm({ account, onClose, onSaved }) {
   const [values, setValues] = useState(
     account
       ? { ...account, password: '' }
-      : { displayName: '', email: '', password: '', role: 'odontologo', active: true },
+      : { displayName: '', email: '', password: '', role: 'odontologo', phone: '', specialty: '', active: true },
   )
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
@@ -98,13 +99,37 @@ function UserForm({ account, onClose, onSaved }) {
               value={values.email}
               onChange={(e) => set('email', e.target.value)}
             />
+            <TextField
+              label="Teléfono *"
+              type="tel"
+              required
+              value={values.phone ?? ''}
+              onChange={(e) => set('phone', e.target.value)}
+            />
             <SelectField
               label="Rol *"
               required
               options={roles}
               value={values.role}
-              onChange={(e) => set('role', e.target.value)}
+              onChange={(e) => {
+                const role = e.target.value
+                setValues((current) => ({
+                  ...current,
+                  role,
+                  specialty: role === 'odontologo' ? current.specialty : '',
+                }))
+              }}
             />
+            {values.role === 'odontologo' && (
+              <SelectField
+                label="Especialidad *"
+                required
+                placeholder="Selecciona una especialidad"
+                options={specialties}
+                value={values.specialty ?? ''}
+                onChange={(e) => set('specialty', e.target.value)}
+              />
+            )}
             <SelectField
               label="Estado *"
               required
@@ -219,9 +244,6 @@ export function UsersPage() {
             <strong>{users.filter((u) => !u.active).length}</strong>Inactivos
           </span>
         </div>
-        <Button className={css.newUserButton} onClick={() => setParams({ nuevo: '1' })}>
-          + NUEVO USUARIO
-        </Button>
       </header>
       {notice && (
         <p role="status" className={styles.success}>
@@ -262,6 +284,9 @@ export function UsersPage() {
               setPage(1)
             }}
           />
+          <Button type="button" size="sm" onClick={() => setParams({ nuevo: '1' })}>
+            + NUEVO USUARIO
+          </Button>
         </div>
         <div
           className={styles.tableScroll + ' ' + css.tableScroll}

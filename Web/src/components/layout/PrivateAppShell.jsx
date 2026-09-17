@@ -42,18 +42,8 @@ export function PrivateAppShell() {
   const location = useLocation()
   const navigate = useNavigate()
   const { user, logout } = useAuth()
-  const action = user?.role === 'paciente' ? null :
-    location.pathname === paths.users
-      ? { to: paths.newAppointment, label: 'NUEVA CITA' }
-      : location.pathname === paths.patients
-        ? { to: paths.newPatient, label: 'NUEVO PACIENTE' }
-        : location.pathname === paths.doctors
-          ? { to: paths.doctors + '?nuevo=1', label: 'NUEVO MÉDICO' }
-        : location.pathname === paths.payments
-          ? { to: paths.newPayment, label: 'NUEVO PAGO' }
-          : location.pathname === paths.summary || location.pathname === paths.appointmentHistory
-            ? null
-          : { to: paths.newAppointment, label: 'NUEVA CITA' }
+  const action =
+    user?.role === 'paciente' ? null : { to: paths.newAppointment, label: 'NUEVA CITA' }
   const workDate = formatWorkDate(new Date())
   const menuItems = user?.role === 'paciente' ? patientMenuItems : privateMenuItems
   const showGlobalSearch =

@@ -70,11 +70,6 @@ export function DashboardPage() {
               <span>Modulo de gestion</span>
               <h2 id="modules-title">Areas de trabajo</h2>
             </div>
-            {canAccess(user, paths.appointments) && (
-              <Link to={paths.newAppointment} className={styles.quickLink}>
-                Nueva cita
-              </Link>
-            )}
           </div>
 
           <ul className={styles.moduleGrid}>
@@ -84,10 +79,7 @@ export function DashboardPage() {
                 <li key={module.id}>
                   <Link
                     to={module.to}
-                    className={[
-                      styles.moduleCard,
-                      module.tone === 'users' ? styles.usersCard : '',
-                    ].join(' ')}
+                    className={styles.moduleCard}
                   >
                     <span className={styles.moduleIcon} data-asset={module.assetName}>
                       {module.imageSrc ? <img src={module.imageSrc} alt="" /> : <Icon />}

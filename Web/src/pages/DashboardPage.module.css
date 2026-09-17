@@ -17,7 +17,7 @@
   border-radius: 8px;
   background:
     radial-gradient(circle at 94% 20%, rgba(64, 239, 217, 0.24), transparent 28%),
-    linear-gradient(135deg, #075ab6 0%, #0284c7 58%, #1fb59b 100%);
+    linear-gradient(135deg, var(--color-banner-start) 0%, var(--color-primary) 58%, var(--color-banner-end) 100%);
   box-shadow: 0 10px 28px rgba(2, 58, 102, 0.14);
   color: #ffffff;
 }
@@ -156,25 +156,6 @@
   font-weight: 900;
 }
 
-.quickLink {
-  display: inline-flex;
-  align-items: center;
-  min-height: 32px;
-  padding: 0 12px;
-  border-radius: 7px;
-  background: #e0f2fb;
-  color: #036aa1;
-  font-size: 0.76rem;
-  font-weight: 900;
-  text-decoration: none;
-  white-space: nowrap;
-}
-
-.quickLink:hover {
-  background: #0284c7;
-  color: #ffffff;
-}
-
 .moduleGrid {
   display: grid;
   grid-template-columns: repeat(3, minmax(160px, 1fr));
@@ -225,22 +206,6 @@
 .moduleCard:focus-visible::before {
   opacity: 1;
 }
-.usersCard,
-.usersCard:hover {
-  background: var(--color-users);
-  border-color: var(--color-users);
-}
-.usersCard .moduleText strong {
-  color: white;
-}
-.usersCard .moduleText span {
-  color: #dbeafe;
-}
-.usersCard .moduleIcon {
-  background: #ffffff20;
-  color: white;
-}
-
 .moduleIcon {
   display: inline-flex;
   align-items: center;
@@ -399,6 +364,35 @@
   border-radius: 999px;
   background: #1fb59b;
   color: #ffffff;
+}
+
+:global(:root[data-theme='dark']) .modulesSection,
+:global(:root[data-theme='dark']) .sidePanel article {
+  border-color: var(--color-border);
+  background: var(--color-surface);
+}
+:global(:root[data-theme='dark']) .sectionHead h2,
+:global(:root[data-theme='dark']) .moduleCard,
+:global(:root[data-theme='dark']) .moduleText strong,
+:global(:root[data-theme='dark']) .panelTitle h2,
+:global(:root[data-theme='dark']) .agendaList strong,
+:global(:root[data-theme='dark']) .profileCard strong {
+  color: var(--color-ink);
+}
+:global(:root[data-theme='dark']) .moduleCard {
+  border-color: var(--color-border);
+  background: var(--color-surface-alt);
+}
+:global(:root[data-theme='dark']) .moduleText span,
+:global(:root[data-theme='dark']) .panelTitle p,
+:global(:root[data-theme='dark']) .agendaList small,
+:global(:root[data-theme='dark']) .profileCard small,
+:global(:root[data-theme='dark']) .opsList li {
+  color: var(--color-text-muted);
+}
+:global(:root[data-theme='dark']) .agendaList time {
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
 }
 
 @media (min-width: 1280px) {

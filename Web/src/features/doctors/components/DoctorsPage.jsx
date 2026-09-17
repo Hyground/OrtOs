@@ -2,11 +2,15 @@ import { Fragment, useEffect, useState } from 'react'
 import { IconChevronRight, IconEdit, IconEye, IconMedical, IconTrash } from '@/components/icons/icons'
 import { Button } from '@/components/ui/Button/Button'
 import { Modal } from '@/components/ui/Modal/Modal'
+import { TextField } from '@/components/ui/TextField/TextField'
+import { SelectField } from '@/components/ui/SelectField/SelectField'
 import { Avatar, Banner, CenterToast, StatusToggle } from '@/features/clinical/components'
 import { useModuleDialogs } from '@/features/clinical/useModuleDialogs'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 import { useDoctors } from '../hooks/useDoctors'
 import { DoctorForm } from './DoctorForm'
+import { specialties } from '../mockData/doctors'
+import { normalize } from '@/features/clinical/mockStore'
 import styles from '@/features/clinical/Clinical.module.css'
 
 export function DoctorsPage() {
@@ -18,7 +22,15 @@ export function DoctorsPage() {
   const [viewing, setViewing] = useState(null)
   const [statusNotice, setStatusNotice] = useState(null)
   const [expandedId, setExpandedId] = useState('')
-  const rows = doctors
+  const [query, setQuery] = useState('')
+  const [specialty, setSpecialty] = useState('')
+  const [status, setStatus] = useState('')
+  const rows = doctors.filter(
+    (doctor) =>
+      normalize(`${doctor.name} ${doctor.dpi} ${doctor.specialty}`).includes(normalize(query)) &&
+      (!specialty || doctor.specialty === specialty) &&
+      (!status || doctor.status === status),
+  )
 
   useEffect(() => {
     if (!statusNotice) return undefined
@@ -67,6 +79,23 @@ export function DoctorsPage() {
       )}
       <CenterToast notice={statusNotice} />
       <section className={styles.card}>
+        <div className={styles.filters}>
+          <TextField
+            label="Buscar médico"
+            type="search"
+            placeholder="Buscar por nombre, DPI o especialidad..."
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+          />
+          <SelectField label="Especialidad" placeholder="Todas" options={specialties} value={specialty} onChange={(event) => setSpecialty(event.target.value)} />
+          <SelectField label="Estado" placeholder="Todos los estados" options={['Activo', 'Inactivo']} value={status} onChange={(event) => setStatus(event.target.value)} />
+          <Button type="button" size="sm" onClick={dialog.create}>
+            + NUEVO MÉDICO
+          </Button>
+          <Button type="button" size="sm" variant="ghost" onClick={() => { setQuery(''); setSpecialty(''); setStatus('') }}>
+            Limpiar
+          </Button>
+        </div>
         <div className={styles.tableContainerScroll}>
           <table className={styles.table}>
             <thead>
