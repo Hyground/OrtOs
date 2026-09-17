@@ -1,26 +1,18 @@
-import { useMemo, useState } from 'react'
-import { IconCalendar, IconClock } from '@/components/icons/icons'
+﻿import { useMemo, useState } from 'react'
+import { IconClock } from '@/components/icons/icons'
 import { Button } from '@/components/ui/Button/Button'
-import { TextField } from '@/components/ui/TextField/TextField'
 import { SelectField } from '@/components/ui/SelectField/SelectField'
 import { Badge } from '@/components/ui/Badge/Badge'
-import { Avatar, Banner } from '@/features/clinical/components'
-import { displayDate, money } from '@/features/clinical/mockStore'
+import { Avatar, Banner, Pagination } from '@/features/clinical/components'
+import { displayDate } from '@/features/clinical/mockStore'
+import { usePagination } from '@/features/clinical/tableHelpers'
+import { QuickPatientSelect } from '@/features/payments/components/QuickPatientSelect'
 import { useAppointments } from '@/features/appointments/hooks/useAppointments'
 import { usePatients } from '@/features/patients/hooks/usePatients'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 import styles from '@/features/clinical/Clinical.module.css'
-
-const costsByTreatment = {
-  'Ortodoncia - Fase 2': 550,
-  'Ortodoncia - Ajuste': 300,
-  'Limpieza dental': 250,
-  Endodoncia: 700,
-  Extracción: 350,
-  'Consulta general': 200,
-  Radiografía: 180,
-  Blanqueamiento: 850,
-}
+import css from './AppointmentHistoryPage.module.css'
+import { HistoryDateField } from './HistoryDateField'
 
 function statusTone(status) {
   if (status === 'Completada') return 'green'
@@ -32,7 +24,8 @@ export function AppointmentHistoryPage() {
   useDocumentTitle('Historial de citas')
   const appointments = useAppointments()
   const patients = usePatients()
-  const [date, setDate] = useState('')
+  const [from, setFrom] = useState('')
+  const [to, setTo] = useState('')
   const [status, setStatus] = useState('')
   const [patientId, setPatientId] = useState('')
 
@@ -40,49 +33,70 @@ export function AppointmentHistoryPage() {
     () => new Map(patients.map((patient) => [patient.id, patient])),
     [patients],
   )
-  const history = appointments.map((appointment, index) => {
-    const patient = patientMap.get(appointment.patientId)
-    const cost = costsByTreatment[appointment.treatment] ?? 300
-    return {
-      ...appointment,
-      index: index + 1,
-      patient,
-      cost,
-      paid: appointment.status === 'Completada' ? cost : Math.round(cost * 0.65),
-    }
-  })
+  const history = [...appointments]
+    .sort((a, b) => b.date.localeCompare(a.date) || b.time.localeCompare(a.time))
+    .map((appointment, index) => {
+      const patient = patientMap.get(appointment.patientId)
+      return {
+        ...appointment,
+        index: index + 1,
+        patient,
+      }
+    })
   const rows = history.filter(
     (appointment) =>
-      (!date || appointment.date === date) &&
+      (!from
+        ? !to || appointment.date <= to
+        : !to
+          ? appointment.date === from
+          : appointment.date >= from && appointment.date <= to) &&
       (!status || appointment.status === status) &&
       (!patientId || appointment.patientId === patientId),
   )
+  const { page, setPage, visible } = usePagination(rows, 25)
+  const invalidRange = from && to && from > to
 
   return (
     <div className={styles.page}>
       <Banner
         title="HISTORIAL DE CITAS"
-        description="Consulta el registro de tratamientos, médicos, pacientes, costos y estados de atención."
+        description="Consulta el registro de tratamientos, médicos, pacientes y estados de atención."
         Icon={IconClock}
         metrics={[
-          [history.length, 'Historiales de citas'],
-          [history.filter((appointment) => appointment.status === 'Completada').length, 'Completadas'],
+          [history.length, 'Total de citas'],
+          [
+            history.filter((appointment) => appointment.status === 'Completada').length,
+            'Completadas',
+          ],
+          [
+            history.filter((appointment) => appointment.status === 'Pendiente').length,
+            'Pendientes',
+          ],
         ]}
       />
-      <section className={styles.card}>
+      <section className={styles.card + ' ' + css.card}>
         <form
           className={styles.filters}
           onSubmit={(event) => {
             event.preventDefault()
           }}
         >
-          <TextField
-            label="Por fecha"
-            icon={IconCalendar}
-            type="date"
-            value={date}
+          <HistoryDateField
+            label="Desde"
+            value={from}
+            max={to || undefined}
             onChange={(event) => {
-              setDate(event.target.value)
+              setFrom(event.target.value)
+              setPage(1)
+            }}
+          />
+          <HistoryDateField
+            label="Hasta (opcional)"
+            value={to}
+            min={from || undefined}
+            onChange={(event) => {
+              setTo(event.target.value)
+              setPage(1)
             }}
           />
           <SelectField
@@ -92,15 +106,17 @@ export function AppointmentHistoryPage() {
             value={status}
             onChange={(event) => {
               setStatus(event.target.value)
+              setPage(1)
             }}
           />
-          <SelectField
+          <QuickPatientSelect
             label="Por paciente"
-            placeholder="Todos los pacientes"
-            options={patients.map((patient) => ({ value: patient.id, label: patient.name }))}
+            options={patients}
             value={patientId}
-            onChange={(event) => {
-              setPatientId(event.target.value)
+            openOnFocus={false}
+            onChange={(value) => {
+              setPatientId(value)
+              setPage(1)
             }}
           />
           <Button
@@ -108,19 +124,34 @@ export function AppointmentHistoryPage() {
             size="sm"
             variant="ghost"
             onClick={() => {
-              setDate('')
+              setFrom('')
+              setTo('')
               setStatus('')
               setPatientId('')
+              setPage(1)
             }}
           >
             Limpiar
           </Button>
         </form>
-        <div className={styles.tableContainerScroll}>
-          <table className={styles.table}>
+        {invalidRange && (
+          <p role="alert" className={styles.error}>
+            La fecha inicial debe ser anterior o igual a la fecha final.
+          </p>
+        )}
+        <div
+          className={styles.tableScroll + ' ' + css.tableScroll}
+          key={`${page}-${from}-${to}-${status}-${patientId}`}
+        >
+          <table className={styles.table + ' ' + css.historyTable}>
+            <colgroup>
+              {[5, 20, 19, 28, 11, 7, 10].map((width, index) => (
+                <col key={index} style={{ width: `${width}%` }} />
+              ))}
+            </colgroup>
             <thead>
               <tr>
-                {['#', 'TRATAMIENTO', 'MÉDICO', 'PACIENTE', 'FECHA', 'HORA', 'ESTADO', 'COSTO', 'PAGADO'].map(
+                {['#', 'TRATAMIENTO', 'MÉDICO', 'PACIENTE', 'FECHA', 'HORA', 'ESTADO'].map(
                   (heading) => (
                     <th key={heading} scope="col">
                       {heading}
@@ -130,7 +161,7 @@ export function AppointmentHistoryPage() {
               </tr>
             </thead>
             <tbody>
-              {rows.map((appointment) => (
+              {visible.map((appointment) => (
                 <tr key={appointment.id}>
                   <td>{appointment.index}</td>
                   <td>{appointment.treatment}</td>
@@ -146,14 +177,15 @@ export function AppointmentHistoryPage() {
                   <td>
                     <Badge tone={statusTone(appointment.status)}>{appointment.status}</Badge>
                   </td>
-                  <td>{money(appointment.cost)}</td>
-                  <td>{money(appointment.paid)}</td>
                 </tr>
               ))}
             </tbody>
           </table>
-          {!rows.length && <p className={styles.empty}>No se encontraron citas con estos filtros.</p>}
+          {!rows.length && (
+            <p className={styles.empty}>No se encontraron citas con estos filtros.</p>
+          )}
         </div>
+        <Pagination total={rows.length} page={page} onChange={setPage} size={25} noun="citas" />
       </section>
     </div>
   )
