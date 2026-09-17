@@ -35,22 +35,21 @@ export function PaymentsAnalytics({ payments, label }) {
     }),
   )
   return (
-    <aside className={styles.stack}>
+    <aside className={css.analytics}>
       <section className={styles.card}>
-        <h2 className={styles.cardTitle}>RESUMEN DEL MES - {label}</h2>
+        <h2 className={styles.cardTitle}>PAGOS POR CATEGORÍA (MES)</h2>
         <div className={styles.cardBody}>
-          {[
-            ['Total recibido', money(total)],
-            ['Total pendiente', money(pending.reduce((sum, p) => sum + Number(p.amount), 0))],
-            ['Pagos completados', completed.length],
-            ['Pacientes con pagos', new Set(completed.map((p) => p.patientId)).size],
-          ].map(([label, value]) => (
-            <div className={styles.metricRow} key={label}>
-              <span>{label}</span>
-              <strong>{value}</strong>
+          {categories.map((c) => (
+            <div key={c.name}>
+              <div className={css.barLabel}>
+                <span>{c.name}</span>
+                <strong>{money(c.amount)}</strong>
+              </div>
+              <div className={css.bar}>
+                <span style={{ width: (total ? (c.amount / total) * 100 : 0) + '%' }} />
+              </div>
             </div>
           ))}
-          <p className={styles.muted}>Importes en GTQ. Otras monedas se consultan en la tabla.</p>
         </div>
       </section>
       <section className={styles.card}>
@@ -79,19 +78,20 @@ export function PaymentsAnalytics({ payments, label }) {
         </div>
       </section>
       <section className={styles.card}>
-        <h2 className={styles.cardTitle}>PAGOS POR CATEGORÍA (MES)</h2>
+        <h2 className={styles.cardTitle}>RESUMEN DEL MES - {label}</h2>
         <div className={styles.cardBody}>
-          {categories.map((c) => (
-            <div key={c.name}>
-              <div className={css.barLabel}>
-                <span>{c.name}</span>
-                <strong>{money(c.amount)}</strong>
-              </div>
-              <div className={css.bar}>
-                <span style={{ width: (total ? (c.amount / total) * 100 : 0) + '%' }} />
-              </div>
+          {[
+            ['Total recibido', money(total)],
+            ['Total pendiente', money(pending.reduce((sum, p) => sum + Number(p.amount), 0))],
+            ['Pagos completados', completed.length],
+            ['Pacientes con pagos', new Set(completed.map((p) => p.patientId)).size],
+          ].map(([label, value]) => (
+            <div className={styles.metricRow} key={label}>
+              <span>{label}</span>
+              <strong>{value}</strong>
             </div>
           ))}
+          <p className={styles.muted}>Importes en GTQ. Otras monedas se consultan en la tabla.</p>
         </div>
       </section>
     </aside>

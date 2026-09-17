@@ -8,6 +8,7 @@ import { concepts, paymentMethods } from '../mockData/payments'
 import { initialPayment } from '../mockData/initialPayment'
 import styles from '@/features/clinical/Clinical.module.css'
 import css from './Payments.module.css'
+import { QuickPatientSelect } from './QuickPatientSelect'
 export function QuickPayment({ onComplete, onExpand }) {
   const patients = usePatients()
   const [message, setMessage] = useState('')
@@ -42,11 +43,14 @@ export function QuickPayment({ onComplete, onExpand }) {
           style={{ border: 0, padding: 0, margin: 0, minWidth: 0 }}
           className={css.quickForm}
         >
-          {f(
-            'patientId',
-            'Paciente *',
-            patients.map((p) => ({ value: p.id, label: p.name })),
-          )}
+          <div className={css.quickPatient}>
+            <QuickPatientSelect
+              options={patients}
+              value={form.values.patientId}
+              onChange={(value) => form.set('patientId', value)}
+              error={form.errors.patientId}
+            />
+          </div>
           {f('concept', 'Concepto *', concepts)}
           {f('treatment', 'Tratamiento / Cita', treatments)}
           {f('amount', 'Monto * (Q)')}
