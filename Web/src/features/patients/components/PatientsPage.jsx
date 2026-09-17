@@ -96,7 +96,10 @@ export function PatientsPage() {
         Icon={IconUsers}
         metrics={[
           [patients.length, 'Pacientes registrados'],
-          [patients.filter((p) => p.createdAt?.startsWith('2026-08')).length, 'Nuevos en agosto'],
+          [
+            patients.filter((p) => p.createdAt?.startsWith(localDate().slice(0, 7))).length,
+            'Nuevos este mes',
+          ],
         ]}
         onNew={dialog.create}
         newLabel="NUEVO PACIENTE"
@@ -149,12 +152,15 @@ export function PatientsPage() {
           <Button type="submit" size="sm">
             <IconSearch /> Buscar
           </Button>
+          <Button type="button" size="sm" onClick={dialog.create}>
+            + NUEVO PACIENTE
+          </Button>
           <Button size="sm" variant="ghost" onClick={exportRows} aria-label="Exportar pacientes">
             <IconDownload />
           </Button>
         </form>
         <div className={styles.tableScroll}>
-          <table className={styles.table}>
+          <table className={styles.table + ' ' + styles.patientsTable}>
             <thead>
               <tr>
                 {['PACIENTE', 'DPI', 'TELÉFONO', 'EMAIL', 'ÚLTIMA CITA', 'ESTADO', 'ACCIONES'].map(
@@ -186,7 +192,7 @@ export function PatientsPage() {
                       <td>
                         <div className={styles.personButton}>
 
-                          <Avatar patient={p} />
+                          <Avatar patient={p} variant="initials" />
                           <span>
                             <strong>{p.name}</strong>
                             <small>
@@ -195,11 +201,11 @@ export function PatientsPage() {
                           </span>
                         </div>
                       </td>
-                      <td>{p.dpi || '—'}</td>
-                      <td>{p.phone}</td>
-                      <td>{p.email || '—'}</td>
-                      <td>{displayDate(p.lastAppointment)}</td>
-                      <td onClick={(event) => event.stopPropagation()}>
+                      <td data-label="DPI">{p.dpi || '—'}</td>
+                      <td data-label="TELÉFONO">{p.phone}</td>
+                      <td data-label="EMAIL">{p.email || '—'}</td>
+                      <td data-label="ÚLTIMA CITA">{displayDate(p.lastAppointment)}</td>
+                      <td data-label="ESTADO" onClick={(event) => event.stopPropagation()}>
                         <StatusToggle
                           active={p.status === 'Activo'}
                           disabled={statusBusy === p.id}
@@ -209,7 +215,7 @@ export function PatientsPage() {
                           onToggle={() => togglePatientStatus(p)}
                         />
                       </td>
-                      <td onClick={(event) => event.stopPropagation()}>
+                      <td data-label="ACCIONES" onClick={(event) => event.stopPropagation()}>
                         <button
                           type="button"
                           className={styles.optionButton}

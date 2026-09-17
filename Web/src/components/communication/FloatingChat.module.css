@@ -15,6 +15,7 @@
   right: auto;
   bottom: auto;
   z-index: 20;
+  flex: 0 0 auto;
 }
 
 .toolbar .bubble {
@@ -28,7 +29,14 @@
   font-size: 1.2rem;
 }
 
-.toolbar .bubble span { border-color: var(--color-surface); }
+.toolbar .bubble span {
+  top: 3px;
+  right: 3px;
+  min-width: 15px;
+  height: 15px;
+  padding-inline: 3px;
+  border-color: var(--color-surface);
+}
 
 .toolbar .panel {
   position: absolute;

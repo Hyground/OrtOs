@@ -22,7 +22,6 @@ import { PatientPortal } from '@/features/portal/PatientPortal'
 import { MessagesPage } from '@/features/messages/MessagesPage'
 import { SpecialtiesPage } from '@/features/specialties/SpecialtiesPage'
 import { TreatmentsPage } from '@/features/treatments/TreatmentsPage'
-import { CalendarPage } from '@/features/calendar/CalendarPage'
 import { OdontogramPage } from '@/features/odontogram/OdontogramPage'
 import { DoctorsPage } from '@/features/doctors/components/DoctorsPage'
 import { AppointmentSummaryPage } from '@/features/reports/components/AppointmentSummaryPage'
@@ -57,8 +56,6 @@ export function AppRouter() {
                     <PatientsPage />
                   ) : module.to === paths.appointments ? (
                     <AppointmentsPage />
-                  ) : module.to === paths.calendar ? (
-                    <CalendarPage />
                   ) : module.to === paths.payments ? (
                     <PaymentsPage />
                   ) : module.to === paths.users ? (

@@ -7,14 +7,49 @@ import { SearchSelect } from '@/components/ui/SearchSelect/SearchSelect'
 import { usePatients } from '@/features/patients/hooks/usePatients'
 import { age, displayDate } from './mockStore'
 import styles from './Clinical.module.css'
-export function Avatar({ patient }) {
+const initialsPalette = ['#f97316', '#8b5cf6', '#ec4899', '#14b8a6', '#f59e0b', '#6366f1']
+const initialsColor = (id) => {
+  const sum = String(id ?? '')
+    .split('')
+    .reduce((acc, ch) => acc + ch.charCodeAt(0), 0)
+  return initialsPalette[sum % initialsPalette.length]
+}
+const patientInitials = (patient) => {
+  if (!patient) return '?'
+  if (patient.names || patient.surnames) {
+    return ((patient.names?.charAt(0) ?? '') + (patient.surnames?.charAt(0) ?? '')).toUpperCase() || '?'
+  }
+  const [first = '', second = ''] = String(patient.name ?? '').trim().split(/\s+/)
+  return ((first.charAt(0) ?? '') + (second.charAt(0) ?? '')).toUpperCase() || '?'
+}
+export function Avatar({ patient, variant }) {
+  if (!patient?.photo && variant === 'initials') {
+    return (
+      <span className={styles.avatar}>
+        <span
+          style={{
+            width: '100%',
+            height: '100%',
+            display: 'grid',
+            placeItems: 'center',
+            background: initialsColor(patient?.id),
+            color: '#fff',
+            fontWeight: 700,
+            fontSize: 13,
+          }}
+        >
+          {patientInitials(patient)}
+        </span>
+      </span>
+    )
+  }
   return (
     <span className={styles.avatar}>
       {patient?.photo ? <img src={patient.photo} alt="" /> : <IconUser />}
     </span>
   )
 }
-export function Banner({ title, description, Icon, metrics, onNew, newLabel }) {
+export function Banner({ title, description, Icon, metrics }) {
   return (
     <header className={styles.banner}>
       <span className={styles.bannerIcon}>
@@ -32,9 +67,6 @@ export function Banner({ title, description, Icon, metrics, onNew, newLabel }) {
           </div>
         ))}
       </div>
-      <Button size="sm" onClick={onNew} className={styles.bannerAction}>
-        + {newLabel}
-      </Button>
     </header>
   )
 }
@@ -173,7 +205,7 @@ export function FormFooter({ form, onClose, label }) {
     </>
   )
 }
-export function PatientFields({ form, onAdd, onRecord, folio = false }) {
+export function PatientFields({ form, onAdd, onRecord, folio = false, warnInactive = false }) {
   const patients = usePatients()
   const p = patients.find((p) => p.id === form.values.patientId)
   return (
@@ -201,21 +233,37 @@ export function PatientFields({ form, onAdd, onRecord, folio = false }) {
         />
       </div>
       {p && (
-        <div className={styles.patientCard}>
-          <Avatar patient={p} />
-          <div>
-            <strong>{p.name}</strong>
-            <small>
-              {displayDate(p.birthDate)} ({age(p.birthDate)} años) · {p.treatment}
-            </small>
-            <small>{p.folio}</small>
+        <>
+          <div className={styles.patientCard}>
+            <Avatar patient={p} />
+            <div>
+              <strong>{p.name}</strong>
+              <small>
+                {displayDate(p.birthDate)} ({age(p.birthDate)} años) · {p.treatment}
+              </small>
+              <small>{p.folio}</small>
+            </div>
+            {onRecord && (
+              <Button size="sm" variant="ghost" onClick={() => onRecord(p)}>
+                Ver expediente
+              </Button>
+            )}
           </div>
-          {onRecord && (
-            <Button size="sm" variant="ghost" onClick={() => onRecord(p)}>
-              Ver expediente
-            </Button>
+          {warnInactive && p.status === 'Inactivo' && (
+            <p
+              role="alert"
+              style={{
+                background: 'var(--color-warning-soft)',
+                color: 'var(--color-warning)',
+                padding: '10px 14px',
+                borderRadius: 8,
+                fontWeight: 600,
+              }}
+            >
+              Este paciente está marcado como Inactivo.
+            </p>
           )}
-        </div>
+        </>
       )}
     </Section>
   )

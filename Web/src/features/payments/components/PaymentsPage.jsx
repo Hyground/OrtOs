@@ -15,6 +15,7 @@ import { ReceiptModal } from './ReceiptModal'
 import { PaymentForm } from './PaymentForm'
 import { QuickPayment } from './QuickPayment'
 import { PaymentsAnalytics } from './PaymentsAnalytics'
+import { PaymentMethodIcon } from './PaymentMethodIcon'
 import { concepts, paymentMethods } from '../mockData/payments'
 import { usePayments } from '../hooks/usePayments'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
@@ -50,7 +51,7 @@ export function PaymentsPage() {
             : true),
     )
     .sort((a, b) => b.date.localeCompare(a.date))
-  const { page, setPage, visible } = usePagination(rows, 7)
+  const { page, setPage, visible } = usePagination(rows, 25)
   const month = (from || '2026-08-01').slice(0, 7)
   const monthly = payments.filter((p) => p.date.startsWith(month))
   const paid = monthly.filter((p) => p.status === 'Completado')
@@ -177,6 +178,9 @@ export function PaymentsPage() {
           <Button type="submit" size="sm">
             <IconSearch /> Buscar
           </Button>
+          <Button type="button" size="sm" onClick={dialog.create}>
+            + NUEVO PAGO
+          </Button>
           <Button size="sm" variant="ghost" onClick={clear}>
             Limpiar
           </Button>
@@ -187,7 +191,7 @@ export function PaymentsPage() {
           </p>
         )}
       </section>
-      <div className={styles.split}>
+      <div className={css.paymentContent}>
         <section className={styles.card}>
           {tab === 'CATEGORÍAS' ? (
             <>
@@ -221,7 +225,10 @@ export function PaymentsPage() {
             </>
           ) : (
             <>
-              <div className={styles.tableScroll}>
+              <div
+                className={styles.tableScroll + ' ' + css.tableScroll}
+                key={`${page}-${tab}-${from}-${to}-${concept}-${method}-${query}`}
+              >
                 <table className={styles.table + ' ' + css.paymentTable}>
                   <colgroup>
                     {[10, 18, 13, 13, 13, 11, 10, 12].map((width, i) => (
@@ -260,7 +267,7 @@ export function PaymentsPage() {
                         </td>
                         <td>{p.treatment || '—'}</td>
                         <td>
-                          <IconCreditCard /> {p.method}
+                          <PaymentMethodIcon method={p.method} /> {p.method}
                         </td>
                         <td>
                           <strong>{money(p.amount, p.currency)}</strong>
@@ -305,7 +312,7 @@ export function PaymentsPage() {
                 total={rows.length}
                 page={page}
                 onChange={setPage}
-                size={7}
+                size={25}
                 noun="pagos"
               />
             </>
@@ -316,6 +323,7 @@ export function PaymentsPage() {
       <QuickPayment onComplete={saved} onExpand={dialog.setEditing} />
       {dialog.open && (
         <PaymentForm
+          paymentPage
           payment={dialog.editing}
           onClose={dialog.close}
           onSaved={saved}

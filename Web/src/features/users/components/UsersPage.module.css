@@ -1,9 +1,5 @@
-.page {
-  --color-primary: var(--color-users);
-  --color-primary-dark: #173570;
-}
 .banner {
-  background: linear-gradient(120deg, #122747, var(--color-users));
+  background: linear-gradient(110deg, var(--color-banner-start), var(--color-primary), var(--color-banner-end));
   border-radius: var(--radius-md);
   padding: 25px;
   color: white;
@@ -20,10 +16,11 @@
 }
 .banner p {
   margin: 0;
-  color: #dbeafe;
+  color: rgba(255, 255, 255, 0.88);
 }
 .counts {
   display: flex;
+  flex-wrap: wrap;
   gap: 12px;
 }
 .counts span {
@@ -35,4 +32,12 @@
 }
 .counts strong {
   font-size: 24px;
+}
+.tableScroll {
+  /* Encabezado de 43px y diez filas de 65px. */
+  max-height: 693px;
+  overflow-y: auto;
+}
+.table tbody tr {
+  height: 65px;
 }

@@ -9,10 +9,17 @@ export const treatments = [
   'Radiografía',
   'Blanqueamiento',
 ]
+function shiftDate(days) {
+  const d = new Date()
+  d.setDate(d.getDate() + days)
+  return (
+    d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0')
+  )
+}
 export const appointmentSeed = Array.from({ length: 28 }, (_, i) => ({
   id: 'appointment-' + (i + 1),
   patientId: 'patient-' + ((i % 12) + 1),
-  date: i < 8 ? '2026-08-31' : '2026-08-' + String(3 + (i % 25)).padStart(2, '0'),
+  date: i < 8 ? shiftDate(0) : shiftDate((i % 25) - 12),
   time:
     i < 8
       ? ['10:00', '10:30', '11:30', '12:30', '14:00', '15:00', '16:00', '17:30'][i]

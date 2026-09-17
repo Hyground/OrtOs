@@ -1,0 +1,130 @@
+.card {
+  overflow: visible;
+}
+.tableScroll {
+  /* Encabezado de 43px, diez filas de 63px y margen para el borde. */
+  max-height: 674px;
+  overflow-y: auto;
+}
+.tableScroll tbody tr {
+  height: 63px;
+}
+.historyTable td {
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+.historyTable {
+  table-layout: fixed;
+  min-width: 960px;
+}
+.historyTable td:nth-child(2),
+.historyTable td:nth-child(3),
+.historyTable td:nth-child(4) {
+  white-space: normal;
+}
+.dateControl {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+.dateControl:focus-within {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-soft);
+}
+.dateControl .dateInput {
+  width: 12ch;
+  min-width: 0;
+  padding: 0.75rem 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: inherit;
+  font-family: inherit;
+  font-size: 12px;
+}
+.dateField {
+  position: relative;
+}
+.calendar {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 5;
+  width: 280px;
+  max-width: calc(100vw - 40px);
+  margin-top: 4px;
+  padding: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-md);
+}
+.calendarHeader,
+.calendarFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.calendarHeader strong {
+  text-transform: capitalize;
+}
+.calendar button {
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text);
+  padding: 8px;
+  cursor: pointer;
+  font: inherit;
+}
+.calendar button:hover,
+.calendar button:focus-visible {
+  background: var(--color-primary-soft);
+}
+.calendar button[aria-pressed='true'] {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+.calendar button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.calendarDays {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  text-align: center;
+  gap: 2px;
+  margin: 8px 0;
+}
+.calendarDays span {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  padding: 4px 0;
+}
+.dateLeadingIcon,
+.dateCalendarArea {
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+.dateLeadingIcon {
+  flex: 0 0 2.7rem;
+  justify-content: center;
+  font-size: 1.15rem;
+}
+.dateCalendarArea {
+  flex: 1;
+  justify-content: flex-end;
+  padding: 0 1rem 0 0;
+  font-size: 14px;
+}

@@ -27,15 +27,6 @@ function renderAt(route) {
 describe('AppRouter', () => {
   afterEach(() => tokenStorage.clear())
 
-  it('Calendario ya no reutiliza la vista de Citas', async () => {
-    tokenStorage.set('ortos-dev-token:dev-admin')
-    renderAt(paths.calendar)
-    expect(
-      await screen.findByRole('heading', { name: 'Calendario de la clínica' }),
-    ).toBeInTheDocument()
-    expect(screen.queryByText('Modulo en preparacion')).not.toBeInTheDocument()
-  })
-
   it('Tratamientos deja de caer en el placeholder genérico', async () => {
     tokenStorage.set('ortos-dev-token:dev-admin')
     renderAt(paths.treatments)

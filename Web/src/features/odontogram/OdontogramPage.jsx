@@ -84,8 +84,9 @@ export function OdontogramPage() {
             <button
               key={number}
               type="button"
-              className={styles.tooth}
+              className={`${styles.tooth} ${editing === number ? styles.toothSelected : ''}`}
               disabled={!enabled}
+              aria-pressed={editing === number}
               aria-label={`Diente ${number}`}
               title={`Diente ${number}: ${labels.join(', ') || 'Sano'}`}
               onClick={() => setEditing(number)}

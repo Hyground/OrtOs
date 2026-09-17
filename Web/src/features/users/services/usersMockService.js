@@ -7,6 +7,7 @@ let accounts = [
     password: 'Admin123',
     displayName: 'Administrador OrtOs',
     role: 'admin',
+    phone: '5555-0001',
     active: true,
   },
   {
@@ -15,6 +16,8 @@ let accounts = [
     password: 'Odonto123',
     displayName: 'Dra. Ana Morales',
     role: 'odontologo',
+    phone: '5555-0002',
+    specialty: 'General',
     active: true,
   },
   {
@@ -23,15 +26,18 @@ let accounts = [
     password: 'Paciente123',
     displayName: 'Paciente Demo',
     role: 'paciente',
+    phone: '5555-0003',
     patientId: 'patient-1',
     active: true,
   },
 ]
-const publicAccount = ({ id, email, displayName, role, active }) => ({
+const publicAccount = ({ id, email, displayName, role, phone, specialty, active }) => ({
   id,
   email,
   displayName,
   role,
+  phone,
+  specialty,
   active,
 })
 let snapshot = accounts.map(publicAccount)
@@ -65,6 +71,8 @@ export async function saveUser(data) {
     throw new Error('Ingresa un correo válido.')
   if (!['admin', 'odontologo', 'asistente', 'paciente'].includes(data.role))
     throw new Error('Selecciona un rol válido.')
+  if (!data.phone?.trim()) throw new Error('Ingresa el teléfono del usuario.')
+  if (data.role === 'odontologo' && !data.specialty) throw new Error('Selecciona la especialidad.')
   if ((!data.id || data.password) && (!data.password || data.password.length < 8))
     throw new Error('La contraseña debe tener al menos 8 caracteres.')
   if (
@@ -82,6 +90,8 @@ export async function saveUser(data) {
     displayName: data.displayName.trim(),
     email: data.email.trim().toLowerCase(),
     role: data.role,
+    phone: data.phone.trim(),
+    specialty: data.role === 'odontologo' ? data.specialty : '',
     active: Boolean(data.active),
     password: data.password || existing?.password,
   }

@@ -5,12 +5,7 @@
   font-size: 13px;
 }
 .bannerAction {
-  display: none;
-}
-@media (max-width: 1040px) {
-  .bannerAction {
-    display: inline-flex;
-  }
+  margin-left: auto;
 }
 .banner {
   display: flex;
@@ -20,7 +15,7 @@
   padding: 25px;
   border-radius: var(--radius-md);
   color: var(--color-white);
-  background: linear-gradient(110deg, var(--color-primary-dark), var(--color-primary), #31b4e4);
+  background: linear-gradient(110deg, var(--color-banner-start), var(--color-primary), var(--color-banner-end));
   box-shadow: var(--shadow-sm);
 }
 .bannerIcon {
@@ -135,6 +130,11 @@
 .tableScroll {
   overflow-x: auto;
 }
+.tableContainerScroll {
+  max-height: calc(100vh - 320px);
+  overflow-y: auto;
+  overflow-x: auto;
+}
 .table {
   width: 100%;
   border-collapse: collapse;
@@ -143,19 +143,23 @@
   font-size: 12px;
 }
 .table th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
   background: var(--color-admin-bg);
   color: var(--color-text-muted);
   font-size: 10px;
   letter-spacing: 0.03em;
   font-weight: 600;
   padding: 14px 16px;
+  box-shadow: 0 1px 0 var(--color-border);
 }
 .table td {
   padding: 16px;
   border-bottom: 1px solid var(--color-border);
 }
 .table tbody tr:hover {
-  background: #f8fcff;
+  background: var(--color-surface-alt);
 }
 .table td strong {
   font-weight: 600;
@@ -607,7 +611,7 @@
 .clickableRow:hover td,
 .clickableRow:focus-visible td,
 .activeRow td {
-  background: #f8fcff;
+  background: var(--color-surface-alt);
 }
 .clickableRow:focus-visible {
   outline: 2px solid var(--color-primary);
@@ -815,5 +819,45 @@
 @media (max-width: 680px) {
   .doctorDrawerActions {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 680px) {
+  .table.patientsTable thead {
+    display: none;
+  }
+  .table.patientsTable,
+  .table.patientsTable tbody,
+  .table.patientsTable tr {
+    display: block;
+    width: 100%;
+  }
+  .table.patientsTable tr {
+    margin-bottom: 12px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+  .table.patientsTable td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    white-space: normal;
+  }
+  .table.patientsTable td:first-child {
+    background: var(--color-admin-bg);
+    justify-content: flex-start;
+  }
+  .table.patientsTable td[data-label]::before {
+    content: attr(data-label);
+    flex-shrink: 0;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--color-text-muted);
+  }
+  .table.patientsTable .detailRow td {
+    display: block;
+    border-bottom: 0;
   }
 }
