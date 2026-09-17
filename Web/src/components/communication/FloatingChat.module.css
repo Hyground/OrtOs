@@ -335,34 +335,65 @@
 
 @media (max-width: 720px) {
   .root {
-    right: 14px;
-    bottom: 14px;
+    right: 12px;
+    bottom: 12px;
   }
 
-  .panel {
-    width: calc(100vw - 28px);
+  .toolbar {
+    right: auto;
+    bottom: auto;
   }
 
   .toolbar .panel {
     position: fixed;
-    top: 74px;
-    right: 14px;
+    top: 70px;
+    right: 12px;
+    width: min(440px, calc(100vw - 24px));
+    height: min(600px, calc(100dvh - 82px));
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
   }
 
   .body {
     grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(0, 1fr);
     min-height: 0;
+    overflow: hidden;
   }
 
   .conversations {
-    grid-auto-flow: column;
-    grid-auto-columns: minmax(210px, 1fr);
+    display: flex;
+    gap: 6px;
+    padding: 8px;
     overflow-x: auto;
     border-right: 0;
     border-bottom: 1px solid #e7edf5;
   }
 
+  .conversations button {
+    flex: 0 0 175px;
+    min-width: 0;
+    padding: 8px;
+  }
+
+  .conversations button > span:nth-child(2) {
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .conversations strong,
+  .conversations small {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .chatArea {
+    min-height: 0;
+  }
+
   .messages {
-    max-height: 240px;
+    min-height: 0;
+    max-height: none;
   }
 }

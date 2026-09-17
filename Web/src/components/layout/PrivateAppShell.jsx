@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { paths } from '@/app/routes/paths'
 import { patientMenuItems, privateMenuItems } from '@/app/routes/navigation'
@@ -25,22 +25,40 @@ function menuClass(isActive) {
 }
 
 function formatWorkDate(date) {
-  return new Intl.DateTimeFormat('es-GT', {
-    weekday: 'long',
+  return new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'America/Guatemala',
     day: '2-digit',
-    month: 'long',
+    month: '2-digit',
     year: 'numeric',
-  })
-    .format(date)
-    .toUpperCase()
+  }).format(date)
 }
 
 export function PrivateAppShell() {
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [collapsed, setCollapsed] = useState(false)
+  const [collapsed, setCollapsed] = useState(() =>
+    window.matchMedia?.('(min-width: 681px) and (max-width: 1040px)').matches ?? false,
+  )
+
+  useEffect(() => {
+    const mediumScreen = window.matchMedia?.('(min-width: 681px) and (max-width: 1040px)')
+    if (!mediumScreen) return undefined
+    const onBreakpointChange = () => setCollapsed(mediumScreen.matches)
+    mediumScreen.addEventListener('change', onBreakpointChange)
+    return () => mediumScreen.removeEventListener('change', onBreakpointChange)
+  }, [])
   const [search, setSearch] = useState('')
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false)
+  const searchInputRef = useRef(null)
   const location = useLocation()
   const navigate = useNavigate()
+
+  useEffect(() => {
+    if (mobileSearchOpen) searchInputRef.current?.focus()
+  }, [mobileSearchOpen])
+
+  useEffect(() => {
+    setMobileSearchOpen(false)
+  }, [location.pathname])
   const { user, logout } = useAuth()
   const action =
     user?.role === 'paciente' ? null : { to: paths.newAppointment, label: 'NUEVA CITA' }
@@ -75,6 +93,7 @@ export function PrivateAppShell() {
             type="button"
             className={styles.toggleBtn}
             onClick={toggleCollapsed}
+            aria-expanded={!collapsed}
             aria-label={collapsed ? 'Expandir menú' : 'Colapsar menú'}
             title={collapsed ? 'Expandir menú' : 'Colapsar menú'}
           >
@@ -163,7 +182,7 @@ export function PrivateAppShell() {
 
       {/* ── Workspace ────────────────────────────── */}
       <div className={styles.workspace}>
-        <header className={styles.topbar}>
+        <header className={mobileSearchOpen ? `${styles.topbar} ${styles.topbarSearchOpen}` : styles.topbar}>
           <button
             type="button"
             className={styles.mobileMenu}
@@ -175,10 +194,23 @@ export function PrivateAppShell() {
           </button>
 
           {showGlobalSearch ? (
+            <button
+              type="button"
+              className={styles.mobileSearchButton}
+              aria-label={mobileSearchOpen ? 'Cerrar búsqueda' : 'Buscar paciente'}
+              aria-expanded={mobileSearchOpen}
+              onClick={() => setMobileSearchOpen((current) => !current)}
+            >
+              <IconSearch />
+            </button>
+          ) : null}
+
+          {showGlobalSearch ? (
             <form
               className={styles.searchBox}
               onSubmit={(event) => {
                 event.preventDefault()
+                setMobileSearchOpen(false)
                 navigate(paths.patients + '?q=' + encodeURIComponent(search))
               }}
             >
@@ -187,6 +219,7 @@ export function PrivateAppShell() {
                 Buscar paciente, expediente o folio
               </label>
               <input
+                ref={searchInputRef}
                 id="global-patient-search"
                 type="search"
                 placeholder="Buscar paciente, expediente, folio cita..."

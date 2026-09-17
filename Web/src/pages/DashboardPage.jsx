@@ -9,9 +9,9 @@ import styles from './DashboardPage.module.css'
 import { PatientPortal } from '@/features/portal/PatientPortal'
 
 const metrics = [
-  { value: '24', label: 'Citas esta semana', tone: 'cyan' },
-  { value: '5', label: 'Citas del dia', tone: 'teal' },
-  { value: '12', label: 'Pacientes activos', tone: 'blue' },
+  { value: '24', label: 'Semana', tone: 'cyan' },
+  { value: '5', label: 'Día', tone: 'teal' },
+  { value: '11', label: 'Pendientes', tone: 'blue' },
 ]
 
 const agenda = [
@@ -29,8 +29,6 @@ const operations = [
 export function DashboardPage() {
   useDocumentTitle('Panel')
   const { user } = useAuth()
-  const isDentist = user?.role === 'odontologo'
-  const isAssistant = user?.role === 'asistente'
   if (user?.role === 'paciente') return <PatientPortal />
   const modules = privateModules.filter((module) => canAccess(user, module.to))
 
@@ -38,29 +36,20 @@ export function DashboardPage() {
     <section className={styles.page}>
       <header className={styles.hero}>
         <div className={styles.heroCopy}>
-          <span className={styles.kicker}>
-            {isDentist ? 'Panel del odontólogo' : isAssistant ? 'Panel del asistente' : 'Panel principal'}
-          </span>
-          <h1>Hola, {user?.displayName ?? 'Usuario'}</h1>
-          <p>
-            {isDentist
-              ? 'Consulta pacientes y expedientes, organiza las citas y registra pagos desde tu espacio de trabajo.'
-              : isAssistant
-                ? 'Gestiona pacientes, organiza la agenda de citas y registra pagos desde tu espacio de trabajo.'
-                : user?.role === 'admin'
-                  ? 'Administra los módulos de la clínica y las cuentas de acceso del equipo.'
-                  : 'Bienvenido a tu panel. Las funciones clínicas están reservadas al personal autorizado.'}
-          </p>
+          <h1>Bienvenido, {user?.displayName ?? 'Usuario'}</h1>
         </div>
 
-        <dl className={styles.metrics}>
-          {metrics.map((metric) => (
-            <div key={metric.label} data-tone={metric.tone}>
-              <dt>{metric.label}</dt>
-              <dd>{metric.value}</dd>
-            </div>
-          ))}
-        </dl>
+        <div className={styles.metricsBlock}>
+          <h2>Citas</h2>
+          <dl className={styles.metrics}>
+            {metrics.map((metric) => (
+              <div key={metric.label} data-tone={metric.tone}>
+                <dt>{metric.label}</dt>
+                <dd>{metric.value}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
       </header>
 
       <div className={styles.contentGrid}>
