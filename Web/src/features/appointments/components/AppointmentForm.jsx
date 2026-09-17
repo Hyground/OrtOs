@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { IconEye } from '@/components/icons/icons'
 import { Button } from '@/components/ui/Button/Button'
 import { Modal } from '@/components/ui/Modal/Modal'
@@ -11,6 +11,7 @@ import { useDoctors } from '@/features/doctors/hooks/useDoctors'
 import { treatments } from '../mockData/appointments'
 import styles from '@/features/clinical/Clinical.module.css'
 import calendarStyles from './Calendar.module.css'
+import { TimeField12h } from './TimeField12h'
 export function AppointmentForm({
   appointment,
   date,
@@ -46,11 +47,12 @@ export function AppointmentForm({
   const initialValuesRef = useRef(initialAppointment)
   const patient = patients.find((p) => p.id === form.values.patientId)
   const f = (name, label, props = {}) => <Field form={form} name={name} label={label} {...props} />
+  const [confirmClose, setConfirmClose] = useState(false)
   const requestClose = () => {
     if (form.saving) return
     const changed = JSON.stringify(form.values) !== JSON.stringify(initialValuesRef.current)
-    if (changed && !window.confirm('¿Descartar los cambios sin guardar?')) return
-    onClose()
+    if (changed) setConfirmClose(true)
+    else onClose()
   }
   const occupiedSlots =
     form.values.dentist && form.values.date
@@ -106,7 +108,12 @@ export function AppointmentForm({
           <Section title={compactPatient ? 'AGENDAR CITA' : 'DETALLES DE LA CITA'}>
             <div className={styles.cols3}>
               {f('date', 'Fecha *', { type: 'date', required: true })}
-              {f('time', 'Hora *', { type: 'time', required: true })}
+              <TimeField12h
+                label="Hora *"
+                value={form.values.time}
+                onChange={(value) => form.set('time', value)}
+                error={form.errors.time}
+              />
               {f('dentist', 'Odontólogo *', { options: dentists, required: true })}
             </div>
             {form.values.dentist && form.values.date && (
@@ -183,6 +190,21 @@ export function AppointmentForm({
         </fieldset>
         <FormFooter form={form} onClose={requestClose} label="Guardar Cita" />
       </form>
+      <Modal
+        open={confirmClose}
+        title="¿Cerrar sin guardar?"
+        onClose={() => setConfirmClose(false)}
+      >
+        <p>
+          Hay datos sin guardar. Si cierras esta ventana, perderás los datos o cambios ingresados.
+        </p>
+        <div className={styles.footer}>
+          <Button variant="ghost" onClick={() => setConfirmClose(false)}>
+            Seguir editando
+          </Button>
+          <Button onClick={onClose}>Cerrar sin guardar</Button>
+        </div>
+      </Modal>
     </Modal>
   )
 }

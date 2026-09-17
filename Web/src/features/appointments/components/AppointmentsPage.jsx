@@ -87,6 +87,7 @@ export function AppointmentsPage() {
   const [priority, setPriority] = useState('')
   const [all, setAll] = useState(false)
   const [focusedDay, setFocusedDay] = useState('')
+  const today = localDate()
   const date = new Date(cursor + 'T12:00:00')
   const month = cursor.slice(0, 7)
   const monthLabel = date
@@ -198,59 +199,65 @@ export function AppointmentsPage() {
         <div className={styles.stack}>
           <section className={styles.card}>
             <div className={calendar.toolbar + ' ' + calendar.printHide}>
-              <Button
-                size="sm"
-                variant="ghost"
-                aria-label="Período anterior"
-                onClick={() => move(-1)}
-              >
-                <IconChevronLeft />
-              </Button>
-              <Button
-                size="sm"
-                variant="ghost"
-                aria-label="Período siguiente"
-                onClick={() => move(1)}
-              >
-                <IconChevronRight />
-              </Button>
-              <Button size="sm" variant="ghost" onClick={() => setCursor(localDate())}>
-                Hoy
-              </Button>
-              <input
-                type="month"
-                aria-label="Mes del calendario"
-                value={month}
-                onChange={(e) => {
-                  if (e.target.value) setCursor(e.target.value + '-01')
-                }}
-              />
-              <strong>{view !== 'Mes' ? displayDate(cursor) : ''}</strong>
-              {['Mes', 'Semana', 'Día'].map((v) => (
+              <div className={calendar.toolbarGroup}>
                 <Button
-                  key={v}
                   size="sm"
-                  variant={view === v ? 'primary' : 'ghost'}
-                  aria-pressed={view === v}
-                  onClick={() => setView(v)}
+                  variant="ghost"
+                  aria-label="Período anterior"
+                  onClick={() => move(-1)}
                 >
-                  {v}
+                  <IconChevronLeft />
                 </Button>
-              ))}
-              <Button
-                size="sm"
-                variant="ghost"
-                aria-expanded={filters}
-                onClick={() => setFilters((v) => !v)}
-              >
-                Filtros
-              </Button>
-              <Button size="sm" variant="ghost" onClick={exportAgenda}>
-                <IconDownload /> Exportar
-              </Button>
-              <Button size="sm" variant="ghost" onClick={() => window.print()}>
-                <IconPrint /> Imprimir
-              </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  aria-label="Período siguiente"
+                  onClick={() => move(1)}
+                >
+                  <IconChevronRight />
+                </Button>
+                <Button size="sm" variant="ghost" onClick={() => setCursor(localDate())}>
+                  Hoy
+                </Button>
+                <input
+                  type="month"
+                  aria-label="Mes del calendario"
+                  value={month}
+                  onChange={(e) => {
+                    if (e.target.value) setCursor(e.target.value + '-01')
+                  }}
+                />
+                <strong>{view !== 'Mes' ? displayDate(cursor) : ''}</strong>
+              </div>
+              <div className={calendar.toolbarGroup}>
+                {['Mes', 'Semana', 'Día'].map((v) => (
+                  <Button
+                    key={v}
+                    size="sm"
+                    variant={view === v ? 'primary' : 'ghost'}
+                    aria-pressed={view === v}
+                    onClick={() => setView(v)}
+                  >
+                    {v}
+                  </Button>
+                ))}
+              </div>
+              <div className={calendar.toolbarGroup}>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  aria-expanded={filters}
+                  onClick={() => setFilters((v) => !v)}
+                >
+                  Filtros
+                </Button>
+                <Button size="sm" variant="ghost" onClick={exportAgenda}>
+                  <IconDownload /> Exportar
+                </Button>
+                <Button size="sm" variant="ghost" onClick={() => window.print()}>
+                  <IconPrint /> Imprimir
+                </Button>
+              </div>
             </div>
             {filters && (
               <div className={styles.filters + ' ' + calendar.printHide}>
@@ -359,9 +366,13 @@ export function AppointmentsPage() {
                         event.preventDefault()
                         setFocusedDay(day)
                       }}
-                      className={
-                        calendar.day + ' ' + (!day.startsWith(month) ? calendar.outside : '')
-                      }
+                      className={[
+                        calendar.day,
+                        !day.startsWith(month) ? calendar.outside : '',
+                        day === today ? calendar.today : '',
+                      ]
+                        .filter(Boolean)
+                        .join(' ')}
                     >
                       <button
                         className={
@@ -400,9 +411,9 @@ export function AppointmentsPage() {
                 <strong className={calendar.legendTitle}>Por prioridad</strong>
                 <span className={calendar.legendGroup}>
                   {[
-                    ['#ef4444', 'Alta prioridad'],
+                    ['var(--color-danger)', 'Alta prioridad'],
                     ['#eab308', 'Media prioridad'],
-                    ['#22c55e', 'Baja prioridad'],
+                    ['var(--color-success)', 'Baja prioridad'],
                   ].map(([color, label]) => (
                     <span key={label}>
                       <i className={calendar.dot} style={{ background: color }} />

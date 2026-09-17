@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 import { Modal } from '@/components/ui/Modal/Modal'
+import { Button } from '@/components/ui/Button/Button'
 import { TextField } from '@/components/ui/TextField/TextField'
 import { IconUpload } from '@/components/icons/icons'
 import { localDate } from '@/features/clinical/mockStore'
@@ -99,11 +100,12 @@ export function PatientForm({ patient, onClose, onSaved }) {
   const initialValuesRef = useRef(patient ?? initial)
   const [photoError, setPhotoError] = useState('')
   const [reading, setReading] = useState(false)
+  const [confirmClose, setConfirmClose] = useState(false)
   const requestClose = () => {
     if (form.saving || reading) return
     const changed = JSON.stringify(form.values) !== JSON.stringify(initialValuesRef.current)
-    if (changed && !window.confirm('¿Descartar los cambios sin guardar?')) return
-    onClose()
+    if (changed) setConfirmClose(true)
+    else onClose()
   }
   const upload = async (file) => {
     setPhotoError('')
@@ -274,6 +276,21 @@ export function PatientForm({ patient, onClose, onSaved }) {
           label="Guardar paciente"
         />
       </form>
+      <Modal
+        open={confirmClose}
+        title="¿Cerrar sin guardar?"
+        onClose={() => setConfirmClose(false)}
+      >
+        <p>
+          Hay datos sin guardar. Si cierras esta ventana, perderás los datos o cambios ingresados.
+        </p>
+        <div className={styles.footer}>
+          <Button variant="ghost" onClick={() => setConfirmClose(false)}>
+            Seguir editando
+          </Button>
+          <Button onClick={onClose}>Cerrar sin guardar</Button>
+        </div>
+      </Modal>
     </Modal>
   )
 }
