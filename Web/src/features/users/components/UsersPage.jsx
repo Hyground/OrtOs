@@ -23,89 +23,124 @@ function UserForm({ account, onClose, onSaved }) {
   )
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
+  const [confirmDeactivate, setConfirmDeactivate] = useState(false)
   const set = (key, value) => setValues((v) => ({ ...v, [key]: value }))
+  const submit = async () => {
+    if (busy) return
+    setBusy(true)
+    setError('')
+    try {
+      await saveUser(values)
+      onSaved()
+    } catch (e) {
+      setError(e.message)
+    } finally {
+      setBusy(false)
+    }
+  }
   return (
     <Modal
       open
       size="wide"
-      title={account ? 'EDITAR USUARIO' : 'NUEVO USUARIO'}
+      title={
+        confirmDeactivate ? 'Desactivar usuario' : account ? 'EDITAR USUARIO' : 'NUEVO USUARIO'
+      }
       onClose={() => {
-        if (!busy) onClose()
+        if (!busy) {
+          if (confirmDeactivate) setConfirmDeactivate(false)
+          else onClose()
+        }
       }}
     >
-      <form
-        className={styles.form}
-        onSubmit={async (e) => {
-          e.preventDefault()
-          if (busy) return
-          setBusy(true)
-          setError('')
-          try {
-            await saveUser(values)
-            onSaved()
-          } catch (e) {
-            setError(e.message)
-          } finally {
-            setBusy(false)
-          }
-        }}
-      >
-        <fieldset disabled={busy} className={styles.cols2}>
-          <TextField
-            label="Nombre completo *"
-            required
-            value={values.displayName}
-            onChange={(e) => set('displayName', e.target.value)}
-          />
-          <TextField
-            label="Correo electrónico *"
-            type="email"
-            required
-            value={values.email}
-            onChange={(e) => set('email', e.target.value)}
-          />
-          <SelectField
-            label="Rol *"
-            required
-            options={roles}
-            value={values.role}
-            onChange={(e) => set('role', e.target.value)}
-          />
-          <SelectField
-            label="Estado *"
-            required
-            options={['Activo', 'Inactivo']}
-            value={values.active ? 'Activo' : 'Inactivo'}
-            onChange={(e) => set('active', e.target.value === 'Activo')}
-          />
-          <TextField
-            label={account ? 'Nueva contraseña (opcional)' : 'Contraseña *'}
-            type="password"
-            autoComplete="new-password"
-            required={!account}
-            minLength={8}
-            value={values.password}
-            onChange={(e) => set('password', e.target.value)}
-          />
-          <p className={styles.muted}>
-            {account ? 'Deja la contraseña vacía para conservarla. ' : ''}El odontólogo y el
-            asistente acceden únicamente a Pacientes, Citas y Pagos.
+      {confirmDeactivate ? (
+        <>
+          <p>
+            ¿Desactivar la cuenta de {account.displayName}? No podrá iniciar sesión hasta que la
+            actives nuevamente.
           </p>
-        </fieldset>
-        {error && (
-          <p role="alert" className={styles.error}>
-            {error}
-          </p>
-        )}
-        <div className={styles.footer}>
-          <Button variant="ghost" disabled={busy} onClick={onClose}>
-            Cancelar
-          </Button>
-          <Button type="submit" disabled={busy}>
-            {busy ? 'Guardando…' : 'Guardar usuario'}
-          </Button>
-        </div>
-      </form>
+          {error && (
+            <p role="alert" className={styles.error}>
+              {error}
+            </p>
+          )}
+          <div className={styles.footer}>
+            <Button variant="ghost" disabled={busy} onClick={() => setConfirmDeactivate(false)}>
+              Cancelar
+            </Button>
+            <Button disabled={busy} onClick={submit}>
+              {busy ? 'Guardando…' : 'Desactivar y guardar'}
+            </Button>
+          </div>
+        </>
+      ) : (
+        <form
+          className={styles.form}
+          onSubmit={(e) => {
+            e.preventDefault()
+            if (busy) return
+            if (account?.active && !values.active) {
+              setError('')
+              setConfirmDeactivate(true)
+            } else submit()
+          }}
+        >
+          <fieldset disabled={busy} className={styles.cols2}>
+            <TextField
+              label="Nombre completo *"
+              required
+              value={values.displayName}
+              onChange={(e) => set('displayName', e.target.value)}
+            />
+            <TextField
+              label="Correo electrónico *"
+              type="email"
+              required
+              value={values.email}
+              onChange={(e) => set('email', e.target.value)}
+            />
+            <SelectField
+              label="Rol *"
+              required
+              options={roles}
+              value={values.role}
+              onChange={(e) => set('role', e.target.value)}
+            />
+            <SelectField
+              label="Estado *"
+              required
+              options={['Activo', 'Inactivo']}
+              value={values.active ? 'Activo' : 'Inactivo'}
+              onChange={(e) => set('active', e.target.value === 'Activo')}
+            />
+            <TextField
+              label={account ? 'Nueva contraseña (opcional)' : 'Contraseña *'}
+              type="password"
+              autoComplete="new-password"
+              required={!account}
+              minLength={8}
+              value={values.password}
+              onChange={(e) => set('password', e.target.value)}
+            />
+            <p className={styles.muted}>
+              {account ? 'Deja la contraseña vacía para conservarla. ' : ''}El odontólogo y el
+              asistente acceden únicamente a Pacientes, Citas y Pagos.
+            </p>
+          </fieldset>
+          {error && (
+            <p role="alert" className={styles.error}>
+              {error}
+            </p>
+          )}
+          <div className={styles.footer}>
+            <Button variant="ghost" disabled={busy} onClick={onClose}>
+              Cancelar
+            </Button>
+            <Button type="submit" disabled={busy}>
+              {busy ? 'Guardando…' : 'Guardar usuario'}
+            </Button>
+          </div>
+        </form>
+      )}
     </Modal>
   )
 }
@@ -119,6 +154,7 @@ export function UsersPage() {
   const [status, setStatus] = useState('')
   const [editing, setEditing] = useState(null)
   const [remove, setRemove] = useState(null)
+  const [deactivate, setDeactivate] = useState(null)
   const [notice, setNotice] = useState('')
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
@@ -126,11 +162,12 @@ export function UsersPage() {
   const [statusNotice, setStatusNotice] = useState(null)
   const rows = users.filter(
     (u) =>
+      u.id !== user.id &&
       normalize(u.displayName + ' ' + u.email).includes(normalize(query)) &&
       (!role || u.role === role) &&
       (!status || u.active === (status === 'Activo')),
   )
-  const { page, setPage, visible } = usePagination(rows, 7)
+  const { page, setPage, visible } = usePagination(rows, 25)
   const close = () => {
     setEditing(null)
     setParams(
@@ -148,11 +185,13 @@ export function UsersPage() {
   }, [statusNotice])
 
   const toggleUserStatus = async (account) => {
+    if (statusBusy || account.id === user.id) return
     const nextActive = !account.active
     setStatusBusy(account.id)
     setError('')
     try {
       await saveUser({ ...account, active: nextActive, password: '' })
+      setDeactivate(null)
       setStatusNotice({ name: account.displayName, status: nextActive ? 'Activo' : 'Inactivo' })
     } catch (e) {
       setError(e.message)
@@ -176,8 +215,13 @@ export function UsersPage() {
           <span>
             <strong>{users.filter((u) => u.active).length}</strong>Activos
           </span>
+          <span>
+            <strong>{users.filter((u) => !u.active).length}</strong>Inactivos
+          </span>
         </div>
-        <Button onClick={() => setParams({ nuevo: '1' })}>+ NUEVO USUARIO</Button>
+        <Button className={css.newUserButton} onClick={() => setParams({ nuevo: '1' })}>
+          + NUEVO USUARIO
+        </Button>
       </header>
       {notice && (
         <p role="status" className={styles.success}>
@@ -219,8 +263,11 @@ export function UsersPage() {
             }}
           />
         </div>
-        <div className={styles.tableScroll}>
-          <table className={styles.table}>
+        <div
+          className={styles.tableScroll + ' ' + css.tableScroll}
+          key={`${page}-${query}-${role}-${status}`}
+        >
+          <table className={styles.table + ' ' + css.table}>
             <thead>
               <tr>
                 {['USUARIO', 'CORREO', 'ROL', 'ACCESO', 'ESTADO', 'ACCIONES'].map((h) => (
@@ -233,7 +280,6 @@ export function UsersPage() {
                 <tr key={u.id}>
                   <td>
                     <strong>{u.displayName}</strong>
-                    {u.id === user.id && <small>Tu cuenta</small>}
                   </td>
                   <td>{u.email}</td>
                   <td>{roleLabels[u.role]}</td>
@@ -245,11 +291,18 @@ export function UsersPage() {
                         : 'Panel de paciente'}
                   </td>
                   <td>
-                                        <StatusToggle
+                    <StatusToggle
                       active={u.active}
-                      disabled={statusBusy === u.id || u.id === user.id}
+                      disabled={!!statusBusy}
                       label={`Cambiar estado de ${u.displayName} a ${u.active ? 'Inactivo' : 'Activo'}`}
-                      onToggle={() => toggleUserStatus(u)}
+                      onToggle={() => {
+                        if (u.active) {
+                          setError('')
+                          setDeactivate(u)
+                        } else {
+                          toggleUserStatus(u)
+                        }
+                      }}
                     />
                   </td>
                   <td>
@@ -280,7 +333,12 @@ export function UsersPage() {
           </table>
           {!rows.length && <p className={styles.empty}>No se encontraron usuarios.</p>}
         </div>
-        <Pagination total={rows.length} page={page} onChange={setPage} size={7} noun="usuarios" />
+        <Pagination total={rows.length} page={page} onChange={setPage} size={25} noun="usuarios" />
+        {error && !remove && !deactivate && (
+          <p role="alert" className={styles.error}>
+            {error}
+          </p>
+        )}
       </section>
       {(params.get('nuevo') === '1' || editing) && (
         <UserForm
@@ -292,6 +350,31 @@ export function UsersPage() {
           }}
         />
       )}
+      <Modal
+        open={!!deactivate}
+        title="Desactivar usuario"
+        onClose={() => {
+          if (!statusBusy) setDeactivate(null)
+        }}
+      >
+        <p>
+          ¿Desactivar la cuenta de {deactivate?.displayName}? No podrá iniciar sesión hasta que la
+          actives nuevamente.
+        </p>
+        {error && (
+          <p role="alert" className={styles.error}>
+            {error}
+          </p>
+        )}
+        <div className={styles.footer}>
+          <Button variant="ghost" disabled={!!statusBusy} onClick={() => setDeactivate(null)}>
+            Cancelar
+          </Button>
+          <Button disabled={!!statusBusy} onClick={() => toggleUserStatus(deactivate)}>
+            {statusBusy ? 'Desactivando…' : 'Desactivar'}
+          </Button>
+        </div>
+      </Modal>
       <Modal
         open={!!remove}
         title="Eliminar usuario"

@@ -1,4 +1,4 @@
-import { act, render, screen, waitFor } from '@testing-library/react'
+import { act, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { AuthContext } from '@/features/auth/context/AuthContext'
@@ -22,6 +22,64 @@ function mount(component, user) {
   )
 }
 afterEach(() => tokenStorage.clear())
+it('pagina los usuarios de 25 en 25 sin incluir la cuenta actual', async () => {
+  tokenStorage.set('ortos-dev-token:dev-admin')
+  const accounts = await Promise.all(
+    Array.from({ length: 26 }, (_, index) =>
+      saveUser({
+        displayName: `Usuario paginado ${index}`,
+        email: `paginado${index}@ortos.test`,
+        password: 'Prueba123',
+        role: 'asistente',
+        active: index % 2 === 0,
+      }),
+    ),
+  )
+  try {
+    const user = userEvent.setup()
+    mount(<UsersPage />, admin)
+    const table = screen.getByRole('table')
+    expect(within(table).getAllByRole('row')).toHaveLength(26)
+    expect(screen.getByText('1-25 de 28 usuarios')).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Página siguiente' }))
+    expect(within(screen.getByRole('table')).getAllByRole('row')).toHaveLength(4)
+    expect(screen.getByText('26-28 de 28 usuarios')).toBeInTheDocument()
+    expect(screen.queryByText(admin.displayName)).not.toBeInTheDocument()
+  } finally {
+    await act(async () => {
+      await Promise.all(accounts.map((account) => deleteUser(account.id)))
+    })
+  }
+})
+it('oculta la cuenta actual y muestra los tres contadores', () => {
+  mount(<UsersPage />, admin)
+  expect(screen.queryByText(admin.displayName)).not.toBeInTheDocument()
+  expect(screen.getByText('Activos')).toBeInTheDocument()
+  expect(screen.getByText('Inactivos')).toBeInTheDocument()
+  expect(
+    screen.queryByRole('button', { name: 'Eliminar ' + admin.displayName }),
+  ).not.toBeInTheDocument()
+})
+it('pide confirmación antes de desactivar y permite cancelar', async () => {
+  tokenStorage.set('ortos-dev-token:dev-admin')
+  const user = userEvent.setup()
+  mount(<UsersPage />, admin)
+  const toggle = screen.getByRole('button', {
+    name: `Cambiar estado de ${dentist.displayName} a Inactivo`,
+  })
+  await user.click(toggle)
+  expect(screen.getByRole('dialog', { name: 'Desactivar usuario' })).toBeInTheDocument()
+  expect(findDevAccountByEmail('odontologo@ortos.test').active).toBe(true)
+  await user.click(screen.getByRole('button', { name: 'Cancelar' }))
+  expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+  expect(toggle).toHaveAttribute('aria-pressed', 'true')
+  await user.click(toggle)
+  await user.click(screen.getByRole('button', { name: 'Desactivar', exact: true }))
+  await waitFor(() => expect(toggle).toHaveAttribute('aria-pressed', 'false'))
+  expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+  await user.click(toggle)
+  await waitFor(() => expect(toggle).toHaveAttribute('aria-pressed', 'true'))
+})
 it('inicia sesión como odontólogo y restaura el rol desde su token', async () => {
   const result = await authService.login({ email: 'odontologo@ortos.test', password: 'Odonto123' })
   expect(result.user).toMatchObject(dentist)

@@ -24,6 +24,7 @@
 }
 .counts {
   display: flex;
+  flex-wrap: wrap;
   gap: 12px;
 }
 .counts span {
@@ -35,4 +36,16 @@
 }
 .counts strong {
   font-size: 24px;
+}
+.newUserButton {
+  --color-primary: var(--color-action);
+  --color-primary-dark: var(--color-ink);
+}
+.tableScroll {
+  /* Encabezado de 43px y diez filas de 65px. */
+  max-height: 693px;
+  overflow-y: auto;
+}
+.table tbody tr {
+  height: 65px;
 }
