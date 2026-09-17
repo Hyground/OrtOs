@@ -13,10 +13,11 @@
 }
 .toolbar input {
   max-width: 150px;
-  border: 1px solid var(--color-border);
-  padding: 8px;
-  border-radius: 6px;
+  border: 2px solid var(--color-border);
+  padding: 0.55rem 1.1rem;
+  border-radius: var(--radius-full);
   font: inherit;
+  font-size: var(--font-size-sm);
 }
 .calendar {
   display: grid;
@@ -127,6 +128,18 @@
   display: flex;
   flex-wrap: wrap;
   gap: 14px;
+}
+.legendBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.legendTitle {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
 }
 .legend span {
   display: flex;
@@ -334,6 +347,38 @@
   display: flex;
   align-items: center;
   gap: 5px;
+}
+@media print {
+  .printHide {
+    display: none !important;
+  }
+}
+.occupiedSlots {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-admin-bg);
+  font-size: 11px;
+  color: var(--color-text-muted);
+}
+.occupiedSlots ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.occupiedSlots li {
+  padding: 3px 8px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-weight: 600;
 }
 .focusTime {
   color: var(--color-primary-dark);

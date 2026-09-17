@@ -826,3 +826,43 @@
     grid-template-columns: 1fr;
   }
 }
+
+@media (max-width: 680px) {
+  .table.patientsTable thead {
+    display: none;
+  }
+  .table.patientsTable,
+  .table.patientsTable tbody,
+  .table.patientsTable tr {
+    display: block;
+    width: 100%;
+  }
+  .table.patientsTable tr {
+    margin-bottom: 12px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+  .table.patientsTable td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    white-space: normal;
+  }
+  .table.patientsTable td:first-child {
+    background: var(--color-admin-bg);
+    justify-content: flex-start;
+  }
+  .table.patientsTable td[data-label]::before {
+    content: attr(data-label);
+    flex-shrink: 0;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--color-text-muted);
+  }
+  .table.patientsTable .detailRow td {
+    display: block;
+    border-bottom: 0;
+  }
+}

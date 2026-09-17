@@ -1,11 +1,72 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Modal } from '@/components/ui/Modal/Modal'
+import { TextField } from '@/components/ui/TextField/TextField'
 import { IconUpload } from '@/components/icons/icons'
 import { localDate } from '@/features/clinical/mockStore'
 import { useEntryForm } from '@/features/clinical/useEntryForm'
 import { Field, Section, FormFooter } from '@/features/clinical/components'
 import { locations } from '../mockData/patients'
 import styles from '@/features/clinical/Clinical.module.css'
+const ALLERGY_OPTIONS = ['Penicilina', 'Aspirina', 'Anestesia local', 'Látex', 'Ninguna conocida']
+const DISEASE_OPTIONS = [
+  'Diabetes',
+  'Hipertensión',
+  'Enfermedades cardíacas',
+  'Asma',
+  'Ninguna conocida',
+]
+function ChecklistField({ label, options, value, onChange }) {
+  const tokens = String(value ?? '')
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean)
+  const known = tokens.filter((t) => options.includes(t))
+  const [otroChecked, setOtroChecked] = useState(tokens.some((t) => !options.includes(t)))
+  const [otroText, setOtroText] = useState(tokens.filter((t) => !options.includes(t)).join(', '))
+  const emit = (nextKnown, nextOtroChecked, nextOtroText) => {
+    const parts = [...nextKnown]
+    if (nextOtroChecked && nextOtroText.trim()) parts.push(nextOtroText.trim())
+    onChange(parts.join(', '))
+  }
+  const toggle = (option) => {
+    const nextKnown = known.includes(option)
+      ? known.filter((k) => k !== option)
+      : [...known, option]
+    emit(nextKnown, otroChecked, otroText)
+  }
+  return (
+    <div className={styles.radios} role="group" aria-label={label}>
+      <span>{label}</span>
+      {options.map((option) => (
+        <label key={option}>
+          <input type="checkbox" checked={known.includes(option)} onChange={() => toggle(option)} />
+          {option}
+        </label>
+      ))}
+      <label>
+        <input
+          type="checkbox"
+          checked={otroChecked}
+          onChange={(e) => {
+            setOtroChecked(e.target.checked)
+            emit(known, e.target.checked, otroText)
+          }}
+        />
+        Otra
+      </label>
+      {otroChecked && (
+        <TextField
+          label="Especifica"
+          value={otroText}
+          onChange={(e) => {
+            setOtroText(e.target.value)
+            emit(known, otroChecked, e.target.value)
+          }}
+        />
+      )}
+    </div>
+  )
+}
 const initial = {
   names: '',
   surnames: '',
@@ -35,8 +96,15 @@ const initial = {
 }
 export function PatientForm({ patient, onClose, onSaved }) {
   const form = useEntryForm('patients', patient ?? initial, onSaved)
+  const initialValuesRef = useRef(patient ?? initial)
   const [photoError, setPhotoError] = useState('')
   const [reading, setReading] = useState(false)
+  const requestClose = () => {
+    if (form.saving || reading) return
+    const changed = JSON.stringify(form.values) !== JSON.stringify(initialValuesRef.current)
+    if (changed && !window.confirm('¿Descartar los cambios sin guardar?')) return
+    onClose()
+  }
   const upload = async (file) => {
     setPhotoError('')
     if (!file) return
@@ -47,8 +115,21 @@ export function PatientForm({ patient, onClose, onSaved }) {
     setReading(true)
     const reader = new FileReader()
     reader.onload = () => {
-      form.set('photo', reader.result)
-      setReading(false)
+      const img = new Image()
+      img.onload = () => {
+        const scale = Math.min(1, 400 / img.width)
+        const canvas = document.createElement('canvas')
+        canvas.width = Math.round(img.width * scale)
+        canvas.height = Math.round(img.height * scale)
+        canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height)
+        form.set('photo', canvas.toDataURL('image/jpeg', 0.8))
+        setReading(false)
+      }
+      img.onerror = () => {
+        setPhotoError('No se pudo leer la imagen.')
+        setReading(false)
+      }
+      img.src = reader.result
     }
     reader.onerror = () => {
       setPhotoError('No se pudo leer la imagen.')
@@ -60,9 +141,7 @@ export function PatientForm({ patient, onClose, onSaved }) {
   return (
     <Modal
       open
-      onClose={() => {
-        if (!form.saving && !reading) onClose()
-      }}
+      onClose={requestClose}
       title={patient ? 'EDITAR PACIENTE' : 'NUEVO PACIENTE'}
       size="wide"
     >
@@ -120,13 +199,21 @@ export function PatientForm({ patient, onClose, onSaved }) {
             </div>
             <div>
               <Section title="INFORMACIÓN MÉDICA BÁSICA">
-                <div className={styles.cols2}>
-                  {f('bloodGroup', 'Grupo sanguíneo', {
-                    options: ['O+', 'O-', 'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-'],
-                  })}
-                  {f('allergies', 'Alergias conocidas')}
-                </div>
-                {f('diseases', 'Enfermedades relevantes')}
+                {f('bloodGroup', 'Grupo sanguíneo', {
+                  options: ['O+', 'O-', 'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-'],
+                })}
+                <ChecklistField
+                  label="Alergias conocidas"
+                  options={ALLERGY_OPTIONS}
+                  value={form.values.allergies}
+                  onChange={(value) => form.set('allergies', value)}
+                />
+                <ChecklistField
+                  label="Enfermedades relevantes"
+                  options={DISEASE_OPTIONS}
+                  value={form.values.diseases}
+                  onChange={(value) => form.set('diseases', value)}
+                />
                 {[
                   ['medications', '¿Toma medicamentos?'],
                   ['smoker', '¿Fuma?'],
@@ -183,7 +270,7 @@ export function PatientForm({ patient, onClose, onSaved }) {
         </fieldset>
         <FormFooter
           form={{ ...form, saving: form.saving || reading }}
-          onClose={onClose}
+          onClose={requestClose}
           label="Guardar paciente"
         />
       </form>

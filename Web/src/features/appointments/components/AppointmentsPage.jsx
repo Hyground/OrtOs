@@ -1,18 +1,25 @@
 import { useState } from 'react'
-import { IconCalendar, IconChevronLeft, IconChevronRight } from '@/components/icons/icons'
+import {
+  IconCalendar,
+  IconChevronLeft,
+  IconChevronRight,
+  IconDownload,
+  IconPrint,
+} from '@/components/icons/icons'
 import { Button } from '@/components/ui/Button/Button'
 import { Modal } from '@/components/ui/Modal/Modal'
 import { SelectField } from '@/components/ui/SelectField/SelectField'
 import { Badge } from '@/components/ui/Badge/Badge'
 import { Banner, Avatar } from '@/features/clinical/components'
 import { useModuleDialogs } from '@/features/clinical/useModuleDialogs'
+import { exportExcel } from '@/features/clinical/tableHelpers'
 import { localDate, displayDate } from '@/features/clinical/mockStore'
 import { usePatients } from '@/features/patients/hooks/usePatients'
 import { PatientForm } from '@/features/patients/components/PatientForm'
 import { RecordModal } from '@/features/records/components/RecordModal'
 import { AppointmentForm } from './AppointmentForm'
 import { useAppointments } from '../hooks/useAppointments'
-import { dentists } from '../mockData/appointments'
+import { useDoctors } from '@/features/doctors/hooks/useDoctors'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 import styles from '@/features/clinical/Clinical.module.css'
 import calendar from './Calendar.module.css'
@@ -58,7 +65,6 @@ const dentistColors = [
   'var(--color-action)',
   'var(--color-users)',
 ]
-const dentistColor = (name) => dentistColors[Math.max(dentists.indexOf(name), 0) % dentistColors.length]
 const dentistInitial = (name) =>
   (name ?? '')
     .replace(/^(Dr\.|Dra\.)\s*/, '')
@@ -69,8 +75,12 @@ export function AppointmentsPage() {
   useDocumentTitle('Citas')
   const appointments = useAppointments()
   const patients = usePatients()
+  const dentists = useDoctors()
+    .filter((d) => d.status === 'Activo')
+    .map((d) => d.name)
+  const dentistColor = (name) => dentistColors[Math.max(dentists.indexOf(name), 0) % dentistColors.length]
   const dialog = useModuleDialogs()
-  const [cursor, setCursor] = useState('2026-08-31')
+  const [cursor, setCursor] = useState(localDate())
   const [view, setView] = useState('Mes')
   const [filters, setFilters] = useState(false)
   const [dentist, setDentist] = useState('')
@@ -124,6 +134,27 @@ export function AppointmentsPage() {
     setCursor(dateKey(d))
   }
   const patient = (id) => patients.find((p) => p.id === id)
+  const exportAgenda = () => {
+    const rows = (view === 'Día' ? daily : monthly).map((a) => ({
+      time: a.time,
+      patientName: patient(a.patientId)?.name ?? '',
+      dentist: a.dentist,
+      treatment: a.treatment,
+      status: a.status,
+    }))
+    exportExcel(
+      rows,
+      [
+        { key: 'time', label: 'Hora' },
+        { key: 'patientName', label: 'Paciente' },
+        { key: 'dentist', label: 'Odontólogo' },
+        { key: 'treatment', label: 'Tratamiento' },
+        { key: 'status', label: 'Estado' },
+      ],
+      'citas-ortos.xlsx',
+      view === 'Día' ? 'Agenda del día' : 'Agenda del mes',
+    )
+  }
   const appointmentsForDay = (day) =>
     filtered.filter((a) => a.date === day).sort((a, b) => a.time.localeCompare(b.time))
   const focusedAppointments = focusedDay ? appointmentsForDay(focusedDay) : []
@@ -166,7 +197,7 @@ export function AppointmentsPage() {
       <div className={styles.split}>
         <div className={styles.stack}>
           <section className={styles.card}>
-            <div className={calendar.toolbar}>
+            <div className={calendar.toolbar + ' ' + calendar.printHide}>
               <Button
                 size="sm"
                 variant="ghost"
@@ -214,9 +245,15 @@ export function AppointmentsPage() {
               >
                 Filtros
               </Button>
+              <Button size="sm" variant="ghost" onClick={exportAgenda}>
+                <IconDownload /> Exportar
+              </Button>
+              <Button size="sm" variant="ghost" onClick={() => window.print()}>
+                <IconPrint /> Imprimir
+              </Button>
             </div>
             {filters && (
-              <div className={styles.filters}>
+              <div className={styles.filters + ' ' + calendar.printHide}>
                 <SelectField
                   label="Odontólogo"
                   placeholder="Todos los odontólogos"
@@ -359,28 +396,34 @@ export function AppointmentsPage() {
               </div>
             )}
             <div className={calendar.legend}>
-              <span className={calendar.legendGroup}>
-                {[
-                  ['#ef4444', 'Alta prioridad'],
-                  ['#eab308', 'Media prioridad'],
-                  ['#22c55e', 'Baja prioridad'],
-                ].map(([color, label]) => (
-                  <span key={label}>
-                    <i className={calendar.dot} style={{ background: color }} />
-                    {label}
-                  </span>
-                ))}
-              </span>
-              <span className={calendar.legendGroup}>
-                {dentists.map((name) => (
-                  <span key={name}>
-                    <i className={calendar.chipDot} style={{ background: dentistColor(name) }}>
-                      {dentistInitial(name)}
-                    </i>
-                    {name}
-                  </span>
-                ))}
-              </span>
+              <div className={calendar.legendBlock}>
+                <strong className={calendar.legendTitle}>Por prioridad</strong>
+                <span className={calendar.legendGroup}>
+                  {[
+                    ['#ef4444', 'Alta prioridad'],
+                    ['#eab308', 'Media prioridad'],
+                    ['#22c55e', 'Baja prioridad'],
+                  ].map(([color, label]) => (
+                    <span key={label}>
+                      <i className={calendar.dot} style={{ background: color }} />
+                      {label}
+                    </span>
+                  ))}
+                </span>
+              </div>
+              <div className={calendar.legendBlock}>
+                <strong className={calendar.legendTitle}>Por odontólogo</strong>
+                <span className={calendar.legendGroup}>
+                  {dentists.map((name) => (
+                    <span key={name}>
+                      <i className={calendar.chipDot} style={{ background: dentistColor(name) }}>
+                        {dentistInitial(name)}
+                      </i>
+                      {name}
+                    </span>
+                  ))}
+                </span>
+              </div>
             </div>
           </section>
           <section className={styles.card}>
@@ -407,7 +450,7 @@ export function AppointmentsPage() {
             <h2 className={styles.cardTitle}>{all ? 'PRÓXIMAS CITAS' : 'PRÓXIMAS 5 CITAS'}</h2>
             {upcoming.slice(0, all ? upcoming.length : 5).map((a) => (
               <div key={a.id} className={calendar.upcoming}>
-                <Avatar patient={patient(a.patientId)} />
+                <Avatar patient={patient(a.patientId)} variant="initials" />
                 <div>
                   <button onClick={() => dialog.setEditing(a)}>
                     {a.time} · {displayDate(a.date)}

@@ -1,13 +1,16 @@
+import { useRef } from 'react'
 import { IconEye } from '@/components/icons/icons'
 import { Button } from '@/components/ui/Button/Button'
 import { Modal } from '@/components/ui/Modal/Modal'
-import { localDate } from '@/features/clinical/mockStore'
+import { localDate, displayDate, getClinic } from '@/features/clinical/mockStore'
 import { useEntryForm } from '@/features/clinical/useEntryForm'
 import { Avatar, PatientFields, Field, Section, FormFooter } from '@/features/clinical/components'
 import { Badge } from '@/components/ui/Badge/Badge'
 import { usePatients } from '@/features/patients/hooks/usePatients'
-import { dentists, treatments } from '../mockData/appointments'
+import { useDoctors } from '@/features/doctors/hooks/useDoctors'
+import { treatments } from '../mockData/appointments'
 import styles from '@/features/clinical/Clinical.module.css'
+import calendarStyles from './Calendar.module.css'
 export function AppointmentForm({
   appointment,
   date,
@@ -19,6 +22,9 @@ export function AppointmentForm({
   onRecord,
 }) {
   const patients = usePatients()
+  const dentists = useDoctors()
+    .filter((d) => d.status === 'Activo')
+    .map((d) => d.name)
   const isEditing = Boolean(appointment?.id)
   const initialAppointment = {
     patientId: initialPatientId,
@@ -37,22 +43,47 @@ export function AppointmentForm({
     ...appointment,
   }
   const form = useEntryForm('appointments', initialAppointment, onSaved)
+  const initialValuesRef = useRef(initialAppointment)
   const patient = patients.find((p) => p.id === form.values.patientId)
   const f = (name, label, props = {}) => <Field form={form} name={name} label={label} {...props} />
+  const requestClose = () => {
+    if (form.saving) return
+    const changed = JSON.stringify(form.values) !== JSON.stringify(initialValuesRef.current)
+    if (changed && !window.confirm('¿Descartar los cambios sin guardar?')) return
+    onClose()
+  }
+  const occupiedSlots =
+    form.values.dentist && form.values.date
+      ? getClinic()
+          .appointments.filter(
+            (a) =>
+              a.date === form.values.date &&
+              a.dentist === form.values.dentist &&
+              a.id !== form.values.id,
+          )
+          .map((a) => {
+            const [h, m] = a.time.split(':').map(Number)
+            const endMinutes = h * 60 + m + (Number(a.duration) || 60)
+            const end =
+              String(Math.floor(endMinutes / 60)).padStart(2, '0') +
+              ':' +
+              String(endMinutes % 60).padStart(2, '0')
+            return a.time + '–' + end
+          })
+          .sort()
+      : []
   return (
     <Modal
       open
       size="wide"
       title={isEditing ? 'DETALLE / EDITAR CITA' : 'NUEVA CITA'}
-      onClose={() => {
-        if (!form.saving) onClose()
-      }}
+      onClose={requestClose}
     >
       <form className={styles.form} onSubmit={form.submit} noValidate>
         <fieldset disabled={form.saving} className={styles.stack}>
           {compactPatient && patient ? (
             <section className={styles.quickPatient} aria-label="Paciente seleccionado">
-              <Avatar patient={patient} />
+              <Avatar patient={patient} variant="initials" />
               <div className={styles.quickPatientInfo}>
                 <strong>{patient.name}</strong>
                 <small>{patient.folio}</small>
@@ -65,7 +96,12 @@ export function AppointmentForm({
               )}
             </section>
           ) : (
-            <PatientFields form={form} onAdd={() => onAdd(form)} onRecord={onRecord} />
+            <PatientFields
+              form={form}
+              onAdd={() => onAdd(form)}
+              onRecord={onRecord}
+              warnInactive
+            />
           )}
           <Section title={compactPatient ? 'AGENDAR CITA' : 'DETALLES DE LA CITA'}>
             <div className={styles.cols3}>
@@ -73,6 +109,22 @@ export function AppointmentForm({
               {f('time', 'Hora *', { type: 'time', required: true })}
               {f('dentist', 'Odontólogo *', { options: dentists, required: true })}
             </div>
+            {form.values.dentist && form.values.date && (
+              <div className={calendarStyles.occupiedSlots}>
+                <span>
+                  Horarios ocupados de {form.values.dentist} el {displayDate(form.values.date)}:
+                </span>
+                {occupiedSlots.length ? (
+                  <ul>
+                    {occupiedSlots.map((slot) => (
+                      <li key={slot}>{slot}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <span>Sin citas registradas este día.</span>
+                )}
+              </div>
+            )}
             <div className={styles.cols3}>
               {f('treatment', 'Tratamiento *', {
                 options: treatments,
@@ -129,7 +181,7 @@ export function AppointmentForm({
             </Section>
           )}
         </fieldset>
-        <FormFooter form={form} onClose={onClose} label="Guardar Cita" />
+        <FormFooter form={form} onClose={requestClose} label="Guardar Cita" />
       </form>
     </Modal>
   )

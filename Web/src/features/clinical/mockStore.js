@@ -50,18 +50,6 @@ export function nextReceipt() {
   )
   return 'CP-' + new Date().getFullYear() + '-' + String(latest + 1).padStart(6, '0')
 }
-export async function deletePatient(id) {
-  await new Promise((resolve) => setTimeout(resolve, 300))
-  if (
-    state.appointments.some((a) => a.patientId === id) ||
-    state.payments.some((p) => p.patientId === id)
-  )
-    throw new Error(
-      'Este paciente tiene citas o pagos asociados. Puedes cambiar su estado a Inactivo al editarlo.',
-    )
-  state = { ...state, patients: state.patients.filter((p) => p.id !== id) }
-  listeners.forEach((fn) => fn())
-}
 export function localDate(date = new Date()) {
   return new Intl.DateTimeFormat('en-CA', {
     timeZone: 'America/Guatemala',
