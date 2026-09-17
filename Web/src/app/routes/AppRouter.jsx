@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import { PublicLayout } from '@/components/layout/PublicLayout'
 import { PrivateLayout } from '@/components/layout/PrivateLayout'
 import { privateModules } from './navigation'
@@ -27,12 +27,14 @@ import { DoctorsPage } from '@/features/doctors/components/DoctorsPage'
 import { AppointmentSummaryPage } from '@/features/reports/components/AppointmentSummaryPage'
 import { AppointmentHistoryPage } from '@/features/appointmentHistory/components/AppointmentHistoryPage'
 import { ReportsPage } from '@/features/reports/ReportsPage'
+import { useAuth } from '@/features/auth/hooks/useAuth'
+import { PageLoader } from '@/components/feedback/PageLoader'
 
 export function AppRouter() {
   return (
     <Routes>
       <Route element={<PublicLayout />}>
-        <Route path={paths.home} element={<HomePage />} />
+        <Route path={paths.home} element={<HomeRoute />} />
         <Route path={paths.services} element={<ServicesPage />} />
         <Route path={paths.specialists} element={<SpecialistsPage />} />
         <Route path={paths.bookAppointment} element={<BookAppointmentPage />} />
@@ -85,6 +87,14 @@ export function AppRouter() {
       </Route>
     </Routes>
   )
+}
+
+function HomeRoute() {
+  const { status } = useAuth()
+
+  if (status === 'loading') return <PageLoader />
+  if (status === 'authenticated') return <Navigate to={paths.dashboard} replace />
+  return <HomePage />
 }
 
 function PatientDashboard() {

@@ -41,6 +41,13 @@ describe('AppRouter', () => {
     ).toBeInTheDocument()
   })
 
+  it('con sesión activa, la raíz abre el dashboard', async () => {
+    tokenStorage.set('ortos-dev-token:dev-admin')
+    renderAt('/')
+    expect(await screen.findByRole('heading', { name: /Hola,/i })).toBeInTheDocument()
+    expect(screen.queryByText('Mi panel')).not.toBeInTheDocument()
+  })
+
   it('sin sesión, /panel redirige al inicio y abre el modal de login', async () => {
     renderAt('/panel')
     expect(
