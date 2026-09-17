@@ -1,0 +1,7 @@
+<resources>
+    <item name="option_full_payment" type="id" />
+    <item name="option_partial_payment" type="id" />
+    <item name="option_transfer_payment" type="id" />
+    <item name="option_card_payment" type="id" />
+    <item name="option_cash_payment" type="id" />
+</resources>

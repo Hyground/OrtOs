@@ -1,4 +1,4 @@
-package com.wave.gt.ortos.di
+﻿package com.wave.gt.ortos.di
 
 import android.content.Context
 import com.wave.gt.ortos.auth.data.AuthRepositoryImpl
@@ -23,6 +23,10 @@ import com.wave.gt.ortos.home.data.HomeRepositoryImpl
 import com.wave.gt.ortos.home.data.local.LocalHomeDataSource
 import com.wave.gt.ortos.home.domain.HomeRepository
 import com.wave.gt.ortos.home.domain.usecase.GetHomeDashboardUseCase
+import com.wave.gt.ortos.pagos.data.PagosRepositoryImpl
+import com.wave.gt.ortos.pagos.data.local.LocalPagosDataSource
+import com.wave.gt.ortos.pagos.domain.PagosRepository
+import com.wave.gt.ortos.pagos.domain.usecase.GetPaymentDashboardUseCase
 
 class AppContainer(context: Context) {
 
@@ -62,13 +66,19 @@ class AppContainer(context: Context) {
     val getHomeDashboardUseCase: GetHomeDashboardUseCase
         get() = GetHomeDashboardUseCase(homeRepository)
 
-
     private val localCitaDataSource by lazy { LocalCitaDataSource() }
 
     private val citaRepository: CitaRepository by lazy { CitaRepositoryImpl(localCitaDataSource) }
 
     val getMyAppointmentsUseCase: GetMyAppointmentsUseCase
         get() = GetMyAppointmentsUseCase(citaRepository)
+
+    private val localPagosDataSource by lazy { LocalPagosDataSource() }
+
+    private val pagosRepository: PagosRepository by lazy { PagosRepositoryImpl(localPagosDataSource) }
+
+    val getPaymentDashboardUseCase: GetPaymentDashboardUseCase
+        get() = GetPaymentDashboardUseCase(pagosRepository)
 
     private val localChatDataSource by lazy { LocalChatDataSource() }
 

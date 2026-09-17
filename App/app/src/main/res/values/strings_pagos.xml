@@ -1,0 +1,31 @@
+<resources>
+    <string name="pagos_summary_label">Estado de cuenta</string>
+    <string name="pagos_pending_total">%1$s pendiente</string>
+    <string name="pagos_next_due">Proximo vencimiento: %1$s - %2$s</string>
+    <string name="pagos_no_next_due">No tienes pagos pendientes.</string>
+    <string name="pagos_paid_total_label">Pagado validado</string>
+    <string name="pagos_treatment_label">Tratamiento</string>
+    <string name="pagos_pending_title">Por pagar</string>
+    <string name="pagos_history_title">Historial y reportes</string>
+    <string name="pagos_empty_pending">Estas al dia con tus pagos.</string>
+    <string name="pagos_register_payment">Reportar pago</string>
+    <string name="pagos_payment_registered">Pago registrado localmente.</string>
+    <string name="pagos_payment_reported">Comprobante enviado para validacion.</string>
+    <string name="pagos_reported_on">Reportado %1$s</string>
+    <string name="pagos_paid_on">Pagado %1$s</string>
+    <string name="pagos_due_on">Vence %1$s</string>
+    <string name="pagos_method_pending">Metodo por confirmar</string>
+    <string name="pagos_report_payment_title">Reportar pago</string>
+    <string name="pagos_report_explanation">Esto no confirma el pago de inmediato. El admin lo revisa en la web y despues descuenta o marca pagada la deuda.</string>
+    <string name="pagos_full_payment">Pago completo (%1$s)</string>
+    <string name="pagos_partial_payment">Abono parcial</string>
+    <string name="pagos_amount_hint">Monto a reportar</string>
+    <string name="pagos_method_label">Metodo de pago</string>
+    <string name="pagos_method_transfer">Transferencia</string>
+    <string name="pagos_method_card">Tarjeta</string>
+    <string name="pagos_method_cash">Efectivo en clinica</string>
+    <string name="pagos_reference_hint">Referencia o numero de comprobante</string>
+    <string name="pagos_send_report">Enviar reporte</string>
+    <string name="pagos_invalid_amount">Ingresa un monto valido para esta deuda.</string>
+    <string name="pagos_reference_required">Ingresa una referencia o numero de comprobante.</string>
+</resources>
