@@ -34,10 +34,16 @@
   background: #ffffff24;
   font-size: 40px;
 }
+.bannerText {
+  flex: 1;
+  min-width: 180px;
+}
+.bannerAction {
+  margin-left: auto;
+}
 .total {
   display: grid;
   gap: 5px;
-  margin-left: auto;
   padding: 14px 18px;
   border: 1px solid #ffffff40;
   border-radius: 10px;

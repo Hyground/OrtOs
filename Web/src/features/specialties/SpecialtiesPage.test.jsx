@@ -6,7 +6,7 @@ import { SpecialtiesPage } from './SpecialtiesPage'
 beforeEach(() => localStorage.clear())
 
 describe('Especialidades', () => {
-  it('permite crear, editar, buscar y eliminar una especialidad con persistencia', async () => {
+  it('permite crear, editar, cambiar estado y eliminar una especialidad con persistencia', async () => {
     const user = userEvent.setup()
     const view = render(<SpecialtiesPage />)
     await user.click(screen.getByRole('button', { name: 'Nueva especialidad' }))
@@ -21,9 +21,14 @@ describe('Especialidades', () => {
     await user.clear(within(dialog).getByLabelText('Nombre'))
     await user.type(within(dialog).getByLabelText('Nombre'), 'Periodoncia clínica')
     await user.click(within(dialog).getByRole('button', { name: 'Guardar' }))
-    await user.type(screen.getByLabelText('Buscar especialidad'), 'clinica')
     expect(screen.getByRole('button', { name: 'Editar Periodoncia clínica' })).toBeInTheDocument()
-    expect(screen.queryByRole('button', { name: 'Editar Ortodoncia' })).not.toBeInTheDocument()
+    
+    // Probar el toggle de estado
+    const toggleBtn = screen.getByRole('button', { name: /Cambiar estado de Periodoncia clínica/ })
+    expect(toggleBtn).toHaveAttribute('aria-pressed', 'true')
+    await user.click(toggleBtn)
+    expect(toggleBtn).toHaveAttribute('aria-pressed', 'false')
+
     await user.click(screen.getByRole('button', { name: 'Eliminar Periodoncia clínica' }))
     await user.click(within(screen.getByRole('dialog')).getByRole('button', { name: 'Eliminar' }))
     expect(

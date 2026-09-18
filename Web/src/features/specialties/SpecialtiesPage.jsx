@@ -1,23 +1,22 @@
 import { useState } from 'react'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
-import { IconServices, IconSearch, IconPlus, IconEdit, IconTrash } from '@/components/icons/icons'
+import { IconServices, IconPlus, IconEdit, IconTrash } from '@/components/icons/icons'
 import { Button } from '@/components/ui/Button/Button'
 import { Modal } from '@/components/ui/Modal/Modal'
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog/ConfirmDialog'
 import { TextField } from '@/components/ui/TextField/TextField'
 import { TextAreaField } from '@/components/ui/TextAreaField/TextAreaField'
+import { StatusToggle } from '@/features/clinical/components'
 import { normalizeName, readSpecialties, saveSpecialties } from './specialtiesData'
 import styles from './SpecialtiesPage.module.css'
 
 export function SpecialtiesPage() {
   useDocumentTitle('Especialidades')
   const [items, setItems] = useState(readSpecialties)
-  const [search, setSearch] = useState('')
   const [draft, setDraft] = useState(null)
   const [deleting, setDeleting] = useState(null)
   const [error, setError] = useState('')
   const [notice, setNotice] = useState('')
-  const filtered = items.filter((item) => normalizeName(item.name).includes(normalizeName(search)))
 
   function openForm(item = { name: '', description: '' }) {
     setError('')
@@ -40,6 +39,12 @@ export function SpecialtiesPage() {
     }
   }
 
+  function toggleStatus(item) {
+    const nextStatus = item.status === 'Inactivo' ? 'Activo' : 'Inactivo'
+    const next = items.map((entry) => (entry.id === item.id ? { ...entry, status: nextStatus } : entry))
+    persist(next, `Estado de ${item.name} actualizado.`)
+  }
+
   function submit(event) {
     event.preventDefault()
     const name = draft.name.trim()
@@ -54,7 +59,7 @@ export function SpecialtiesPage() {
       setError('Ya existe una especialidad con ese nombre.')
       return
     }
-    const entry = { id: draft.id ?? crypto.randomUUID(), name, description }
+    const entry = { id: draft.id ?? crypto.randomUUID(), name, description, status: draft.status ?? 'Activo' }
     const next = draft.id
       ? items.map((item) => (item.id === draft.id ? entry : item))
       : [...items, entry]
@@ -68,10 +73,13 @@ export function SpecialtiesPage() {
         <span className={styles.moduleIcon}>
           <IconServices />
         </span>
-        <div>
+        <div className={styles.bannerText}>
           <h1>Especialidades</h1>
           <p>Administra las áreas odontológicas de la clínica.</p>
         </div>
+        <Button onClick={() => openForm()} size="sm" className={styles.bannerAction}>
+          <IconPlus /> Nueva especialidad
+        </Button>
         <div className={styles.total}>
           <strong>{items.length}</strong>
           <span>Especialidades registradas</span>
@@ -79,22 +87,6 @@ export function SpecialtiesPage() {
       </header>
 
       <div className={styles.card}>
-        <div className={styles.toolbar}>
-          <TextField
-            label="Buscar especialidad"
-            type="search"
-            icon={IconSearch}
-            placeholder="Buscar por nombre…"
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
-          />
-          <Button onClick={() => openForm()}>
-            <IconPlus /> Nueva especialidad
-          </Button>
-          <span className={styles.count}>
-            TOTAL: <strong>{items.length}</strong>
-          </span>
-        </div>
         <div className={styles.tableScroll}>
           <table className={styles.table} aria-label="Especialidades registradas">
             <thead>
@@ -102,17 +94,25 @@ export function SpecialtiesPage() {
                 <th scope="col">#</th>
                 <th scope="col">Nombre</th>
                 <th scope="col">Descripción</th>
+                <th scope="col">Estado</th>
                 <th scope="col">Acciones</th>
               </tr>
             </thead>
             <tbody>
-              {filtered.map((item, index) => (
+              {items.map((item, index) => (
                 <tr key={item.id}>
                   <td>{index + 1}</td>
                   <td>
                     <strong>{item.name}</strong>
                   </td>
                   <td className={styles.description}>{item.description}</td>
+                  <td>
+                    <StatusToggle
+                      active={item.status !== 'Inactivo'}
+                      label={`Cambiar estado de ${item.name} a ${item.status === 'Inactivo' ? 'Activo' : 'Inactivo'}`}
+                      onToggle={() => toggleStatus(item)}
+                    />
+                  </td>
                   <td>
                     <div className={styles.actions}>
                       <button
@@ -141,12 +141,10 @@ export function SpecialtiesPage() {
                   </td>
                 </tr>
               ))}
-              {!filtered.length && (
+              {!items.length && (
                 <tr>
-                  <td colSpan={4} className={styles.empty}>
-                    {items.length
-                      ? 'No hay especialidades que coincidan con la búsqueda.'
-                      : 'Todavía no hay especialidades. Agrega la primera con Nueva especialidad.'}
+                  <td colSpan={5} className={styles.empty}>
+                    Todavía no hay especialidades. Agrega la primera con Nueva especialidad.
                   </td>
                 </tr>
               )}

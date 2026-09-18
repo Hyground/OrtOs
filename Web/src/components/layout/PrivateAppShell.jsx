@@ -64,8 +64,17 @@ export function PrivateAppShell() {
     user?.role === 'paciente' ? null : { to: paths.newAppointment, label: 'NUEVA CITA' }
   const workDate = formatWorkDate(new Date())
   const menuItems = user?.role === 'paciente' ? patientMenuItems : privateMenuItems
+  const isDashboardRoute =
+    location.pathname === paths.dashboard ||
+    location.pathname === '/panel/dashboard' ||
+    location.pathname === '/panel/modulos'
+
   const showGlobalSearch =
-    location.pathname !== paths.summary && !location.pathname.startsWith(paths.doctors)
+    !isDashboardRoute &&
+    location.pathname !== paths.summary &&
+    !location.pathname.startsWith(paths.doctors) &&
+    !location.pathname.startsWith(paths.specialties) &&
+    !location.pathname.startsWith(paths.reports)
 
   const closeMobile = () => setMobileOpen(false)
   const toggleCollapsed = () => setCollapsed((prev) => !prev)

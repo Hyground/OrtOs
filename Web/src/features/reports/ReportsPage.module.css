@@ -269,6 +269,8 @@
   color: var(--color-text-muted);
 }
 .tableScroll {
+  max-height: 440px;
+  overflow-y: auto;
   overflow-x: auto;
 }
 .tableCard table {
@@ -277,9 +279,13 @@
   font-size: 12px;
 }
 .tableCard th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
   background: var(--color-primary-soft);
   color: var(--color-ink);
   text-align: left;
+  box-shadow: 0 1px 0 var(--color-border);
 }
 .tableCard th,
 .tableCard td {

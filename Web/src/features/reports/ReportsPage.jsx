@@ -107,9 +107,6 @@ function ReportChart({ chart }) {
 }
 
 function ReportTable({ table }) {
-  const [requestedPage, setPage] = useState(1)
-  const pages = Math.max(1, Math.ceil(table.rows.length / 15))
-  const page = Math.min(requestedPage, pages)
   return (
     <section className={styles.tableCard}>
       <h3>
@@ -127,7 +124,7 @@ function ReportTable({ table }) {
             </tr>
           </thead>
           <tbody>
-            {table.rows.slice((page - 1) * 15, page * 15).map((row, index) => (
+            {table.rows.map((row, index) => (
               <tr key={index}>
                 {table.columns.map((column, cell) => (
                   <td key={column.key}>{formatValue(row[cell]) || '—'}</td>
@@ -139,19 +136,6 @@ function ReportTable({ table }) {
       </div>
       {!table.rows.length && (
         <p className={styles.empty}>Sin registros para los filtros seleccionados.</p>
-      )}
-      {pages > 1 && (
-        <div className={styles.pagination}>
-          <Button variant="ghost" disabled={page <= 1} onClick={() => setPage(page - 1)}>
-            Anterior
-          </Button>
-          <span>
-            Página {page} de {pages}
-          </span>
-          <Button variant="ghost" disabled={page >= pages} onClick={() => setPage(page + 1)}>
-            Siguiente
-          </Button>
-        </div>
       )}
     </section>
   )
@@ -231,11 +215,7 @@ export function ReportsPage() {
         </div>
       </header>
       {!selected ? (
-        <section className={styles.catalog} aria-labelledby="report-areas">
-          <header>
-            <span>Módulo de gestión</span>
-            <h2 id="report-areas">Áreas de trabajo · Reportes</h2>
-          </header>
+        <section className={styles.catalog} aria-label="Áreas de trabajo · Reportes">
           <div className={styles.cards}>
             {reportCatalog.map((item) => {
               const Icon = icons[item.icon]
