@@ -34,6 +34,9 @@ Disponible normalmente en `http://localhost:5173`.
 
 Abra la carpeta `App` con Android Studio, espere la sincronización de Gradle y ejecute el módulo `app` en un emulador o dispositivo.
 
+No abra `App/app` directamente: es un modulo y no la raiz Gradle. La preparacion
+reproducible de una computadora nueva esta documentada en [App/README.md](App/README.md).
+
 ### Docker
 
 ```powershell

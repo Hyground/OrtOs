@@ -2,6 +2,23 @@ plugins {
     alias(libs.plugins.android.application)
 }
 
+// Android Studio 2026.1.1 can request the Kotlin DSL preparation task using
+// the module path (:app:) even though Gradle registers the real task only on
+// the root project. Keep this compatibility bridge until the IDE fixes that
+// project-path mismatch.
+tasks.register("prepareKotlinBuildScriptModel") {
+    group = "ide"
+    description = "Compatibility bridge for Android Studio Kotlin DSL import"
+    dependsOn(rootProject.tasks.named("prepareKotlinBuildScriptModel"))
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+        vendor = JvmVendorSpec.ADOPTIUM
+    }
+}
+
 android {
     namespace = "com.wave.gt.ortos"
 
