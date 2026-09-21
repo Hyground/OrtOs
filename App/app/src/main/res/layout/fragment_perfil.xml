@@ -1,19 +1,442 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?android:attr/colorBackground"
     tools:context=".ui.perfil.PerfilFragment">
 
-    <TextView
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:id="@+id/content_profile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="16dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="112dp"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_profile_hero"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:paddingHorizontal="24dp"
+                android:paddingTop="24dp"
+                android:paddingBottom="22dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/profile_portal_label"
+                    android:textAllCaps="true"
+                    android:textColor="@color/brand_on_primary_muted"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.14" />
+
+                <TextView
+                    android:id="@+id/text_initials"
+                    android:layout_width="84dp"
+                    android:layout_height="84dp"
+                    android:layout_marginTop="14dp"
+                    android:background="@drawable/bg_profile_avatar"
+                    android:gravity="center"
+                    android:textColor="@color/brand_on_primary"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    tools:text="MF" />
+
+                <TextView
+                    android:id="@+id/text_patient_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:gravity="center"
+                    android:maxLines="2"
+                    android:textColor="@color/brand_on_primary"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    tools:text="María Fernanda López García" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/text_patient_folio"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_profile_chip"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="7dp"
+                        android:textColor="@color/brand_on_primary"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        tools:text="EXP-2026-00128" />
+
+                    <TextView
+                        android:id="@+id/text_patient_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:background="@drawable/bg_profile_chip"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="7dp"
+                        android:textColor="@color/brand_on_primary"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        tools:text="● Activo" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="10dp"
+                android:text="@string/profile_personal_title"
+                android:textColor="?attr/colorOnSurface"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="?attr/colorSurface"
+                app:cardCornerRadius="22dp"
+                app:cardElevation="1dp"
+                app:strokeColor="?attr/colorOutline"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="18dp"
+                    android:paddingVertical="6dp">
+
+                    <LinearLayout style="@style/Widget.OrtOs.ProfileRow">
+                        <ImageView style="@style/Widget.OrtOs.ProfileIcon" android:contentDescription="@null" app:srcCompat="@drawable/ic_badge_24" />
+                        <LinearLayout style="@style/Widget.OrtOs.ProfileTextGroup">
+                            <TextView style="@style/Widget.OrtOs.ProfileLabelModern" android:text="@string/profile_name" />
+                            <TextView android:id="@+id/display_name" style="@style/Widget.OrtOs.ProfileValueModern" android:drawableEnd="@drawable/ic_edit_24" android:drawablePadding="8dp" tools:text="María Fernanda López García" />
+                        </LinearLayout>
+                    </LinearLayout>
+                    <View style="@style/Widget.OrtOs.ProfileDivider" />
+
+                    <LinearLayout style="@style/Widget.OrtOs.ProfileRow">
+                        <ImageView style="@style/Widget.OrtOs.ProfileIcon" android:contentDescription="@null" app:srcCompat="@drawable/ic_badge_24" />
+                        <LinearLayout style="@style/Widget.OrtOs.ProfileTextGroup">
+                            <TextView style="@style/Widget.OrtOs.ProfileLabelModern" android:text="@string/profile_dpi" />
+                            <TextView android:id="@+id/value_dpi" style="@style/Widget.OrtOs.ProfileValueModern" tools:text="3170626701302" />
+                        </LinearLayout>
+                    </LinearLayout>
+                    <View style="@style/Widget.OrtOs.ProfileDivider" />
+
+                    <LinearLayout style="@style/Widget.OrtOs.ProfileRow">
+                        <ImageView style="@style/Widget.OrtOs.ProfileIcon" android:contentDescription="@null" app:srcCompat="@drawable/ic_calendar_24" />
+                        <LinearLayout style="@style/Widget.OrtOs.ProfileTextGroup">
+                            <TextView style="@style/Widget.OrtOs.ProfileLabelModern" android:text="@string/profile_birth_date" />
+                            <TextView android:id="@+id/display_birth_date" style="@style/Widget.OrtOs.ProfileValueModern" android:drawableEnd="@drawable/ic_edit_24" android:drawablePadding="8dp" tools:text="15/05/1995" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                android:layout_marginBottom="10dp"
+                android:text="@string/profile_contact_title"
+                android:textColor="?attr/colorOnSurface"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="?attr/colorSurface"
+                app:cardCornerRadius="22dp"
+                app:cardElevation="1dp"
+                app:strokeColor="?attr/colorOutline"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="18dp"
+                    android:paddingVertical="6dp">
+
+                    <LinearLayout style="@style/Widget.OrtOs.ProfileRow">
+                        <ImageView style="@style/Widget.OrtOs.ProfileIcon" android:contentDescription="@null" app:srcCompat="@drawable/ic_phone_24" />
+                        <LinearLayout style="@style/Widget.OrtOs.ProfileTextGroup">
+                            <TextView style="@style/Widget.OrtOs.ProfileLabelModern" android:text="@string/profile_phone" />
+                            <TextView android:id="@+id/display_phone" style="@style/Widget.OrtOs.ProfileValueModern" android:drawableEnd="@drawable/ic_edit_24" android:drawablePadding="8dp" tools:text="5555-1234" />
+                        </LinearLayout>
+                    </LinearLayout>
+                    <View style="@style/Widget.OrtOs.ProfileDivider" />
+
+                    <LinearLayout style="@style/Widget.OrtOs.ProfileRow">
+                        <ImageView style="@style/Widget.OrtOs.ProfileIcon" android:contentDescription="@null" app:srcCompat="@drawable/ic_email_24" />
+                        <LinearLayout style="@style/Widget.OrtOs.ProfileTextGroup">
+                            <TextView style="@style/Widget.OrtOs.ProfileLabelModern" android:text="@string/profile_contact_email" />
+                            <TextView android:id="@+id/display_contact_email" style="@style/Widget.OrtOs.ProfileValueModern" android:drawableEnd="@drawable/ic_edit_24" android:drawablePadding="8dp" tools:text="marifer26452@gmail.com" />
+                        </LinearLayout>
+                    </LinearLayout>
+                    <View style="@style/Widget.OrtOs.ProfileDivider" />
+
+                    <LinearLayout style="@style/Widget.OrtOs.ProfileRow">
+                        <ImageView style="@style/Widget.OrtOs.ProfileIcon" android:contentDescription="@null" app:srcCompat="@drawable/ic_location_24" />
+                        <LinearLayout style="@style/Widget.OrtOs.ProfileTextGroup">
+                            <TextView style="@style/Widget.OrtOs.ProfileLabelModern" android:text="@string/profile_address" />
+                            <TextView android:id="@+id/display_address" style="@style/Widget.OrtOs.ProfileValueModern" android:drawableEnd="@drawable/ic_edit_24" android:drawablePadding="8dp" tools:text="Zona 1, Huehuetenango" />
+                        </LinearLayout>
+                    </LinearLayout>
+                    <View style="@style/Widget.OrtOs.ProfileDivider" />
+
+                    <LinearLayout style="@style/Widget.OrtOs.ProfileRow">
+                        <ImageView style="@style/Widget.OrtOs.ProfileIcon" android:contentDescription="@null" app:srcCompat="@drawable/ic_location_24" />
+                        <LinearLayout style="@style/Widget.OrtOs.ProfileTextGroup">
+                            <TextView style="@style/Widget.OrtOs.ProfileLabelModern" android:text="@string/profile_municipality" />
+                            <TextView android:id="@+id/display_municipality" style="@style/Widget.OrtOs.ProfileValueModern" android:drawableEnd="@drawable/ic_edit_24" android:drawablePadding="8dp" tools:text="Huehuetenango" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/edit_panel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?android:attr/colorBackground"
+        android:clipToPadding="false"
+        android:fillViewport="true"
+        android:paddingHorizontal="20dp"
+        android:paddingTop="76dp"
+        android:paddingBottom="112dp"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="20dp"
+                android:text="@string/profile_edit_subtitle"
+                android:textColor="?attr/colorOnSurfaceVariant" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/layout_name"
+                style="@style/Widget.OrtOs.TextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/profile_name"
+                app:startIconDrawable="@drawable/ic_badge_24">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/value_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionDone"
+                    android:inputType="textCapWords"
+                    android:singleLine="true" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/layout_birth_date"
+                style="@style/Widget.OrtOs.TextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:hint="@string/profile_birth_date"
+                app:startIconDrawable="@drawable/ic_calendar_24">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/value_birth_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionDone"
+                    android:inputType="date"
+                    android:singleLine="true" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/layout_phone"
+                style="@style/Widget.OrtOs.TextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:hint="@string/profile_phone"
+                app:startIconDrawable="@drawable/ic_phone_24">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/value_phone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionDone"
+                    android:inputType="phone"
+                    android:singleLine="true" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/layout_contact_email"
+                style="@style/Widget.OrtOs.TextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:hint="@string/profile_contact_email"
+                app:startIconDrawable="@drawable/ic_email_24">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/value_contact_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionDone"
+                    android:inputType="textEmailAddress"
+                    android:singleLine="true" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/layout_address"
+                style="@style/Widget.OrtOs.TextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:hint="@string/profile_address"
+                app:startIconDrawable="@drawable/ic_location_24">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/value_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionDone"
+                    android:inputType="textPostalAddress|textCapSentences"
+                    android:singleLine="true" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/layout_municipality"
+                style="@style/Widget.OrtOs.TextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:hint="@string/profile_municipality"
+                app:startIconDrawable="@drawable/ic_location_24">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/value_municipality"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionDone"
+                    android:inputType="textCapWords"
+                    android:singleLine="true" />
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/layout_edit_actions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:visibility="gone"
+        app:cardBackgroundColor="?attr/colorSurface"
+        app:cardCornerRadius="0dp"
+        app:cardElevation="4dp"
+        tools:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="10dp">
+
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/progress_saving"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:indeterminate="true"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_cancel"
+                    style="@style/Widget.Material3.Button.IconButton"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:contentDescription="@string/profile_cancel"
+                    app:icon="@drawable/ic_close_24"
+                    app:iconPadding="0dp" />
+
+                <TextView
+                    android:id="@+id/text_edit_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="12dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:text="@string/profile_edit_title"
+                    android:textAppearance="?attr/textAppearanceTitleMedium"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_save"
+                    style="@style/Widget.Material3.Button.IconButton.Filled"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:contentDescription="@string/profile_save"
+                    app:icon="@drawable/ic_check_24"
+                    app:iconPadding="0dp" />
+            </LinearLayout>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <LinearLayout
+        android:id="@+id/layout_error"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="32dp"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center" android:text="@string/profile_unavailable" android:textAppearance="?attr/textAppearanceBodyLarge" />
+        <com.google.android.material.button.MaterialButton android:id="@+id/button_retry" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:text="@string/profile_retry" />
+    </LinearLayout>
+
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/menu_perfil"
-        android:textAppearance="?attr/textAppearanceHeadlineSmall"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_gravity="center"
+        android:indeterminate="true" />
+</FrameLayout>

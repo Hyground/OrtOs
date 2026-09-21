@@ -27,6 +27,11 @@ import com.wave.gt.ortos.pagos.data.PagosRepositoryImpl
 import com.wave.gt.ortos.pagos.data.local.LocalPagosDataSource
 import com.wave.gt.ortos.pagos.domain.PagosRepository
 import com.wave.gt.ortos.pagos.domain.usecase.GetPaymentDashboardUseCase
+import com.wave.gt.ortos.ui.perfil.data.ProfileRepositoryImpl
+import com.wave.gt.ortos.ui.perfil.data.local.LocalProfileDataSource
+import com.wave.gt.ortos.ui.perfil.domain.GetPatientProfileUseCase
+import com.wave.gt.ortos.ui.perfil.domain.ProfileRepository
+import com.wave.gt.ortos.ui.perfil.domain.UpdatePatientProfileUseCase
 
 class AppContainer(context: Context) {
 
@@ -89,6 +94,18 @@ class AppContainer(context: Context) {
 
     val sendMessageUseCase: SendMessageUseCase
         get() = SendMessageUseCase(chatRepository)
+
+    private val localProfileDataSource by lazy { LocalProfileDataSource() }
+
+    private val profileRepository: ProfileRepository by lazy {
+        ProfileRepositoryImpl(localProfileDataSource, sessionManager)
+    }
+
+    val getPatientProfileUseCase: GetPatientProfileUseCase
+        get() = GetPatientProfileUseCase(profileRepository)
+
+    val updatePatientProfileUseCase: UpdatePatientProfileUseCase
+        get() = UpdatePatientProfileUseCase(profileRepository)
 
     private companion object {
         const val USE_LOCAL_BACKEND = true

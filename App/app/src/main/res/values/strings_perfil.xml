@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="profile_portal_label">Portal del paciente</string>
+    <string name="profile_personal_title">Información personal</string>
+    <string name="profile_contact_title">Contacto y ubicación</string>
+    <string name="profile_name">Nombre</string>
+    <string name="profile_dpi">DPI</string>
+    <string name="profile_birth_date">Fecha de nacimiento</string>
+    <string name="profile_phone">Teléfono</string>
+    <string name="profile_contact_email">Correo de contacto</string>
+    <string name="profile_address">Dirección</string>
+    <string name="profile_municipality">Municipio</string>
+    <string name="profile_not_registered">No registrado</string>
+    <string name="profile_unavailable">Tu cuenta todavía no tiene un expediente vinculado. Contacta a la clínica para completar tu registro.</string>
+    <string name="profile_retry">Reintentar</string>
+    <string name="profile_status_format">● %1$s</string>
+    <string name="profile_edit_title">Editar perfil</string>
+    <string name="profile_edit_field">Editar: %1$s</string>
+    <string name="profile_edit_subtitle">Modifica este dato y guarda el cambio.</string>
+    <string name="profile_save">Guardar cambios</string>
+    <string name="profile_cancel">Cancelar</string>
+    <string name="profile_saved">Perfil actualizado</string>
+    <string name="profile_error_name">Ingresa el nombre del paciente.</string>
+    <string name="profile_error_phone">Ingresa un teléfono válido.</string>
+    <string name="profile_error_email">Ingresa un correo válido.</string>
+</resources>
