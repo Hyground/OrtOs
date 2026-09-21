@@ -5,6 +5,7 @@ import com.ortos.api.repository.PacienteRepository;
 import com.ortos.api.repository.UsuarioRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -18,6 +19,9 @@ public class SeedUsersRunner implements CommandLineRunner {
     private final PacienteRepository pacienteRepository;
     private final PasswordEncoder passwordEncoder;
 
+    @Value("${ortos.seed.enabled:false}")
+    private boolean seedEnabled;
+
     public SeedUsersRunner(UsuarioRepository usuarioRepository, PacienteRepository pacienteRepository, PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
         this.pacienteRepository = pacienteRepository;
@@ -26,6 +30,7 @@ public class SeedUsersRunner implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
+        if (!seedEnabled) return;
         if (usuarioRepository.count() > 0) return;
 
         String demoPatientId = pacienteRepository.findAll().stream()

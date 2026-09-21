@@ -1,0 +1,75 @@
+name: Deploy API
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "API/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ortos-api-production
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: API
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+          cache-dependency-path: API/pom.xml
+      - name: Build API jar
+        run: mvn --batch-mode --no-transfer-progress -DskipTests package
+      - name: Configure deployment key
+        working-directory: .
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+        run: |
+          install -d -m 700 "$HOME/.ssh"
+          printf '%s\n' "$VPS_SSH_KEY" > "$HOME/.ssh/id_ed25519"
+          chmod 600 "$HOME/.ssh/id_ed25519"
+          ssh-keyscan -H "$VPS_HOST" >> "$HOME/.ssh/known_hosts"
+      - name: Upload release
+        working-directory: .
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+        run: |
+          scp -i "$HOME/.ssh/id_ed25519" API/target/api-0.0.1-SNAPSHOT.jar "$VPS_USER@$VPS_HOST:/opt/ortos-api/releases/api-${GITHUB_SHA}.jar"
+      - name: Activate release
+        working-directory: .
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+        run: |
+          ssh -i "$HOME/.ssh/id_ed25519" "$VPS_USER@$VPS_HOST" "ln -sfn releases/api-${GITHUB_SHA}.jar /opt/ortos-api/app.jar && sudo /usr/bin/systemctl restart ortos-api"
+      - name: Verify API startup
+        working-directory: .
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+        run: |
+          for attempt in {1..12}; do
+            if ssh -i "$HOME/.ssh/id_ed25519" "$VPS_USER@$VPS_HOST" "systemctl is-active --quiet ortos-api && curl --fail --silent http://127.0.0.1:8080/api/services > /dev/null"; then
+              echo "OrtOs API is running"
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "OrtOs API did not become healthy"
+          ssh -i "$HOME/.ssh/id_ed25519" "$VPS_USER@$VPS_HOST" "systemctl status ortos-api --no-pager || true"
+          exit 1
