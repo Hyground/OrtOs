@@ -69,22 +69,25 @@ export function SpecialtiesPage() {
 
   return (
     <section className={styles.page}>
-      <header className={styles.banner}>
-        <span className={styles.moduleIcon}>
-          <IconServices />
-        </span>
-        <div className={styles.bannerText}>
-          <h1>Especialidades</h1>
-          <p>Administra las áreas odontológicas de la clínica.</p>
-        </div>
-        <Button onClick={() => openForm()} size="sm" className={styles.bannerAction}>
+      <div className={styles.headerRow}>
+        <header className={styles.banner}>
+          <span className={styles.moduleIcon}>
+            <IconServices />
+          </span>
+          <div className={styles.bannerText}>
+            <h1>Especialidades</h1>
+            <p>Administra las áreas odontológicas de la clínica.</p>
+          </div>
+          <div className={styles.total}>
+            <strong>{items.length}</strong>
+            <span>Especialidades registradas</span>
+          </div>
+        </header>
+
+        <Button size="sm" onClick={() => openForm()}>
           <IconPlus /> Nueva especialidad
         </Button>
-        <div className={styles.total}>
-          <strong>{items.length}</strong>
-          <span>Especialidades registradas</span>
-        </div>
-      </header>
+      </div>
 
       <div className={styles.card}>
         <div className={styles.tableScroll}>
@@ -94,7 +97,7 @@ export function SpecialtiesPage() {
                 <th scope="col">#</th>
                 <th scope="col">Nombre</th>
                 <th scope="col">Descripción</th>
-                <th scope="col">Estado</th>
+                <th scope="col">Visibilidad</th>
                 <th scope="col">Acciones</th>
               </tr>
             </thead>
@@ -109,7 +112,9 @@ export function SpecialtiesPage() {
                   <td>
                     <StatusToggle
                       active={item.status !== 'Inactivo'}
-                      label={`Cambiar estado de ${item.name} a ${item.status === 'Inactivo' ? 'Activo' : 'Inactivo'}`}
+                      onLabel="Público"
+                      offLabel="Privado"
+                      label={`Cambiar visibilidad de ${item.name} a ${item.status === 'Inactivo' ? 'Público' : 'Privado'}`}
                       onToggle={() => toggleStatus(item)}
                     />
                   </td>

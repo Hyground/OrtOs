@@ -24,7 +24,7 @@ describe('Especialidades', () => {
     expect(screen.getByRole('button', { name: 'Editar Periodoncia clínica' })).toBeInTheDocument()
     
     // Probar el toggle de estado
-    const toggleBtn = screen.getByRole('button', { name: /Cambiar estado de Periodoncia clínica/ })
+    const toggleBtn = screen.getByRole('button', { name: /Cambiar (estado|visibilidad) de Periodoncia clínica/ })
     expect(toggleBtn).toHaveAttribute('aria-pressed', 'true')
     await user.click(toggleBtn)
     expect(toggleBtn).toHaveAttribute('aria-pressed', 'false')

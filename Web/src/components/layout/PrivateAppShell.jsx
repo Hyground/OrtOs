@@ -24,6 +24,41 @@ function menuClass(isActive) {
   return isActive ? `${styles.menuLink} ${styles.menuLinkActive}` : styles.menuLink
 }
 
+const dayWords = [
+  '',
+  'uno',
+  'dos',
+  'tres',
+  'cuatro',
+  'cinco',
+  'seis',
+  'siete',
+  'ocho',
+  'nueve',
+  'diez',
+  'once',
+  'doce',
+  'trece',
+  'catorce',
+  'quince',
+  'dieciséis',
+  'diecisiete',
+  'dieciocho',
+  'diecinueve',
+  'veinte',
+  'veintiuno',
+  'veintidós',
+  'veintitrés',
+  'veinticuatro',
+  'veinticinco',
+  'veintiséis',
+  'veintisiete',
+  'veintiocho',
+  'veintinueve',
+  'treinta',
+  'treinta y uno',
+]
+
 function formatWorkDate(date) {
   return new Intl.DateTimeFormat('en-GB', {
     timeZone: 'America/Guatemala',
@@ -31,6 +66,15 @@ function formatWorkDate(date) {
     month: '2-digit',
     year: 'numeric',
   }).format(date)
+}
+
+function formatWrittenDate(date) {
+  const weekday = new Intl.DateTimeFormat('es-GT', { weekday: 'long' }).format(date)
+  const weekdayCap = weekday.charAt(0).toUpperCase() + weekday.slice(1)
+  const dayNum = date.getDate()
+  const dayWord = dayWords[dayNum] || String(dayNum)
+  const month = new Intl.DateTimeFormat('es-GT', { month: 'long' }).format(date).toLowerCase()
+  return `${weekdayCap}, ${dayWord} de ${month}`
 }
 
 export function PrivateAppShell() {
@@ -75,6 +119,10 @@ export function PrivateAppShell() {
     !location.pathname.startsWith(paths.doctors) &&
     !location.pathname.startsWith(paths.specialties) &&
     !location.pathname.startsWith(paths.reports)
+
+  const isSpecialtiesRoute = location.pathname.startsWith(paths.specialties)
+  const showWrittenDate = isDashboardRoute || isSpecialtiesRoute
+  const writtenDate = formatWrittenDate(new Date())
 
   const closeMobile = () => setMobileOpen(false)
   const toggleCollapsed = () => setCollapsed((prev) => !prev)
@@ -241,6 +289,9 @@ export function PrivateAppShell() {
           <div className={styles.dateBox}>
             <IconCalendar />
             <span>{workDate}</span>
+            {showWrittenDate ? (
+              <span className={styles.writtenDate}>{writtenDate}</span>
+            ) : null}
           </div>
 
           {action ? <Button to={action.to} variant="primary" size="sm" className={styles.newButton}>

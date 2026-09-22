@@ -3,7 +3,15 @@
   gap: 20px;
   color: var(--color-text);
 }
+.headerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
 .banner {
+  flex: 1;
+  min-width: 0;
   display: flex;
   align-items: center;
   flex-wrap: wrap;
@@ -38,12 +46,10 @@
   flex: 1;
   min-width: 180px;
 }
-.bannerAction {
-  margin-left: auto;
-}
 .total {
   display: grid;
   gap: 5px;
+  margin-left: auto;
   padding: 14px 18px;
   border: 1px solid #ffffff40;
   border-radius: 10px;

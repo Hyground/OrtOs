@@ -87,21 +87,23 @@ export function Tabs({ items, value, onChange }) {
     </div>
   )
 }
-export function StatusToggle({ active, disabled = false, label, onToggle }) {
+export function StatusToggle({ active, disabled = false, label, onToggle, onLabel = 'ON', offLabel = 'OFF' }) {
+  const isCustomText = onLabel.length > 3 || offLabel.length > 3
   return (
     <button
       type="button"
       className={styles.statusToggle}
+      style={isCustomText ? { width: 'auto', minWidth: '110px', padding: '2px 6px' } : undefined}
       aria-label={label}
       aria-pressed={active}
       disabled={disabled}
       onClick={onToggle}
     >
       <span className={[styles.statusOption, active ? styles.statusOptionSelected : ''].join(' ')}>
-        ON
+        {onLabel}
       </span>
       <span className={[styles.statusOption, !active ? styles.statusOptionSelected : ''].join(' ')}>
-        OFF
+        {offLabel}
       </span>
     </button>
   )

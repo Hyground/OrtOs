@@ -371,6 +371,14 @@
   border-bottom: 1px solid var(--color-border);
 }
 
+.writtenDate {
+  margin-left: auto;
+  color: var(--color-ink);
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
 .searchBox,
 .dateBox,
 .notification {
@@ -422,7 +430,7 @@
 }
 
 .dateBox {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 12px;
   padding: 0 13px;
@@ -506,7 +514,7 @@
     gap: 5px;
   }
 
-  .dateBox {
+  .writtenDate {
     display: none;
   }
 
@@ -689,15 +697,7 @@
     display: none;
   }
 
-  .dateBox {
-    display: inline-flex;
-    min-height: 36px;
-    gap: 4px;
-    padding: 0 8px;
-    font-size: 0.72rem;
-  }
-
-  .dateBox svg {
+  .writtenDate {
     display: none;
   }
 
