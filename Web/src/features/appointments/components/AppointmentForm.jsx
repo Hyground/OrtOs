@@ -13,6 +13,7 @@ import { treatments } from '../mockData/appointments'
 import styles from '@/features/clinical/Clinical.module.css'
 import calendarStyles from './Calendar.module.css'
 import { TimeField12h } from './TimeField12h'
+import { PatientAccountModal } from '@/features/payments/components/PatientAccountModal'
 export function AppointmentForm({
   appointment,
   date,
@@ -49,6 +50,7 @@ export function AppointmentForm({
   const patient = patients.find((p) => p.id === form.values.patientId)
   const f = (name, label, props = {}) => <Field form={form} name={name} label={label} {...props} />
   const [confirmClose, setConfirmClose] = useState(false)
+  const [accountOpen, setAccountOpen] = useState(false)
   const requestClose = () => {
     if (form.saving) return
     const changed = JSON.stringify(form.values) !== JSON.stringify(initialValuesRef.current)
@@ -107,6 +109,7 @@ export function AppointmentForm({
             />
           )}
           <Section title={compactPatient ? 'AGENDAR CITA' : 'DETALLES DE LA CITA'}>
+            {isEditing && patient && <Button type="button" size="sm" onClick={() => setAccountOpen(true)}>Cuenta de la cita</Button>}
             <div className={styles.cols3}>
               {f('date', 'Fecha *', { type: 'date', required: true })}
               <TimeField12h
@@ -201,6 +204,7 @@ export function AppointmentForm({
         onClose={() => setConfirmClose(false)}
         onConfirm={onClose}
       />
+      {accountOpen && <PatientAccountModal patient={patient} appointment={appointment} onClose={() => setAccountOpen(false)} />}
     </Modal>
   )
 }

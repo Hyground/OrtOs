@@ -23,6 +23,7 @@ import { RecordModal } from '@/features/records/components/RecordModal'
 import { PatientForm } from './PatientForm'
 import { AppointmentForm } from '@/features/appointments/components/AppointmentForm'
 import { PaymentForm } from '@/features/payments/components/PaymentForm'
+import { PatientAccountModal } from '@/features/payments/components/PatientAccountModal'
 import { initialPayment } from '@/features/payments/mockData/initialPayment'
 import { paths } from '@/app/routes/paths'
 import { usePatients } from '../hooks/usePatients'
@@ -44,6 +45,7 @@ export function PatientsPage() {
   const [expandedId, setExpandedId] = useState('')
   const [quickPayment, setQuickPayment] = useState(null)
   const [quickAppointment, setQuickAppointment] = useState(null)
+  const [accountPatient, setAccountPatient] = useState(null)
   const rows = patients.filter(
     (p) =>
       normalize(p.name + ' ' + p.dpi + ' ' + p.phone + ' ' + p.folio).includes(normalize(query)) &&
@@ -242,10 +244,10 @@ export function PatientsPage() {
                               <button
                                 type="button"
                                 className={styles.actionCard + ' ' + styles.actionPayment}
-                                onClick={() => setQuickPayment(p)}
+                                onClick={() => setAccountPatient(p)}
                               >
                                 <IconCreditCard />
-                                <span>Registrar pago</span>
+                                <span>Cuenta / Pagos</span>
                               </button>
                               <button
                                 type="button"
@@ -323,6 +325,7 @@ export function PatientsPage() {
           onRecord={dialog.setRecord}
         />
       )}
+      {accountPatient && <PatientAccountModal patient={accountPatient} onClose={() => setAccountPatient(null)} />}
       {quickAppointment && (
         <AppointmentForm
           initialPatientId={quickAppointment.id}

@@ -16,6 +16,7 @@ import { PaymentForm } from './PaymentForm'
 import { QuickPayment } from './QuickPayment'
 import { PaymentsAnalytics } from './PaymentsAnalytics'
 import { PaymentMethodIcon } from './PaymentMethodIcon'
+import { PatientAccountModal } from './PatientAccountModal'
 import { concepts, paymentMethods } from '../mockData/payments'
 import { usePayments } from '../hooks/usePayments'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
@@ -34,6 +35,7 @@ export function PaymentsPage() {
   const [method, setMethod] = useState('')
   const [query, setQuery] = useState('')
   const [receipt, setReceipt] = useState(null)
+  const [accountPatient, setAccountPatient] = useState(null)
   const person = (id) => patients.find((p) => p.id === id)
   const rows = payments
     .filter(
@@ -182,6 +184,12 @@ export function PaymentsPage() {
           </Button>
           <Button type="button" size="sm" onClick={dialog.create}>
             + NUEVO PAGO
+          </Button>
+          <Button type="button" size="sm" variant="ghost" onClick={() => {
+            const found = patients.find((p) => normalize(p.name + ' ' + p.folio).includes(normalize(query)))
+            if (found) setAccountPatient(found)
+          }}>
+            Abrir cuenta
           </Button>
           <Button size="sm" variant="ghost" onClick={clear}>
             Limpiar
@@ -352,6 +360,7 @@ export function PaymentsPage() {
           onClose={() => setReceipt(null)}
         />
       )}
+      {accountPatient && <PatientAccountModal patient={accountPatient} onClose={() => setAccountPatient(null)} />}
     </div>
   )
 }

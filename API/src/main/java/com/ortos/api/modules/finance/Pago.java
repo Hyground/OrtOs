@@ -19,6 +19,9 @@ public class Pago {
     @Column(name = "patient_id")
     private String patientId;
 
+    @Column(name = "appointment_id")
+    private String appointmentId;
+
     private String concept;
     private String treatment;
     private LocalDate date;
@@ -32,7 +35,7 @@ public class Pago {
     @Column(name = "receipt_number")
     private String receiptNumber;
 
-    private String status = "Pendiente";
+    private String status = "Registrado";
 
     @Column(name = "registrado_por")
     private String registradoPor;

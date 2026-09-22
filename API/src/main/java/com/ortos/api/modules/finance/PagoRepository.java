@@ -11,4 +11,5 @@ public interface PagoRepository extends JpaRepository<Pago, String> {
     boolean existsByPatientId(String patientId);
     Optional<Pago> findFirstByReceiptNumberIsNotNullOrderByReceiptNumberDesc();
     List<Pago> findByPatientIdAndStatus(String patientId, String status);
+    List<Pago> findByPatientIdAndStatusNot(String patientId, String status);
 }

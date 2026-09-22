@@ -46,6 +46,12 @@ public class PaymentController {
         return paymentService.create(dto, user);
     }
 
+    @PatchMapping("/{id}/cancel")
+    public PaymentDto cancel(@PathVariable String id) {
+        AccessGuard.requireBasicStaff(CurrentUser.get());
+        return paymentService.cancel(id);
+    }
+
     @PutMapping("/{id}")
     public PaymentDto update(@PathVariable String id, @RequestBody PaymentDto dto) {
         AccessGuard.requireBasicStaff(CurrentUser.get());
@@ -56,6 +62,6 @@ public class PaymentController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable String id) {
         AccessGuard.requireBasicStaff(CurrentUser.get());
-        paymentService.delete(id);
+        paymentService.cancel(id);
     }
 }

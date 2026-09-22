@@ -1,0 +1,3 @@
+package com.ortos.api.modules.finance;
+import org.springframework.data.jpa.repository.JpaRepository; import java.util.List;
+public interface PaymentPlanRepository extends JpaRepository<PaymentPlan, String> { List<PaymentPlan> findByPatientIdOrderByCreatedAtDesc(String patientId); }
