@@ -14,8 +14,15 @@ Esta carpeta debe centralizar la ejecución local en contenedores. Más adelante
 ## Ejecutar
 
 ```powershell
+Set-Location Docker
+$env:ORTOS_JWT_SECRET = "replace-with-a-long-random-secret"
 docker compose up --build
 ```
 
 Para detener los servicios use `docker compose down`.
+
+El Compose conserva una sola API, una sola PostgreSQL y el volumen nombrado
+`ortos_pgdata`. PostgreSQL tiene healthcheck; la API espera ese servicio y
+Flyway aplica las migraciones al arrancar. Los módulos no crean bases de datos
+ni servicios Docker adicionales.
 
