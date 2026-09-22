@@ -1,76 +1,60 @@
 import { useState } from 'react'
 import { Modal } from '@/components/ui/Modal/Modal'
+import { ConfirmDialog } from '@/components/ui/ConfirmDialog/ConfirmDialog'
 import { Button } from '@/components/ui/Button/Button'
 import { SelectField } from '@/components/ui/SelectField/SelectField'
 import { TextField } from '@/components/ui/TextField/TextField'
-import { money } from '@/features/clinical/mockStore'
+import { moneyRounded } from '@/features/clinical/mockStore'
 import styles from '@/features/clinical/Clinical.module.css'
 import css from './Payments.module.css'
 
-const catalog = [
-  ['Consulta general', 150], ['Ortodoncia - Ajuste', 250], ['Limpieza dental', 350],
-  ['Radiografía', 120], ['Extracción', 450], ['Cambio de hules', 75],
-]
+const catalog = [['Consulta general', 150], ['Ortodoncia - Ajuste', 250], ['Limpieza dental', 350], ['Radiografía', 120], ['Extracción', 450], ['Cambio de hules', 75]]
+const roundToFive = (value) => Math.round(Number(value || 0) / 5) * 5
+
+function useCloseConfirmation(initial, current, onClose) {
+  const [confirming, setConfirming] = useState(false)
+  const requestClose = () => {
+    if (JSON.stringify(initial) === JSON.stringify(current)) onClose()
+    else setConfirming(true)
+  }
+  const confirm = <ConfirmDialog open={confirming} title="¿Cerrar sin guardar?" message="Hay cambios sin guardar. ¿Deseas descartarlos?" confirmLabel="Cerrar sin guardar" cancelLabel="Seguir editando" danger onConfirm={onClose} onClose={() => setConfirming(false)} />
+  return { requestClose, confirm }
+}
 
 export function ChargeModal({ patient, appointments, appointmentId = '', onSave, onClose }) {
-  const [treatment, setTreatment] = useState('')
-  const [form, setForm] = useState({ description: '', quantity: 1, unitPrice: '', appointmentId })
-  const subtotal = Number(form.quantity || 0) * Number(form.unitPrice || 0)
-  const chooseTreatment = (value) => {
-    const item = catalog.find(([name]) => name === value)
-    setTreatment(value)
-    if (item) setForm((current) => ({ ...current, description: item[0], unitPrice: item[1] }))
-  }
+  const initial = { description: '', quantity: 1, unitPrice: '', appointmentId }
+  const [treatment, setTreatment] = useState(''); const [form, setForm] = useState(initial)
+  const { requestClose, confirm } = useCloseConfirmation(initial, { ...form, treatment }, onClose)
+  const subtotal = roundToFive(Number(form.quantity || 0) * Number(form.unitPrice || 0))
+  const chooseTreatment = (value) => { const item = catalog.find(([name]) => name === value); setTreatment(value); if (item) setForm((current) => ({ ...current, description: item[0], unitPrice: item[1] })) }
   const set = (key) => (event) => setForm((current) => ({ ...current, [key]: event.target.value }))
-  return <Modal open size="wide" title="AGREGAR CARGO" onClose={onClose}>
-    <form className={styles.form + ' ' + css.dialogForm} onSubmit={(event) => { event.preventDefault(); onSave({ ...form, patientId: patient.id }) }}>
-      <div className={css.choiceGrid}>
-        <section className={css.choiceCard}><h3>TRATAMIENTO / PROCEDIMIENTO</h3><SelectField label="Catálogo de tratamientos" options={catalog.map(([name, price]) => ({ value: name, label: `${name} · ${money(price)}` }))} value={treatment} onChange={(event) => chooseTreatment(event.target.value)} /></section>
-        <section className={css.choiceCard}><h3>CARGO PERSONALIZADO</h3><p>Para un concepto extraordinario, escribe la descripción y el precio.</p></section>
-      </div>
-      <div className={styles.cols2}>
-        <TextField label="Descripción *" value={form.description} onChange={set('description')} required />
-        <SelectField label="Cita relacionada" placeholder="Sin cita relacionada" options={appointments.map((a) => ({ value: a.id, label: `${a.date} · ${a.time} · ${a.treatment}` }))} value={form.appointmentId} onChange={set('appointmentId')} disabled={!!appointmentId} />
-        <TextField label="Cantidad *" type="number" min="1" step="1" value={form.quantity} onChange={set('quantity')} required />
-        <TextField label="Precio unitario *" type="number" min="0" step="0.01" value={form.unitPrice} onChange={set('unitPrice')} required />
-      </div>
-      <div className={css.modalTotal}><span>Subtotal</span><strong>{money(subtotal)}</strong></div>
-      <div className={css.dialogActions}><Button type="button" variant="ghost" onClick={onClose}>Cancelar</Button><Button type="submit">Agregar cargo</Button></div>
-    </form>
-  </Modal>
+  const roundField = (key) => () => setForm((current) => ({ ...current, [key]: roundToFive(current[key]) }))
+  return <><Modal open size="wide" title="AGREGAR CARGO" onClose={requestClose}><form className={styles.form + ' ' + css.dialogForm} onSubmit={(event) => { event.preventDefault(); onSave({ ...form, unitPrice: roundToFive(form.unitPrice), patientId: patient.id }) }}>
+    <div className={css.choiceGrid}><section className={css.choiceCard}><h3>TRATAMIENTO / PROCEDIMIENTO</h3><SelectField label="Catálogo de tratamientos" options={catalog.map(([name, price]) => ({ value: name, label: `${name} · ${moneyRounded(price)}` }))} value={treatment} onChange={(event) => chooseTreatment(event.target.value)} /></section><section className={css.choiceCard}><h3>CARGO PERSONALIZADO</h3><p>Para un concepto extraordinario, escribe la descripción y el precio.</p></section></div>
+    <div className={styles.cols2}><TextField label="Descripción *" value={form.description} onChange={set('description')} required /><SelectField label="Cita relacionada" placeholder="Sin cita relacionada" options={appointments.map((a) => ({ value: a.id, label: `${a.date} · ${a.time} · ${a.treatment}` }))} value={form.appointmentId} onChange={set('appointmentId')} disabled={!!appointmentId} /><TextField label="Cantidad *" type="number" min="1" step="1" value={form.quantity} onChange={set('quantity')} required /><TextField label="Precio unitario *" type="number" min="0" step="5" value={form.unitPrice} onChange={set('unitPrice')} onBlur={roundField('unitPrice')} required /></div>
+    <div className={css.modalTotal}><span>Subtotal</span><strong>{moneyRounded(subtotal)}</strong></div><div className={css.dialogActions}><Button type="button" variant="ghost" onClick={requestClose}>Cancelar</Button><Button type="submit">Agregar cargo</Button></div>
+  </form></Modal>{confirm}</>
 }
 
 export function PaymentModal({ patient, balance, onSave, onClose }) {
-  const [form, setForm] = useState({ amount: '', method: 'Efectivo', reference: '', notes: '' })
-  const amount = Number(form.amount || 0); const after = Math.max(0, balance - amount)
-  const set = (key) => (event) => setForm((current) => ({ ...current, [key]: event.target.value }))
-  return <Modal open title="REGISTRAR PAGO" onClose={onClose}>
-    <form className={styles.form + ' ' + css.dialogForm} onSubmit={(event) => { event.preventDefault(); onSave({ ...form, patientId: patient.id }) }}>
-      <div className={css.accountIdentity}><strong>{patient.name}</strong><span>Saldo pendiente: <b>{money(balance)}</b></span></div>
-      <TextField label="Monto recibido *" type="number" min="0.01" max={balance} step="0.01" value={form.amount} onChange={set('amount')} required />
-      <Button type="button" variant="ghost" size="sm" onClick={() => setForm((current) => ({ ...current, amount: balance }))}>Pagar saldo completo</Button>
-      <SelectField label="Método *" options={['Efectivo', 'Tarjeta de crédito', 'Tarjeta de débito', 'Transferencia bancaria', 'Cheque']} value={form.method} onChange={set('method')} />
-      <TextField label="Referencia" value={form.reference} onChange={set('reference')} placeholder="REC-001 / TRX-123" />
-      <TextField label="Notas" value={form.notes} onChange={set('notes')} />
-      <div className={css.paymentPreview}><span>Nuevo saldo</span><strong>{money(after)}</strong></div>
-      <div className={css.dialogActions}><Button type="button" variant="ghost" onClick={onClose}>Cancelar</Button><Button type="submit">Registrar pago</Button></div>
-    </form>
-  </Modal>
+  const initial = { amount: '', method: 'Efectivo', reference: '', notes: '' }
+  const [form, setForm] = useState(initial); const { requestClose, confirm } = useCloseConfirmation(initial, form, onClose)
+  const amount = roundToFive(form.amount); const after = Math.max(0, balance - amount); const set = (key) => (event) => setForm((current) => ({ ...current, [key]: event.target.value }))
+  return <><Modal open title="REGISTRAR PAGO" onClose={requestClose}><form className={styles.form + ' ' + css.dialogForm} onSubmit={(event) => { event.preventDefault(); onSave({ ...form, amount, patientId: patient.id }) }}>
+    <div className={css.accountIdentity}><strong>{patient.name}</strong><span>Saldo pendiente: <b>{moneyRounded(balance)}</b></span></div><TextField label="Monto recibido *" type="number" min="5" max={balance} step="5" value={form.amount} onChange={set('amount')} onBlur={() => setForm((current) => ({ ...current, amount: roundToFive(current.amount) }))} required /><Button type="button" variant="ghost" size="sm" onClick={() => setForm((current) => ({ ...current, amount: balance }))}>Pagar saldo completo</Button><SelectField label="Método *" options={['Efectivo', 'Tarjeta de crédito', 'Tarjeta de débito', 'Transferencia bancaria', 'Cheque']} value={form.method} onChange={set('method')} /><TextField label="Referencia" value={form.reference} onChange={set('reference')} placeholder="REC-001 / TRX-123" /><TextField label="Notas" value={form.notes} onChange={set('notes')} />
+    <div className={css.paymentPreview}><span>Nuevo saldo</span><strong>{moneyRounded(after)}</strong></div><div className={css.dialogActions}><Button type="button" variant="ghost" onClick={requestClose}>Cancelar</Button><Button type="submit">Registrar pago</Button></div>
+  </form></Modal>{confirm}</>
 }
 
 export function PlanModal({ patient, balance, onSave, onClose }) {
-  const [form, setForm] = useState({ downPayment: 0, installmentCount: 6, firstDueDate: '', name: 'Plan de pago' })
-  const financed = Math.max(0, balance - Number(form.downPayment || 0)); const installment = form.installmentCount ? financed / Number(form.installmentCount) : 0
+  const initial = { downPayment: 0, preset: '6', customCount: '', firstDueDate: '', name: 'Plan de pago' }
+  const [form, setForm] = useState(initial); const { requestClose, confirm } = useCloseConfirmation(initial, form, onClose)
+  const count = Number(form.preset === 'custom' ? form.customCount : form.preset); const financed = Math.max(0, balance - roundToFive(form.downPayment)); const installment = count ? roundToFive(financed / count) : 0
   const set = (key) => (event) => setForm((current) => ({ ...current, [key]: event.target.value }))
-  return <Modal open title="CREAR PLAN DE PAGO" onClose={onClose}>
-    <form className={styles.form + ' ' + css.dialogForm} onSubmit={(event) => { event.preventDefault(); onSave({ ...form, patientId: patient.id, totalAmount: balance, financedAmount: financed }) }}>
-      <TextField label="Nombre del plan" value={form.name} onChange={set('name')} />
-      <TextField label="Saldo a financiar" readOnly value={money(balance)} />
-      <TextField label="Anticipo" type="number" min="0" max={balance} step="0.01" value={form.downPayment} onChange={set('downPayment')} />
-      <TextField label="Número de cuotas" type="number" min="1" value={form.installmentCount} onChange={set('installmentCount')} />
-      <TextField label="Fecha del primer pago" type="date" value={form.firstDueDate} onChange={set('firstDueDate')} required />
-      <div className={css.paymentPreview}><span>Monto financiado · {form.installmentCount} cuotas</span><strong>{money(financed)} · {money(installment)}</strong></div>
-      <div className={css.dialogActions}><Button type="button" variant="ghost" onClick={onClose}>Cancelar</Button><Button type="submit">Crear plan</Button></div>
-    </form>
-  </Modal>
+  return <><Modal open title="CREAR PLAN DE PAGO" onClose={requestClose}><form className={styles.form + ' ' + css.dialogForm} onSubmit={(event) => { event.preventDefault(); onSave({ ...form, patientId: patient.id, totalAmount: balance, downPayment: roundToFive(form.downPayment), installmentCount: count, financedAmount: financed }) }}>
+    <TextField label="Nombre del plan" value={form.name} onChange={set('name')} /><TextField label="Saldo a financiar" readOnly value={moneyRounded(balance)} /><TextField label="Anticipo" type="number" min="0" max={balance} step="5" value={form.downPayment} onChange={set('downPayment')} onBlur={() => setForm((current) => ({ ...current, downPayment: roundToFive(current.downPayment) }))} />
+    <div><span className={css.fieldLabel}>Número de cuotas</span><div className={css.installmentChoices}>{['3', '6', '9', '12', 'custom'].map((option) => <Button key={option} type="button" size="sm" variant={form.preset === option ? 'primary' : 'ghost'} onClick={() => setForm((current) => ({ ...current, preset: option }))}>{option === 'custom' ? 'Personalizada' : option}</Button>)}</div></div>
+    {form.preset === 'custom' && <TextField label="Cuotas personalizadas" type="number" min="1" step="1" value={form.customCount} onChange={set('customCount')} required />}
+    <TextField label="Fecha del primer pago" type="date" value={form.firstDueDate} onChange={set('firstDueDate')} required /><div className={css.paymentPreview}><span>Monto financiado · {count || 0} cuotas</span><strong>{moneyRounded(financed)} · {moneyRounded(installment)}</strong></div><div className={css.dialogActions}><Button type="button" variant="ghost" onClick={requestClose}>Cancelar</Button><Button type="submit" disabled={!count}>Crear plan</Button></div>
+  </form></Modal>{confirm}</>
 }

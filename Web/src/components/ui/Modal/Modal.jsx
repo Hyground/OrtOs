@@ -25,10 +25,6 @@ export function Modal({ open, onClose, title, children, size = 'default', toolba
     const onKeyDown = (event) => {
       const dialogs = document.querySelectorAll('[aria-modal="true"]')
       if (dialogs[dialogs.length - 1] !== dialog) return
-      if (event.key === 'Escape') {
-        closeRef.current()
-        return
-      }
       if (event.key !== 'Tab') return
       const items = dialog.querySelectorAll(FOCUSABLE)
       if (items.length === 0) return
@@ -54,7 +50,7 @@ export function Modal({ open, onClose, title, children, size = 'default', toolba
   if (!open) return null
 
   return createPortal(
-    <div className={styles.overlay} onClick={onClose}>
+    <div className={styles.overlay}>
       <div
         ref={dialogRef}
         className={[styles.dialog, styles[size]].filter(Boolean).join(' ')}

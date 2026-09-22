@@ -134,6 +134,8 @@ export function age(value) {
 }
 export const money = (amount, currency = 'GTQ') =>
   new Intl.NumberFormat('es-GT', { style: 'currency', currency }).format(amount)
+export const moneyRounded = (amount, currency = 'GTQ') =>
+  new Intl.NumberFormat('es-GT', { style: 'currency', currency, maximumFractionDigits: 0 }).format(Math.round(Number(amount || 0) / 5) * 5)
 export const normalize = (text) =>
   String(text ?? '')
     .normalize('NFD')
