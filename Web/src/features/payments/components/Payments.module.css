@@ -1,168 +1,22 @@
-.donutWrap {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  flex-wrap: wrap;
-  padding: 18px;
-}
-.paymentTable {
-  table-layout: fixed;
-  min-width: 745px;
-  white-space: normal;
-}
-.tableScroll {
-  max-height: 693px;
-  overflow-y: auto;
-}
-.paymentTable tbody tr {
-  height: 65px;
-}
-.paymentTable th {
-  font-size: 10px;
-  padding: 12px 7px;
-  overflow-wrap: anywhere;
-}
-.paymentTable td {
-  padding: 14px 7px;
-  font-size: 11px;
-  overflow-wrap: anywhere;
-}
-.paymentTable small {
-  font-size: 10px;
-}
-.paymentTable td:nth-child(6) {
-  white-space: nowrap;
-}
-.paymentTable td:last-child button {
-  width: 28px;
-  height: 30px;
-  padding: 0;
-  font-size: 17px;
-}
-.paymentTable td:last-child > div {
-  gap: 3px;
-}
-.paymentTable td:nth-child(7) span {
-  font-size: 10px;
-  padding: 4px 6px;
-}
-.donut {
-  width: 116px;
-  height: 116px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
-}
-.donut::after {
-  content: '';
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  background: var(--color-surface);
-}
-.legend {
-  display: grid;
-  gap: 9px;
-  flex: 1;
-  min-width: 110px;
-  font-size: 10px;
-}
-.legend div {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-}
-.legend i {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-}
-.legend strong {
-  margin-left: auto;
-}
-.bar {
-  height: 7px;
-  border-radius: 20px;
-  background: var(--color-surface-alt);
-  overflow: hidden;
-  margin: 8px 0 16px;
-}
-.bar span {
-  display: block;
-  height: 100%;
-  border-radius: 20px;
-  background: var(--color-primary);
-}
-.barLabel {
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-  font-size: 11px;
-}
-.quick {
-  position: sticky;
-  bottom: 0;
-  z-index: 10;
-  padding: 17px 20px;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-top: 3px solid var(--color-primary);
-  border-radius: var(--radius-md);
-  box-shadow: 0 -5px 24px #0b132012;
-}
-.quick h2 {
-  font-size: 12px;
-  color: var(--color-primary-dark);
-  margin: 0 0 12px;
-}
-.quickForm {
-  display: grid;
-  grid-template-columns: 1.4fr 1fr 1fr 0.7fr 1fr auto;
-  align-items: end;
-  gap: 12px;
-}
-.quickForm label {
-  font-size: 10px;
-}
-.quickForm input,
-.quickForm select {
-  font-size: 11px;
-}
-.quickForm button {
-  font-size: 11px;
-}
-.quickPatient {
-  min-width: 0;
-}
-.quickPatient ul {
-  top: auto;
-  bottom: 100%;
-}
-.paymentContent {
-  display: grid;
-  gap: 20px;
-  min-width: 0;
-}
-.analytics {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  align-items: start;
-  gap: 20px;
-}
-@media (max-width: 1200px) {
-  .quick {
-    position: static;
-  }
-  .quickForm {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-@media (max-width: 680px) {
-  .analytics {
-    grid-template-columns: 1fr;
-  }
-  .quickForm {
-    grid-template-columns: 1fr;
-  }
-}
+.paymentsPage { display: grid; gap: 20px; color: var(--color-text); }
+.patientPicker, .account, .noPatient { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); }
+.patientPicker { position: relative; padding: 18px; }
+.searchBox { display: flex; align-items: end; gap: 12px; max-width: 680px; color: var(--color-primary); }
+.searchBox > svg { width: 22px; margin-bottom: 10px; flex: 0 0 auto; }
+.searchBox > div { flex: 1; }
+.searchResults { position: absolute; z-index: 5; left: 18px; right: 18px; top: calc(100% - 8px); max-width: 680px; padding: 8px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); background: var(--color-surface); box-shadow: var(--shadow-md); }
+.searchResults button { display: flex; align-items: center; width: 100%; gap: 10px; border: 0; border-radius: 8px; background: transparent; color: var(--color-text); padding: 9px; text-align: left; cursor: pointer; }
+.searchResults button:hover { background: var(--color-surface-alt); }
+.searchResults small, .selectedPatient small, .patientIdentity small { display: block; margin-top: 3px; color: var(--color-text-muted); }
+.selectedPatient, .accountHeader, .patientIdentity, .headerActions, .sectionHeading, .chargeRow, .paymentRow, .planCard header, .dialogActions, .modalTotal, .paymentPreview { display: flex; align-items: center; gap: 14px; }
+.selectedPatient { margin-top: 2px; }.selectedPatient > div { flex: 1; }
+.noPatient { display: grid; place-items: center; min-height: 300px; padding: 40px; text-align: center; color: var(--color-text-muted); }.noPatient svg { font-size: 46px; color: var(--color-primary); }.noPatient h2 { margin: 12px 0 0; color: var(--color-text); }
+.account { overflow: hidden; }.accountHeader { justify-content: space-between; padding: 22px; border-bottom: 1px solid var(--color-border); }.patientIdentity > div { display: grid; gap: 2px; }.patientIdentity h2 { margin: 0 0 6px; font-size: 12px; letter-spacing: .06em; color: var(--color-primary-dark); }.headerActions { flex-wrap: wrap; justify-content: flex-end; }
+.accountKpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; background: var(--color-border); border-bottom: 1px solid var(--color-border); }.metric { display: grid; gap: 5px; min-height: 104px; padding: 19px 22px; background: var(--color-surface); }.metric span { font-size: 10px; font-weight: 700; letter-spacing: .06em; color: var(--color-text-muted); text-transform: uppercase; }.metric strong { color: var(--color-ink); font-size: 23px; }.metric small { color: var(--color-text-muted); font-size: 11px; }.metric.positive strong { color: var(--color-success); }.metric.warning strong { color: var(--color-warning); }
+.accountBody { padding: 22px; }.summaryGrid { display: grid; grid-template-columns: minmax(240px, .85fr) minmax(260px, 1.15fr); gap: 20px; }.balanceCard, .summaryActions, .pendingCard, .planCard, .choiceCard { border: 1px solid var(--color-border); border-radius: var(--radius-sm); background: var(--color-surface-alt); }.balanceCard { display: grid; gap: 13px; padding: 22px; }.balanceCard > span { color: var(--color-primary-dark); font-size: 11px; font-weight: 700; letter-spacing: .07em; }.balanceCard div { display: flex; justify-content: space-between; align-items: baseline; }.balanceCard small { color: var(--color-text-muted); }.balanceCard strong { font-size: 16px; }.balanceCard hr { width: 100%; border: 0; border-top: 1px dashed var(--color-border); }.balanceCard .balanceTotal strong { color: var(--color-primary); font-size: 25px; }.balanceCard p { margin: 0; color: var(--color-success); font-weight: 600; }.summaryActions { display: grid; align-content: center; justify-items: start; gap: 11px; padding: 25px; }.summaryActions h3, .summaryActions p { margin: 0; }.summaryActions p { color: var(--color-text-muted); }
+.sectionHeading { justify-content: space-between; margin-bottom: 16px; }.sectionHeading h3, .sectionHeading p { margin: 0; }.sectionHeading h3 { color: var(--color-primary-dark); font-size: 13px; }.sectionHeading p { margin-top: 5px; color: var(--color-text-muted); font-size: 12px; }.ledger { border: 1px solid var(--color-border); border-radius: var(--radius-sm); overflow: hidden; }.chargeRow { display: grid; grid-template-columns: minmax(180px, 2fr) minmax(90px, 1fr) minmax(80px, .8fr) minmax(80px, .8fr) auto; padding: 15px 17px; border-bottom: 1px solid var(--color-border); }.chargeRow:last-child, .paymentRow:last-child { border-bottom: 0; }.chargeRow small, .paymentRow small { color: var(--color-text-muted); font-size: 11px; }.paymentRow { display: grid; grid-template-columns: 1.5fr 1fr .8fr auto; padding: 15px 17px; border-bottom: 1px solid var(--color-border); }.empty { margin: 0; padding: 25px; color: var(--color-text-muted); text-align: center; }
+.pendingList, .planList { display: grid; gap: 14px; }.pendingCard { display: grid; grid-template-columns: 1fr minmax(300px, 1.2fr); gap: 20px; padding: 20px; }.pendingCard h3 { margin: 10px 0 3px; }.pendingCard small { color: var(--color-text-muted); }.pendingCard dl { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 0; }.pendingCard dl div { display: grid; gap: 4px; }.pendingCard dt { color: var(--color-text-muted); font-size: 11px; }.pendingCard dd { margin: 0; font-weight: 700; }.planCard { padding: 20px; }.planCard header { justify-content: space-between; }.planCard h3 { margin: 8px 0 3px; }.planCard small, .planCard p { color: var(--color-text-muted); }.progress { height: 9px; margin: 17px 0 8px; border-radius: 99px; overflow: hidden; background: var(--color-border); }.progress span { display: block; height: 100%; border-radius: inherit; background: var(--color-primary); }.installments { display: flex; flex-wrap: wrap; gap: 8px; }.installments > span { display: inline-flex; align-items: center; gap: 4px; padding: 7px 9px; border-radius: 8px; background: var(--color-surface); color: var(--color-text-muted); font-size: 11px; }
+.dialogForm { display: grid; gap: 16px; padding: 22px; }.choiceGrid { display: grid; grid-template-columns: 1.3fr .7fr; gap: 12px; }.choiceCard { padding: 15px; }.choiceCard h3, .choiceCard p { margin: 0 0 8px; }.choiceCard h3 { color: var(--color-primary-dark); font-size: 12px; }.choiceCard p { color: var(--color-text-muted); font-size: 12px; }.modalTotal, .paymentPreview { justify-content: space-between; padding: 14px 16px; border-radius: var(--radius-sm); background: var(--color-primary-soft); color: var(--color-primary-dark); }.modalTotal strong, .paymentPreview strong { font-size: 20px; }.dialogActions { justify-content: flex-end; }.accountIdentity { display: grid; gap: 5px; padding: 14px; border-radius: var(--radius-sm); background: var(--color-surface-alt); }.accountIdentity span { color: var(--color-text-muted); }
+.compactAccount { border: 0; border-radius: 0; box-shadow: none; }.compactAccount .accountBody { padding: 16px; }.compactAccount .accountKpis { grid-template-columns: repeat(2, 1fr); }
+@media (max-width: 760px) { .accountHeader, .selectedPatient, .sectionHeading, .planCard header { align-items: flex-start; flex-direction: column; }.headerActions { justify-content: flex-start; }.accountKpis { grid-template-columns: repeat(2, 1fr); }.metric { min-height: 88px; padding: 14px; }.metric strong { font-size: 18px; }.accountBody { padding: 14px; }.summaryGrid, .choiceGrid, .pendingCard { grid-template-columns: 1fr; }.chargeRow, .paymentRow { grid-template-columns: 1fr 1fr; gap: 8px; }.chargeRow > div, .paymentRow > div { grid-column: 1 / -1; }.chargeRow > :last-child, .paymentRow > :last-child { justify-self: start; }.pendingCard dl { grid-template-columns: repeat(3, 1fr); }.searchResults { left: 8px; right: 8px; }.patientPicker { padding: 14px; } }
+@media (max-width: 420px) { .accountKpis, .compactAccount .accountKpis { grid-template-columns: 1fr; }.pendingCard dl { grid-template-columns: 1fr; }.headerActions { width: 100%; }.headerActions button { flex: 1; }.dialogActions { flex-direction: column-reverse; align-items: stretch; }.dialogActions button { width: 100%; } }
