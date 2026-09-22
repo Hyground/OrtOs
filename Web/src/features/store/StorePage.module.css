@@ -1,0 +1,712 @@
+﻿.page {
+  display: grid;
+  gap: 14px;
+  color: var(--color-text);
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 14px;
+  min-height: 76px;
+  padding: 14px 18px;
+  border-radius: 16px;
+  color: #fff;
+  background: linear-gradient(125deg, var(--color-primary-dark), var(--color-primary));
+  box-shadow: var(--shadow-md);
+}
+.heroIcon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgb(255 255 255 / 22%);
+  border-radius: 12px;
+  background: rgb(255 255 255 / 12%);
+  font-size: 21px;
+}
+.hero h1,
+.hero p {
+  margin: 0;
+}
+.hero h1 {
+  font-size: 21px;
+  line-height: 1.15;
+}
+.hero > div > span {
+  display: block;
+  margin-bottom: 2px;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  opacity: 0.72;
+}
+.heroTotal {
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: baseline;
+  column-gap: 10px;
+  text-align: right;
+}
+.heroTotal small {
+  grid-column: 1;
+  opacity: 0.72;
+}
+.heroTotal strong {
+  grid-column: 2;
+  grid-row: 1 / 3;
+  font-size: 25px;
+}
+.heroTotal span {
+  grid-column: 1;
+  font-size: 11px;
+  opacity: 0.72;
+}
+
+.patientStep {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  grid-template-columns: 90px minmax(300px, 440px) minmax(260px, 1fr);
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+}
+.patientStep h2 {
+  margin: 0;
+  font-size: 15px;
+}
+.patientControl {
+  min-width: 0;
+}
+.patientCard {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  padding: 7px 10px;
+  border-radius: 10px;
+  background: var(--color-surface-alt);
+}
+.patientCard > div:nth-child(2) {
+  display: grid;
+  min-width: 0;
+}
+.patientCard strong,
+.patientCard small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.patientCard small {
+  color: var(--color-text-muted);
+  font-size: 10px;
+}
+.patientCard > span {
+  padding: 4px 7px;
+  border-radius: 99px;
+  color: var(--color-success);
+  background: color-mix(in srgb, var(--color-success) 10%, transparent);
+  font-size: 10px;
+  font-weight: 700;
+}
+.avatar {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  color: #fff;
+  background: var(--color-primary);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.storeLayout {
+  display: grid;
+  grid-template-columns: minmax(410px, 0.9fr) minmax(470px, 1.1fr);
+  gap: 14px;
+  align-items: start;
+}
+.catalog,
+.cart {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+}
+.catalog {
+  padding: 14px;
+}
+.catalog > header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+.catalog h2,
+.catalog p,
+.cart h2 {
+  margin: 0;
+}
+.catalog h2,
+.cart h2 {
+  font-size: 17px;
+}
+.catalog p {
+  margin-top: 2px;
+  color: var(--color-text-muted);
+  font-size: 11px;
+}
+.search {
+  display: flex;
+  align-items: flex-end;
+  gap: 7px;
+  width: min(270px, 55%);
+}
+.search > div {
+  flex: 1;
+}
+.search svg {
+  margin-bottom: 10px;
+  color: var(--color-primary);
+}
+.catalogColumns,
+.product {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 68px 86px;
+  align-items: center;
+  gap: 10px;
+}
+.catalogColumns {
+  padding: 0 11px 7px;
+  color: var(--color-text-muted);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.catalogColumns span:nth-child(n + 2) {
+  text-align: right;
+}
+.catalogGrid {
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+}
+.product {
+  width: 100%;
+  min-height: 48px;
+  padding: 8px 11px;
+  border: 0;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text);
+  background: var(--color-surface);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background 120ms ease,
+    box-shadow 120ms ease;
+}
+.product:last-child {
+  border-bottom: 0;
+}
+.product:hover {
+  background: color-mix(in srgb, var(--color-primary) 6%, var(--color-surface));
+}
+.productSelected {
+  color: var(--color-primary-dark);
+  background: color-mix(in srgb, var(--color-primary) 10%, var(--color-surface));
+  box-shadow: inset 3px 0 0 var(--color-primary);
+}
+.product:focus-visible {
+  position: relative;
+  z-index: 1;
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
+}
+.product > div {
+  min-width: 0;
+}
+.product h3 {
+  margin: 0;
+  overflow: hidden;
+  font-size: 12px;
+  font-weight: 650;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.product small,
+.product > strong {
+  text-align: right;
+}
+.product small {
+  color: var(--color-text-muted);
+  font-size: 10px;
+}
+.product > strong {
+  font-size: 12px;
+}
+.empty {
+  margin: 0;
+  padding: 48px 18px;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.cart {
+  position: sticky;
+  top: 12px;
+}
+.cart > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 64px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--color-border);
+}
+.cart > header span {
+  color: var(--color-primary);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+}
+.cart > header b {
+  padding: 5px 9px;
+  border-radius: 99px;
+  color: var(--color-text-muted);
+  background: var(--color-surface-alt);
+  font-size: 10px;
+}
+.notice {
+  margin: 12px 14px 0;
+  padding: 9px 11px;
+  border-radius: 8px;
+  color: var(--color-warning);
+  background: color-mix(in srgb, var(--color-warning) 10%, transparent);
+  font-size: 11px;
+}
+.cartItems {
+  display: grid;
+  align-content: start;
+  min-height: 250px;
+  max-height: 410px;
+  overflow-y: auto;
+}
+.cartItem {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  padding: 13px 42px 13px 16px;
+  border-bottom: 1px solid var(--color-border);
+}
+.cartItem > div {
+  display: grid;
+  min-width: 0;
+}
+.cartItem strong {
+  overflow: hidden;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cartItem small {
+  color: var(--color-text-muted);
+  font-size: 10px;
+}
+.cartItem > b {
+  font-size: 13px;
+  white-space: nowrap;
+}
+.remove {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  transform: translateY(-50%);
+  border: 0;
+  border-radius: 7px;
+  color: var(--color-text-muted);
+  background: transparent;
+  font-size: 17px;
+  cursor: pointer;
+}
+.remove:hover {
+  color: var(--color-danger);
+  background: color-mix(in srgb, var(--color-danger) 8%, transparent);
+}
+.emptyCart {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 5px;
+  min-height: 250px;
+  padding: 30px;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+.emptyCart svg {
+  margin-bottom: 6px;
+  color: var(--color-primary);
+  font-size: 30px;
+  opacity: 0.75;
+}
+.emptyCart p {
+  margin: 0;
+  font-size: 11px;
+}
+.cartFooter {
+  display: grid;
+  gap: 10px;
+  padding: 14px 16px;
+  border-top: 1px solid var(--color-border);
+  background: var(--color-surface-alt);
+}
+.cartFooter > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+.cartFooter > div span {
+  color: var(--color-text-muted);
+  font-size: 12px;
+}
+.cartFooter > div strong {
+  font-size: 23px;
+}
+.cartFooter small {
+  color: var(--color-text-muted);
+  font-size: 10px;
+  text-align: center;
+}
+
+.success {
+  display: grid;
+  place-items: center;
+  gap: 12px;
+  min-height: 420px;
+  padding: 40px;
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  background: var(--color-surface);
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+}
+.success svg {
+  color: var(--color-success);
+  font-size: 52px;
+}
+.success h1,
+.success p {
+  margin: 0;
+}
+.success p {
+  color: var(--color-text-muted);
+}
+
+@media (max-width: 1120px) {
+  .patientStep {
+    grid-template-columns: 80px 1fr;
+  }
+  .patientCard {
+    grid-column: 1 / -1;
+  }
+  .storeLayout {
+    grid-template-columns: 1fr;
+  }
+  .cart {
+    position: static;
+  }
+}
+@media (max-width: 680px) {
+  .hero {
+    grid-template-columns: auto 1fr;
+  }
+  .heroTotal {
+    grid-column: 1 / -1;
+    justify-self: stretch;
+    padding-top: 10px;
+    border-top: 1px solid rgb(255 255 255 / 18%);
+  }
+  .patientStep {
+    grid-template-columns: 1fr;
+  }
+  .patientCard {
+    grid-column: auto;
+  }
+  .catalog > header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .search {
+    width: 100%;
+  }
+}
+@media (max-width: 500px) {
+  .catalogColumns {
+    display: none;
+  }
+  .product {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .product small {
+    display: none;
+  }
+}
+
+/* Viewport-locked POS layout: only the lists scroll */
+.page {
+  grid-template-rows: auto auto minmax(0, 1fr);
+  height: calc(100dvh - 110px);
+  min-height: 520px;
+  overflow: hidden;
+}
+.storeLayout {
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+.catalog {
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  height: 100%;
+  min-height: 0;
+}
+.catalogGrid {
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--color-primary) 35%, transparent) transparent;
+}
+.cart {
+  position: static;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+.cart > header,
+.notice,
+.cartFooter {
+  flex: 0 0 auto;
+}
+.cartItems {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: none;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--color-primary) 35%, transparent) transparent;
+}
+.catalogGrid::-webkit-scrollbar,
+.cartItems::-webkit-scrollbar {
+  width: 7px;
+}
+.catalogGrid::-webkit-scrollbar-thumb,
+.cartItems::-webkit-scrollbar-thumb {
+  border-radius: 99px;
+  background: color-mix(in srgb, var(--color-primary) 30%, transparent);
+}
+
+@media (max-height: 720px) {
+  .page {
+    gap: 9px;
+    height: calc(100dvh - 102px);
+    min-height: 430px;
+  }
+  .hero {
+    min-height: 58px;
+    padding-block: 8px;
+  }
+  .patientStep {
+    padding-block: 7px;
+  }
+  .cart > header {
+    min-height: 52px;
+  }
+}
+
+@media (max-width: 1120px) {
+  .storeLayout {
+    grid-template-columns: minmax(340px, 0.9fr) minmax(390px, 1.1fr);
+  }
+}
+
+@media (max-width: 820px) {
+  .page {
+    grid-template-rows: auto auto minmax(0, 1fr);
+  }
+  .storeLayout {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(210px, 1fr) minmax(230px, 1fr);
+  }
+  .catalog,
+  .cart {
+    height: 100%;
+  }
+}
+
+@media (max-width: 680px) {
+  .page {
+    height: calc(100dvh - 92px);
+    min-height: 540px;
+  }
+  .hero {
+    min-height: 54px;
+  }
+  .heroTotal {
+    display: none;
+  }
+  .patientStep {
+    grid-template-columns: 1fr;
+    gap: 7px;
+  }
+  .patientStep > div:first-child {
+    display: none;
+  }
+  .patientCard {
+    display: none;
+  }
+  .storeLayout {
+    grid-template-rows: minmax(190px, 0.9fr) minmax(260px, 1.1fr);
+  }
+}
+
+/* POS customer bar and balanced ticket */
+.patientStep {
+  grid-template-columns: minmax(320px, 0.82fr) minmax(360px, 1.18fr);
+  gap: 14px;
+  padding: 10px 12px;
+}
+.patientControl {
+  width: 100%;
+}
+.patientCard {
+  min-height: 52px;
+  padding: 7px 11px;
+}
+.patientEmpty {
+  display: flex;
+  align-items: center;
+  min-height: 52px;
+  padding: 0 14px;
+  border: 1px dashed var(--color-border);
+  border-radius: 10px;
+  color: var(--color-text-muted);
+  background: var(--color-surface-alt);
+  font-size: 11px;
+}
+.storeLayout {
+  grid-template-columns: minmax(390px, 0.86fr) minmax(500px, 1.14fr);
+}
+.catalog > header {
+  min-height: 52px;
+}
+.cart > header {
+  min-height: 62px;
+}
+.cartFooter {
+  padding: 12px 16px 14px;
+}
+.cartFooter button {
+  min-height: 46px;
+}
+
+@media (max-width: 1120px) {
+  .patientStep {
+    grid-template-columns: minmax(280px, 0.9fr) minmax(320px, 1.1fr);
+  }
+  .storeLayout {
+    grid-template-columns: minmax(330px, 0.88fr) minmax(400px, 1.12fr);
+  }
+}
+@media (max-width: 820px) {
+  .patientStep {
+    grid-template-columns: 1fr;
+  }
+  .patientCard,
+  .patientEmpty {
+    display: none;
+  }
+  .storeLayout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Search is self-explanatory in POS context */
+.catalog > header {
+  min-height: 0;
+  justify-content: stretch;
+}
+.search {
+  width: 100%;
+}
+.search label:empty {
+  display: none;
+}
+
+/* Only operational information remains visible */
+.page {
+  grid-template-rows: auto minmax(0, 1fr);
+}
+.patientStep {
+  grid-template-columns: minmax(320px, 0.9fr) minmax(320px, 1.1fr);
+  min-height: 62px;
+  padding: 8px 10px;
+}
+.patientControl label:empty {
+  display: none;
+}
+.patientCard {
+  display: grid;
+  grid-template-columns: 1fr;
+  align-content: center;
+  gap: 1px;
+  min-height: 44px;
+  padding: 6px 12px;
+}
+.patientCard strong,
+.patientCard small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.patientCard small {
+  color: var(--color-text-muted);
+  font-size: 10px;
+}
+@media (max-width: 820px) {
+  .patientStep {
+    grid-template-columns: 1fr;
+  }
+}
+
+.product:disabled {
+  color: var(--color-text-muted);
+  background: var(--color-surface-alt);
+  cursor: not-allowed;
+  opacity: 0.58;
+  box-shadow: none;
+}
+.patientControl label:not(:empty) {
+  color: var(--color-primary-dark);
+  font-size: 12px;
+  font-weight: 800;
+}

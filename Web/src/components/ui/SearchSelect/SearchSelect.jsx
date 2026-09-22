@@ -1,7 +1,15 @@
-import { useId, useState } from 'react'
+﻿import { useId, useState } from 'react'
 import { IconSearch, IconPlus } from '@/components/icons/icons'
 import styles from './SearchSelect.module.css'
-export function SearchSelect({ label = 'Paciente *', options, value, onChange, onAdd, error }) {
+export function SearchSelect({
+  label = 'Paciente *',
+  placeholder = 'Buscar por nombre o DPI...',
+  options,
+  value,
+  onChange,
+  onAdd,
+  error,
+}) {
   const id = useId()
   const [query, setQuery] = useState('')
   const [open, setOpen] = useState(false)
@@ -39,7 +47,7 @@ export function SearchSelect({ label = 'Paciente *', options, value, onChange, o
           aria-activedescendant={open && filtered[active] ? id + '-' + active : undefined}
           aria-invalid={!!error}
           aria-describedby={error ? id + '-error' : undefined}
-          placeholder="Buscar por nombre o DPI..."
+          placeholder={placeholder}
           onClick={() => {
             if (!open) {
               setOpen(true)

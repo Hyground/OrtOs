@@ -15,6 +15,7 @@ export const paths = {
   odontogram: '/panel/odontograma',
   appointmentHistory: '/panel/historial-citas',
   payments: '/panel/pagos',
+  store: '/panel/store',
   newPayment: '/panel/pagos?nuevo=1',
   reports: '/panel/reportes',
   summary: '/panel/resumen',

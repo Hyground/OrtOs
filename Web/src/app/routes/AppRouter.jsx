@@ -27,6 +27,7 @@ import { DoctorsPage } from '@/features/doctors/components/DoctorsPage'
 import { AppointmentSummaryPage } from '@/features/reports/components/AppointmentSummaryPage'
 import { AppointmentHistoryPage } from '@/features/appointmentHistory/components/AppointmentHistoryPage'
 import { ReportsPage } from '@/features/reports/ReportsPage'
+import { StorePage } from '@/features/store/StorePage'
 import { useAuth } from '@/features/auth/hooks/useAuth'
 import { PageLoader } from '@/components/feedback/PageLoader'
 
@@ -44,9 +45,11 @@ export function AppRouter() {
       <Route element={<ProtectedRoute />}>
         <Route element={<PrivateLayout />}>
           <Route path={paths.dashboard} element={<PatientDashboard />} />
-          {[paths.myAppointments, paths.myPayments, paths.myProfile, paths.myTreatment].map((path) => (
-            <Route key={path} path={path} element={<PatientPortal />} />
-          ))}
+          {[paths.myAppointments, paths.myPayments, paths.myProfile, paths.myTreatment].map(
+            (path) => (
+              <Route key={path} path={path} element={<PatientPortal />} />
+            ),
+          )}
           <Route path={paths.messages} element={<MessagesPage />} />
           {privateModules.map((module) => (
             <Route
@@ -60,6 +63,8 @@ export function AppRouter() {
                     <AppointmentsPage />
                   ) : module.to === paths.payments ? (
                     <PaymentsPage />
+                  ) : module.to === paths.store ? (
+                    <StorePage />
                   ) : module.to === paths.users ? (
                     <UsersPage />
                   ) : module.to === paths.specialties ? (
