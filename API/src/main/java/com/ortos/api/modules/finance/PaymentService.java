@@ -154,7 +154,7 @@ public class PaymentService {
             if (!payment.getPatientId().equals(charge.getPatientId()) || "Anulado".equals(charge.getStatus()))
                 throw ApiException.badRequest("El cargo no pertenece a la cuenta del paciente.");
             BigDecimal balance = charge.getSubtotal().subtract(allocationRepository.totalForCharge(charge.getId()));
-            BigDecimal requestedAmount = input.getAmount() == null ? balance : input.getAmount();
+            BigDecimal requestedAmount = input.getAmount() == null ? balance.min(remaining) : input.getAmount();
             if (requestedAmount.compareTo(BigDecimal.ZERO) <= 0 || requestedAmount.compareTo(balance) > 0 || requestedAmount.compareTo(remaining) > 0)
                 throw ApiException.badRequest("La asignación supera el saldo disponible.");
             PaymentAllocation allocation = new PaymentAllocation();
