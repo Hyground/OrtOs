@@ -11,7 +11,7 @@ public class UserSaveRequest {
     private String email;
     private String password;
     private String role;
-    private boolean active;
+    private boolean active = true;
     private String medicoId;
     private String patientId;
 }

@@ -50,6 +50,8 @@ public class SecurityConfig {
                                 "/api/auth/password-reset")
                         .permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/services").permitAll()
+                        // UserService authorizes the first administrator atomically, then requires admin.
+                        .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

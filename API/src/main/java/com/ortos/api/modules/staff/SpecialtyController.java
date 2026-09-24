@@ -25,6 +25,12 @@ public class SpecialtyController {
         return specialtyService.findAll();
     }
 
+    @GetMapping("/{id}")
+    public SpecialtyDto findById(@PathVariable String id) {
+        AccessGuard.requireAuthenticated(CurrentUser.get());
+        return specialtyService.findById(id);
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public SpecialtyDto create(@RequestBody SpecialtyDto dto) {

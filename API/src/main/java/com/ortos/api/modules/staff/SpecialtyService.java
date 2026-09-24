@@ -1,16 +1,14 @@
 package com.ortos.api.modules.staff;
 
-import com.ortos.api.modules.staff.SpecialtyDto;
-import com.ortos.api.modules.staff.Especialidad;
 import com.ortos.api.shared.exception.ApiException;
-import com.ortos.api.modules.staff.EspecialidadRepository;
-import com.ortos.api.modules.staff.MedicoRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
 
 @Service
+@Transactional(readOnly = true)
 public class SpecialtyService {
 
     private final EspecialidadRepository especialidadRepository;
@@ -34,6 +32,7 @@ public class SpecialtyService {
                 .orElseThrow(() -> ApiException.notFound("La especialidad no existe."));
     }
 
+    @Transactional
     public SpecialtyDto create(SpecialtyDto dto) {
         validate(dto);
         if (especialidadRepository.existsByNameIgnoreCase(dto.getName())) {
@@ -47,11 +46,16 @@ public class SpecialtyService {
         return toDto(entity);
     }
 
+    @Transactional
     public SpecialtyDto update(String id, SpecialtyDto dto) {
         validate(dto);
         Especialidad entity = getEntity(id);
         if (especialidadRepository.existsByNameIgnoreCaseAndIdNot(dto.getName(), id)) {
             throw ApiException.conflict("Ya existe una especialidad con ese nombre.");
+        }
+        if (!entity.getName().equals(dto.getName())
+                && medicoRepository.countBySpecialtyIgnoreCase(entity.getName()) > 0) {
+            throw ApiException.conflict("Reasigna los médicos antes de renombrar su especialidad.");
         }
         entity.setName(dto.getName().trim());
         entity.setDescription(dto.getDescription());
@@ -59,15 +63,18 @@ public class SpecialtyService {
         return toDto(entity);
     }
 
+    @Transactional
     public void delete(String id) {
-        getEntity(id);
+        Especialidad entity = getEntity(id);
+        if (medicoRepository.countBySpecialtyIgnoreCase(entity.getName()) > 0) {
+            throw ApiException.conflict("Reasigna los médicos antes de eliminar su especialidad.");
+        }
         especialidadRepository.deleteById(id);
     }
 
     private void validate(SpecialtyDto dto) {
-        if (dto.getName() == null || dto.getName().isBlank()) {
-            throw ApiException.badRequest("Ingresa el nombre de la especialidad.");
-        }
+        dto.setName(StaffValidation.text(dto.getName(), "name", true));
+        dto.setDescription(StaffValidation.text(dto.getDescription(), "description", false));
     }
 
     private SpecialtyDto toDto(Especialidad entity) {

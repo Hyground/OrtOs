@@ -19,6 +19,8 @@ dist/
 .env
 API/.env
 Docker/.env
+API/env
+Docker/env
 .DS_Store
 Thumbs.db
 

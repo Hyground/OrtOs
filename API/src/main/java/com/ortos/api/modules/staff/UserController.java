@@ -1,11 +1,8 @@
 package com.ortos.api.modules.staff;
 
-import com.ortos.api.modules.staff.UserDto;
-import com.ortos.api.modules.staff.UserSaveRequest;
 import com.ortos.api.shared.security.AccessGuard;
 import com.ortos.api.shared.security.AuthenticatedUser;
 import com.ortos.api.shared.security.CurrentUser;
-import com.ortos.api.modules.staff.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,11 +24,16 @@ public class UserController {
         return userService.findAll();
     }
 
+    @GetMapping("/{id}")
+    public UserDto findById(@PathVariable String id) {
+        AccessGuard.requireAdmin(CurrentUser.get());
+        return userService.findById(id);
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public UserDto create(@RequestBody UserSaveRequest req) {
         AuthenticatedUser actor = CurrentUser.get();
-        AccessGuard.requireAdmin(actor);
         return userService.create(req, actor);
     }
 

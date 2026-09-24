@@ -12,6 +12,7 @@ import java.util.Comparator;
 import java.util.UUID;
 
 @Component
+@org.springframework.boot.autoconfigure.condition.ConditionalOnProperty(name = "ortos.seed.enabled", havingValue = "true")
 public class SeedUsersRunner implements CommandLineRunner {
 
     private final UsuarioRepository usuarioRepository;
