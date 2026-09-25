@@ -8,19 +8,80 @@ import { PatientAccount } from './PatientAccount'
 import css from './Payments.module.css'
 
 export function PaymentsPage() {
-  useDocumentTitle('Pagos')
   const clinic = useClinic()
   const [query, setQuery] = useState('')
   const [selectedId, setSelectedId] = useState('patient-1')
   const selected = clinic.patients.find((patient) => patient.id === selectedId)
-  const matches = useMemo(() => clinic.patients.filter((patient) => normalize(`${patient.name} ${patient.dpi} ${patient.folio}`).includes(normalize(query))).slice(0, 6), [clinic.patients, query])
-  const totalReceived = clinic.payments.filter((payment) => payment.status === 'Completado').reduce((sum, payment) => sum + Number(payment.amount), 0)
-  return <div className={css.paymentsPage}>
-    <Banner title="MÓDULO DE PAGOS" description="Gestiona cuentas, cargos, abonos y planes de pago desde un solo lugar." Icon={IconCreditCard} metrics={[[moneyRounded(totalReceived), 'Ingresos registrados'], [clinic.charges.filter((charge) => charge.status !== 'Pagado').length, 'Cargos pendientes'], [clinic.paymentPlans.filter((plan) => plan.status === 'Activo').length, 'Planes activos']]} />
-    <section className={css.patientPicker}>
-      <div className={css.searchBox}><IconSearch /><TextField label="Buscar paciente" type="search" placeholder="Nombre, DPI o expediente..." value={query} onChange={(event) => setQuery(event.target.value)} /></div>
-      {query && <div className={css.searchResults}>{matches.map((patient) => <button type="button" key={patient.id} onClick={() => { setSelectedId(patient.id); setQuery('') }}><Avatar patient={patient} variant="initials" /><span><strong>{patient.name}</strong><small>{patient.dpi} · {patient.folio}</small></span></button>)}{!matches.length && <p>Sin coincidencias.</p>}</div>}
-    </section>
-    {selected ? <PatientAccount patient={selected} /> : <section className={css.noPatient}><IconCreditCard /><h2>Selecciona un paciente</h2><p>Busca por nombre, DPI o expediente para abrir su cuenta financiera.</p></section>}
-  </div>
+  const matches = useMemo(
+    () =>
+      clinic.patients
+        .filter((patient) =>
+          normalize(`${patient.name} ${patient.dpi} ${patient.folio}`).includes(normalize(query)),
+        )
+        .slice(0, 6),
+    [clinic.patients, query],
+  )
+  const totalReceived = clinic.payments
+    .filter((payment) => payment.status === 'Completado')
+    .reduce((sum, payment) => sum + Number(payment.amount), 0)
+
+  useDocumentTitle('Pagos')
+
+  return (
+    <div className={css.paymentsPage}>
+      <Banner
+        title="FINANZAS"
+        description="Administración, historial y seguimiento de las mismas cuentas usadas por Store."
+        Icon={IconCreditCard}
+        metrics={[
+          [moneyRounded(totalReceived), 'Ingresos registrados'],
+          [clinic.charges.filter((charge) => charge.status !== 'Pagado').length, 'Cargos pendientes'],
+          [clinic.paymentPlans.filter((plan) => plan.status === 'Activo').length, 'Planes activos'],
+        ]}
+      />
+          <section className={css.patientPicker}>
+            <div className={css.searchBox}>
+              <IconSearch />
+              <TextField
+                label="Buscar paciente"
+                type="search"
+                placeholder="Nombre, DPI o expediente..."
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+              />
+            </div>
+            {query && (
+              <div className={css.searchResults}>
+                {matches.map((patient) => (
+                  <button
+                    type="button"
+                    key={patient.id}
+                    onClick={() => {
+                      setSelectedId(patient.id)
+                      setQuery('')
+                    }}
+                  >
+                    <Avatar patient={patient} variant="initials" />
+                    <span>
+                      <strong>{patient.name}</strong>
+                      <small>{patient.dpi} · {patient.folio}</small>
+                    </span>
+                  </button>
+                ))}
+                {!matches.length && <p>Sin coincidencias.</p>}
+              </div>
+            )}
+          </section>
+          {selected ? (
+            <PatientAccount patient={selected} />
+          ) : (
+            <section className={css.noPatient}>
+              <IconCreditCard />
+              <h2>Selecciona un paciente</h2>
+              <p>Busca por nombre, DPI o expediente para abrir su cuenta financiera.</p>
+            </section>
+          )}
+      <p className={css.workspaceHint}>Consulta saldos, cargos, pagos, pendientes y planes; para crear nuevos cargos o cobrar usa Store.</p>
+    </div>
+  )
 }

@@ -109,7 +109,7 @@ export const privateModules = [
     id: 'store',
     to: paths.store,
     title: 'Store',
-    description: 'Nueva venta y planes de tratamiento',
+    description: 'Caja clínica: cargos y cobros',
     Icon: IconCreditCard,
     assetName: 'icopagos.png',
   },
