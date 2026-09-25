@@ -5,6 +5,7 @@ import com.ortos.api.modules.staff.MedicoRepository;
 import com.ortos.api.shared.exception.ApiException;
 import com.ortos.api.shared.security.AuthenticatedUser;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -20,12 +21,14 @@ public class AppointmentService {
     private final AppointmentTypeRepository types;
     private final AppointmentPriorityRepository priorities;
     private final AppointmentStatusRepository statuses;
+    private final NotificationService notifications;
 
     public AppointmentService(CitaRepository citas, PacienteRepository patients, MedicoRepository doctors,
                               AppointmentTypeRepository types, AppointmentPriorityRepository priorities,
-                              AppointmentStatusRepository statuses) {
+                              AppointmentStatusRepository statuses, NotificationService notifications) {
         this.citas = citas; this.patients = patients; this.doctors = doctors;
         this.types = types; this.priorities = priorities; this.statuses = statuses;
+        this.notifications = notifications;
     }
 
     public List<AppointmentDto> findAll(String patientId, String doctorId, Short statusId, LocalDate date) {
@@ -47,14 +50,33 @@ public class AppointmentService {
         try { return citas.findById(UUID.fromString(id)).orElseThrow(() -> ApiException.notFound("La cita no existe.")); }
         catch (IllegalArgumentException ex) { throw ApiException.notFound("La cita no existe."); }
     }
+    @Transactional
     public AppointmentDto create(AppointmentDto dto, AuthenticatedUser actor) {
-        validate(dto); Cita entity = new Cita(); entity.setId(UUID.randomUUID()); applyInput(entity, dto); return toDto(citas.save(entity));
+        validate(dto); Cita entity = new Cita(); entity.setId(UUID.randomUUID()); applyInput(entity, dto);
+        Cita saved = citas.save(entity);
+        notifications.notifyAppointment(saved.getPatientId(), saved.getId(), NotificationType.APPOINTMENT_CREATED);
+        return toDto(saved);
     }
-    public AppointmentDto update(String id, AppointmentDto dto) { validate(dto); Cita entity = getEntity(id); applyInput(entity, dto); return toDto(citas.save(entity)); }
+
+    @Transactional
+    public AppointmentDto update(String id, AppointmentDto dto) {
+        Cita entity = getEntity(id); validate(dto);
+        NotificationType type = notificationTypeForUpdate(entity.getStatusId(), dto.getStatusId());
+        applyInput(entity, dto);
+        Cita saved = citas.save(entity);
+        notifications.notifyAppointment(saved.getPatientId(), saved.getId(), type);
+        return toDto(saved);
+    }
+    @Transactional
     public AppointmentDto updateStatus(String id, String status) {
         Cita entity = getEntity(id);
-        entity.setStatusId(statuses.findByNameIgnoreCase(status).orElseThrow(() -> ApiException.badRequest("Selecciona un estado válido.")).getId());
-        return toDto(citas.save(entity));
+        AppointmentStatus target = statuses.findByNameIgnoreCase(status)
+                .orElseThrow(() -> ApiException.badRequest("Selecciona un estado válido."));
+        if (target.getId().equals(entity.getStatusId())) return toDto(entity);
+        entity.setStatusId(target.getId());
+        Cita saved = citas.save(entity);
+        notifications.notifyAppointment(saved.getPatientId(), saved.getId(), notificationTypeForStatus(target.getName()));
+        return toDto(saved);
     }
     public void delete(String id) { citas.delete(getEntity(id)); }
 
@@ -73,6 +95,19 @@ public class AppointmentService {
     private void applyInput(Cita e, AppointmentDto d) {
         e.setPatientId(d.getPatientId()); e.setDoctorId(d.getDoctorId()); e.setAppointmentTypeId(d.getAppointmentTypeId());
         e.setPriorityId(d.getPriorityId()); e.setStatusId(d.getStatusId()); e.setAppointmentAt(d.getAppointmentAt()); e.setNotes(d.getNotes());
+    }
+
+    private NotificationType notificationTypeForUpdate(Short previousStatusId, Short nextStatusId) {
+        if (previousStatusId.equals(nextStatusId)) return NotificationType.APPOINTMENT_UPDATED;
+        return statuses.findById(nextStatusId)
+                .map(status -> notificationTypeForStatus(status.getName()))
+                .orElse(NotificationType.APPOINTMENT_UPDATED);
+    }
+
+    private NotificationType notificationTypeForStatus(String status) {
+        if ("Cancelada".equalsIgnoreCase(status)) return NotificationType.APPOINTMENT_CANCELLED;
+        if ("Confirmada".equalsIgnoreCase(status)) return NotificationType.APPOINTMENT_CONFIRMED;
+        return NotificationType.APPOINTMENT_UPDATED;
     }
     private AppointmentDto toDto(Cita e) {
         AppointmentDto d = new AppointmentDto(); d.setId(e.getId().toString()); d.setPatientId(e.getPatientId()); d.setDoctorId(e.getDoctorId());

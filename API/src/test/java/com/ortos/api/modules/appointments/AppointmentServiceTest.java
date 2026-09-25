@@ -24,6 +24,8 @@ class AppointmentServiceTest {
     private CitaRepository citas;
     private PacienteRepository patients;
     private MedicoRepository doctors;
+    private AppointmentStatusRepository statuses;
+    private NotificationService notifications;
     private AppointmentService service;
 
     @BeforeEach
@@ -31,10 +33,11 @@ class AppointmentServiceTest {
         citas = mock(CitaRepository.class);
         patients = mock(PacienteRepository.class);
         doctors = mock(MedicoRepository.class);
+        notifications = mock(NotificationService.class);
         AppointmentTypeRepository types = mock(AppointmentTypeRepository.class);
         AppointmentPriorityRepository priorities = mock(AppointmentPriorityRepository.class);
-        AppointmentStatusRepository statuses = mock(AppointmentStatusRepository.class);
-        service = new AppointmentService(citas, patients, doctors, types, priorities, statuses);
+        statuses = mock(AppointmentStatusRepository.class);
+        service = new AppointmentService(citas, patients, doctors, types, priorities, statuses, notifications);
 
         when(patients.existsById("patient-1")).thenReturn(true);
         when(doctors.existsById("doctor-1")).thenReturn(true);
@@ -52,6 +55,7 @@ class AppointmentServiceTest {
         assertEquals("doctor-1", result.getDoctorId());
         assertEquals((short) 1, result.getStatusId());
         verify(citas).save(any(Cita.class));
+        verify(notifications).notifyAppointment(eq("patient-1"), any(), eq(NotificationType.APPOINTMENT_CREATED));
     }
 
     @Test
@@ -70,6 +74,33 @@ class AppointmentServiceTest {
         input.setNotes("Actualizada");
 
         assertEquals("Actualizada", service.update(appointment.getId().toString(), input).getNotes());
+        verify(notifications, times(1)).notifyAppointment(eq("patient-1"), eq(appointment.getId()), eq(NotificationType.APPOINTMENT_UPDATED));
+    }
+
+    @Test
+    void confirmsAppointmentWithoutDuplicatingUpdateNotification() {
+        Cita appointment = appointment();
+        when(citas.findById(appointment.getId())).thenReturn(Optional.of(appointment));
+        AppointmentStatus confirmed = new AppointmentStatus(); confirmed.setId((short) 2); confirmed.setName("Confirmada");
+        when(statuses.existsById((short) 2)).thenReturn(true);
+        when(statuses.findById((short) 2)).thenReturn(Optional.of(confirmed));
+        AppointmentDto input = validDto(); input.setStatusId((short) 2);
+
+        service.update(appointment.getId().toString(), input);
+
+        verify(notifications, times(1)).notifyAppointment("patient-1", appointment.getId(), NotificationType.APPOINTMENT_CONFIRMED);
+    }
+
+    @Test
+    void cancelsAppointment() {
+        Cita appointment = appointment();
+        when(citas.findById(appointment.getId())).thenReturn(Optional.of(appointment));
+        AppointmentStatus cancelled = new AppointmentStatus(); cancelled.setId((short) 5); cancelled.setName("Cancelada");
+        when(statuses.findByNameIgnoreCase("Cancelada")).thenReturn(Optional.of(cancelled));
+
+        service.updateStatus(appointment.getId().toString(), "Cancelada");
+
+        verify(notifications).notifyAppointment("patient-1", appointment.getId(), NotificationType.APPOINTMENT_CANCELLED);
     }
 
     @Test
