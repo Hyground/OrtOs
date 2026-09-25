@@ -27,7 +27,6 @@ import { DoctorsPage } from '@/features/doctors/components/DoctorsPage'
 import { AppointmentSummaryPage } from '@/features/reports/components/AppointmentSummaryPage'
 import { AppointmentHistoryPage } from '@/features/appointmentHistory/components/AppointmentHistoryPage'
 import { ReportsPage } from '@/features/reports/ReportsPage'
-import { StorePage } from '@/features/store/StorePage'
 import { useAuth } from '@/features/auth/hooks/useAuth'
 import { PageLoader } from '@/components/feedback/PageLoader'
 
@@ -63,8 +62,6 @@ export function AppRouter() {
                     <AppointmentsPage />
                   ) : module.to === paths.payments ? (
                     <PaymentsPage />
-                  ) : module.to === paths.store ? (
-                    <StorePage />
                   ) : module.to === paths.users ? (
                     <UsersPage />
                   ) : module.to === paths.specialties ? (
@@ -88,6 +85,7 @@ export function AppRouter() {
               }
             />
           ))}
+          <Route path={paths.store} element={<Navigate to={paths.payments} replace />} />
         </Route>
       </Route>
     </Routes>

@@ -7,19 +7,19 @@ import { SearchSelect } from '@/components/ui/SearchSelect/SearchSelect'
 import { accountFor, addCharge, moneyRounded, normalize, registerAccountPayment, useClinic } from '@/features/clinical/mockStore'
 import { readTreatments } from '@/features/treatments/treatmentsData'
 import { PaymentModal } from '@/features/payments/components/AccountDialogs'
-import { useDocumentTitle } from '@/hooks/useDocumentTitle'
-import styles from './StorePage.module.css'
+import { ReceiptModal } from './ReceiptModal'
+import styles from './PaymentsCashier.module.css'
 
 const newCustomCharge = () => ({ id: `custom-${crypto.randomUUID()}`, description: '', quantity: 1, unitPrice: '' })
 
-export function StorePage() {
-  useDocumentTitle('Store')
+export function PaymentsCashier() {
   const clinic = useClinic()
   const [patientId, setPatientId] = useState('')
   const [appointmentId, setAppointmentId] = useState('')
   const [query, setQuery] = useState('')
   const [cart, setCart] = useState([])
   const [payment, setPayment] = useState(null)
+  const [receipt, setReceipt] = useState(null)
   const [notice, setNotice] = useState('')
   const [saving, setSaving] = useState(false)
   const patient = clinic.patients.find((item) => item.id === patientId)
@@ -49,13 +49,14 @@ export function StorePage() {
     try { const charges = await saveCharges(); setPayment({ chargeIds: charges.map((charge) => charge.id), balance: charges.reduce((sum, charge) => sum + charge.subtotal, 0) }); setCart([]) } catch (error) { setNotice(error.message) } finally { setSaving(false) }
   }
   const completePayment = async (data) => {
-    await registerAccountPayment({ ...data, chargeIds: payment.chargeIds, appointmentId: appointmentId || undefined, notes: data.notes || 'Pago registrado desde Store' })
+    const registered = await registerAccountPayment({ ...data, chargeIds: payment.chargeIds, appointmentId: appointmentId || undefined, notes: data.notes || 'Pago registrado desde Pagos' })
     setPayment(null)
+    setReceipt(registered)
     setNotice(`Pago registrado. Saldo de esta operación: ${moneyRounded(Math.max(0, payment.balance - data.amount))}.`)
   }
 
   return <div className={styles.page}>
-    <section className={styles.hero}><IconCreditCard /><div><span>CAJA CLÍNICA</span><h1>Store</h1><p>Crea cargos y cobra desde una sola cuenta del paciente.</p></div><strong>{moneyRounded(total)}</strong></section>
+    <section className={styles.hero}><IconCreditCard /><div><span>CAJA CLÍNICA</span><h1>Pagos</h1><p>Crea cargos y cobra desde una sola cuenta del paciente.</p></div><strong>{moneyRounded(total)}</strong></section>
     {notice && <p role="status" className={styles.storeNotice}>{notice}</p>}
     <section className={styles.patientStep}>
       <div className={styles.patientControl}><SearchSelect label="Paciente" placeholder="Buscar por nombre, DPI o expediente..." options={clinic.patients} value={patientId} onChange={(id) => { setPatientId(id); setAppointmentId(''); setCart([]); setNotice('') }} /></div>
@@ -67,5 +68,6 @@ export function StorePage() {
       <aside className={styles.cart}><header><div><span>CARGOS</span><h2>Carrito</h2></div><b>{cart.length} conceptos</b></header><div className={styles.cartItems}>{cart.map((item) => <article className={styles.cartItem} key={item.id}><div className={styles.chargeFields}><TextField label="Descripción" value={item.description} onChange={(event) => update(item.id, 'description', event.target.value)} /><TextField label="Cantidad" type="number" min="1" value={item.quantity} onChange={(event) => update(item.id, 'quantity', event.target.value)} /><TextField label="Precio unitario" type="number" min="0" value={item.unitPrice} onChange={(event) => update(item.id, 'unitPrice', event.target.value)} /></div><b>{moneyRounded(Number(item.quantity || 0) * Number(item.unitPrice || 0))}</b><button type="button" className={styles.remove} aria-label={`Eliminar ${item.description || 'cargo'}`} onClick={() => remove(item.id)}>×</button></article>)}{!cart.length && <div className={styles.emptyCart}><IconCreditCard /><strong>El carrito está vacío</strong><p>Agrega un tratamiento o un cargo personalizado.</p></div>}</div><footer className={styles.cartFooter}><Button type="button" variant="ghost" disabled={!patient} onClick={() => setCart((items) => [...items, newCustomCharge()])}>+ Cargo personalizado</Button><div><span>TOTAL</span><strong>{moneyRounded(total)}</strong></div><Button type="button" variant="ghost" disabled={!patient || !cart.length || saving} onClick={leavePending}>Dejar pendiente</Button><Button type="button" disabled={!patient || !cart.length || saving} onClick={beginPayment}>{saving ? 'Guardando…' : 'COBRAR'}</Button></footer></aside>
     </div>
     {payment && <PaymentModal patient={patient} balance={payment.balance} chargeIds={payment.chargeIds} appointmentId={appointmentId} onSave={completePayment} onClose={() => setPayment(null)} />}
+    {receipt && <ReceiptModal payment={receipt} patient={patient} onClose={() => setReceipt(null)} />}
   </div>
 }

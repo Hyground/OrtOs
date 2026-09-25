@@ -106,14 +106,6 @@ export const privateModules = [
     assetName: 'icopagos.png',
   },
   {
-    id: 'store',
-    to: paths.store,
-    title: 'Store',
-    description: 'Caja clínica: cargos y cobros',
-    Icon: IconCreditCard,
-    assetName: 'icopagos.png',
-  },
-  {
     id: 'reportes',
     to: paths.reports,
     title: 'Reporte',

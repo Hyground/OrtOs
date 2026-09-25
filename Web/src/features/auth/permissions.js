@@ -9,14 +9,13 @@ export function canAccess(user, path) {
   if (!user) return false
   if (path === paths.dashboard) return true
   if (user.role === 'admin') return true
-  if (path === paths.store) return user.role === 'asistente'
+  if (path === paths.store) return canAccess(user, paths.payments)
   return (
     (user.role === 'odontologo' || user.role === 'asistente') &&
     [
       paths.patients,
       paths.appointments,
       paths.payments,
-      paths.store,
       paths.specialties,
       paths.odontogram,
       paths.reports,
