@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OrtOs API Tester</title>
+  <style>
+    :root { color-scheme: dark; --bg:#10131a; --panel:#181d27; --line:#303848; --muted:#98a4b8; --text:#eef3fa; --blue:#65a8ff; --green:#57d49a; --red:#ff7777; --yellow:#f7c85b; }
+    * { box-sizing:border-box; } body { margin:0; min-height:100vh; background:var(--bg); color:var(--text); font:14px/1.45 Inter,ui-sans-serif,system-ui,sans-serif; }
+    header { position:sticky; top:0; z-index:2; display:grid; grid-template-columns:1fr 2fr auto; gap:12px; padding:14px 20px; border-bottom:1px solid var(--line); background:#121722; }
+    label { display:block; color:var(--muted); font-size:12px; margin-bottom:5px; } input,select,textarea,button { border:1px solid var(--line); border-radius:7px; background:#0e131d; color:var(--text); font:inherit; }
+    input,select,textarea { width:100%; padding:9px 10px; } textarea { min-height:116px; resize:vertical; font:12px/1.45 ui-monospace,SFMono-Regular,Consolas,monospace; }
+    button { padding:9px 13px; cursor:pointer; } button:hover { border-color:var(--blue); } .primary { border-color:#397dcc; background:#1c528e; font-weight:700; }
+    .shell { display:grid; grid-template-columns:220px minmax(0,1fr); min-height:calc(100vh - 77px); } aside { padding:18px 12px; border-right:1px solid var(--line); background:#131823; } .brand { font-weight:800; font-size:17px; margin:1px 8px 20px; } .brand small { display:block; color:var(--muted); font-weight:400; font-size:11px; }
+    .group { color:var(--muted); font-size:11px; letter-spacing:.08em; margin:18px 8px 6px; text-transform:uppercase; } .nav { width:100%; text-align:left; margin:2px 0; border:0; background:transparent; } .nav.active { background:#26344a; color:#fff; }
+    main { max-width:1280px; width:100%; padding:26px; margin:auto; } h1 { margin:0 0 5px; font-size:24px; } .lead { color:var(--muted); margin:0 0 20px; } .presets { display:flex; flex-wrap:wrap; gap:8px; margin:0 0 22px; } .preset { display:flex; gap:8px; align-items:center; text-align:left; background:var(--panel); } .method { min-width:46px; color:var(--blue); font-weight:800; font-size:11px; }
+    .card { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:18px; margin:14px 0; } .grid { display:grid; grid-template-columns:140px 1fr; gap:12px; } .two { display:grid; grid-template-columns:1fr 1fr; gap:16px; } .actions { display:flex; justify-content:flex-end; gap:8px; margin-top:12px; } .hint { color:var(--muted); font-size:12px; margin:7px 0 0; }
+    .result-head { display:flex; flex-wrap:wrap; gap:10px; align-items:center; } #status { font-weight:800; } .ok { color:var(--green); } .bad { color:var(--red); } .pending { color:var(--yellow); } pre { margin:12px 0 0; padding:14px; overflow:auto; min-height:180px; border-radius:7px; background:#0c1119; color:#c9d5e8; font:12px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace; white-space:pre-wrap; }
+    #headers { color:var(--muted); font:12px ui-monospace,SFMono-Regular,Consolas,monospace; } .hidden { display:none; } @media (max-width:760px) { header,.shell,.two { display:block; } header > div { margin:0 0 10px; } aside { border-right:0; border-bottom:1px solid var(--line); display:flex; overflow:auto; padding:8px; } .brand,.group { display:none; } .nav { white-space:nowrap; width:auto; } main { padding:17px; } .grid { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+<header>
+  <div><label for="baseUrl">Base URL</label><input id="baseUrl" value="http://localhost:8080" autocomplete="off"></div>
+  <div><label for="token">JWT Token (solo memoria)</label><input id="token" type="password" placeholder="Pega un token obtenido desde login" autocomplete="off"></div>
+  <div style="align-self:end"><button id="copyToken">Copy token</button></div>
+</header>
+<div class="shell">
+  <aside><div class="brand">OrtOs <small>Development API Tester</small></div><div id="nav"></div></aside>
+  <main>
+    <h1 id="title">API tester</h1><p class="lead" id="description">Selecciona una petición predefinida o usa Custom Request.</p>
+    <div class="presets" id="presets"></div>
+    <section class="card">
+      <div class="grid"><div><label for="method">Method</label><select id="method"><option>GET</option><option>POST</option><option>PUT</option><option>PATCH</option><option>DELETE</option></select></div><div><label for="endpoint">Endpoint</label><input id="endpoint" value="/api/saludo" autocomplete="off"></div></div>
+      <div class="two" style="margin-top:16px"><div><label for="params">Query params (JSON object)</label><textarea id="params" spellcheck="false">{}</textarea><p class="hint">Ej.: { "from": "2026-10-10T00:00:00Z", "to": "2026-10-11T00:00:00Z" }</p></div><div><label for="body">JSON body</label><textarea id="body" spellcheck="false"></textarea><p class="hint">Se envía solamente para POST, PUT y PATCH.</p></div></div>
+      <div class="actions"><button id="reset">Reset</button><button class="primary" id="send">Send Request</button></div>
+    </section>
+    <section class="card"><div class="result-head"><strong>Response</strong><span id="status">Sin petición</span><span id="duration"></span></div><div id="headers"></div><pre id="response">Envía una petición para ver la respuesta.</pre></section>
+  </main>
+</div>
+<script>
+  const presets = [
+    {g:'Auth',n:'Login',m:'POST',p:'/api/auth/login',b:{email:'',password:''},d:'Obtiene JWT y lo coloca automáticamente arriba.'},
+    {g:'Auth',n:'My session',m:'GET',p:'/api/auth/me'}, {g:'Auth',n:'Password reset',m:'POST',p:'/api/auth/password-reset',b:{email:''}},
+    {g:'Patients',n:'List patients',m:'GET',p:'/api/patients'}, {g:'Patients',n:'Get patient',m:'GET',p:'/api/patients/{id}'},
+    {g:'Patients',n:'Create patient',m:'POST',p:'/api/patients',b:{names:'',surnames:'',dpi:'',phone:'',secondaryPhone:'',email:'',birthDate:'',gender:'',maritalStatus:'',occupation:'',department:'',municipality:'',address:'',reference:'',bloodGroup:'',allergies:'',diseases:'',medications:false,smoker:false,notes:'',photo:'',status:'Activo'}},
+    {g:'Patients',n:'Update patient',m:'PUT',p:'/api/patients/{id}',b:{names:'',surnames:'',dpi:'',phone:'',secondaryPhone:'',email:'',birthDate:'',gender:'',maritalStatus:'',occupation:'',department:'',municipality:'',address:'',reference:'',bloodGroup:'',allergies:'',diseases:'',medications:false,smoker:false,notes:'',photo:'',status:'Activo'}}, {g:'Patients',n:'Delete patient',m:'DELETE',p:'/api/patients/{id}'},
+    {g:'Doctors',n:'List doctors',m:'GET',p:'/api/doctors'}, {g:'Doctors',n:'Get doctor',m:'GET',p:'/api/doctors/{id}'},
+    {g:'Doctors',n:'Create doctor',m:'POST',p:'/api/doctors',b:{names:'',surnames:'',dpi:'',specialty:'',address:'',phone:'',email:'',status:'Activo',photo:''}},
+    {g:'Doctors',n:'Update doctor',m:'PUT',p:'/api/doctors/{id}',b:{names:'',surnames:'',dpi:'',specialty:'',address:'',phone:'',email:'',status:'Activo',photo:''}}, {g:'Doctors',n:'Delete doctor',m:'DELETE',p:'/api/doctors/{id}'},
+    {g:'Appointments',n:'List / filters',m:'GET',p:'/api/appointments',q:{patientId:'',doctorId:'',statusId:'',from:'',to:''}}, {g:'Appointments',n:'Get appointment',m:'GET',p:'/api/appointments/{id}'},
+    {g:'Appointments',n:'Create appointment',m:'POST',p:'/api/appointments',b:{patientId:'',doctorId:'',appointmentTypeId:1,priorityId:1,statusId:1,appointmentAt:'2026-10-10T10:00:00Z',notes:''}},
+    {g:'Appointments',n:'Update appointment',m:'PUT',p:'/api/appointments/{id}',b:{patientId:'',doctorId:'',appointmentTypeId:1,priorityId:1,statusId:1,appointmentAt:'2026-10-10T10:00:00Z',notes:''}},
+    {g:'Appointments',n:'Change status',m:'PATCH',p:'/api/appointments/{id}/status',b:{status:'Confirmada'}}, {g:'Appointments',n:'Delete appointment',m:'DELETE',p:'/api/appointments/{id}'},
+    {g:'Appointments',n:'Calendar',m:'GET',p:'/api/appointments/calendar',q:{from:'2026-10-10T00:00:00Z',to:'2026-10-11T00:00:00Z',doctorId:'',patientId:''}},
+    {g:'Appointments',n:'Availability',m:'GET',p:'/api/appointments/availability',q:{doctorId:'',from:'2026-10-10T00:00:00Z',to:'2026-10-11T00:00:00Z'}},
+    {g:'Appointments',n:'Availability check',m:'GET',p:'/api/appointments/availability/check',q:{doctorId:'',appointmentAt:'2026-10-10T10:00:00Z',excludeAppointmentId:''}},
+    {g:'Notifications',n:'My notifications',m:'GET',p:'/api/notifications'}, {g:'Notifications',n:'Get notification',m:'GET',p:'/api/notifications/{id}'},
+    {g:'Notifications',n:'User notifications',m:'GET',p:'/api/notifications/user/{userId}',q:{read:''}}, {g:'Notifications',n:'Unread notifications',m:'GET',p:'/api/notifications/user/{userId}/unread'},
+    {g:'Notifications',n:'Mark read',m:'PATCH',p:'/api/notifications/{id}/read'}, {g:'Notifications',n:'Mark all read',m:'PATCH',p:'/api/notifications/user/{userId}/read-all'}, {g:'Notifications',n:'Delete notification',m:'DELETE',p:'/api/notifications/{id}'},
+    {g:'Catalogs',n:'Appointment types',m:'GET',p:'/api/appointment-types'}, {g:'Catalogs',n:'Appointment priorities',m:'GET',p:'/api/appointment-priorities'}, {g:'Catalogs',n:'Appointment statuses',m:'GET',p:'/api/appointment-statuses'}, {g:'Catalogs',n:'Specialties',m:'GET',p:'/api/specialties'}, {g:'Catalogs',n:'Services / treatments',m:'GET',p:'/api/services'},
+    {g:'Custom Request',n:'Custom request',m:'GET',p:'/api/saludo',d:'Edita método, endpoint, parámetros y JSON libremente.'}
+  ];
+  const $ = id => document.getElementById(id); let current = presets[0];
+  const groupOrder = ['Auth','Patients','Doctors','Appointments','Notifications','Catalogs','Custom Request'];
+  function pretty(v){ return v && Object.keys(v).length ? JSON.stringify(v,null,2) : ''; }
+  function showPreset(item){ current=item; $('method').value=item.m; $('endpoint').value=item.p; $('params').value=pretty(item.q||{}); $('body').value=pretty(item.b||{}); $('title').textContent=item.n; $('description').textContent=item.d||'Petición basada en un endpoint existente de OrtOs.'; renderPresets(); }
+  function renderNav(){ const nav=$('nav'); nav.innerHTML=''; groupOrder.forEach(g=>{ const a=presets.filter(x=>x.g===g); if(!a.length)return; const label=document.createElement('div'); label.className='group'; label.textContent=g; nav.append(label); a.forEach(x=>{const b=document.createElement('button');b.className='nav'+(x===current?' active':'');b.textContent=x.n;b.onclick=()=>showPreset(x);nav.append(b);}); }); }
+  function renderPresets(){ renderNav(); $('presets').innerHTML=''; presets.filter(x=>x.g===current.g).forEach(x=>{const b=document.createElement('button');b.className='preset';b.innerHTML=`<span class="method">${x.m}</span><span>${x.n}</span>`;b.onclick=()=>showPreset(x);$('presets').append(b);}); }
+  function parseJson(value,label){ if(!value.trim()) return {}; try { const parsed=JSON.parse(value); if(parsed===null||Array.isArray(parsed)||typeof parsed!=='object') throw Error(); return parsed; } catch { throw new Error(`${label} debe ser un objeto JSON válido.`); } }
+  async function send(){ const status=$('status'), output=$('response'), start=performance.now(); status.className='pending';status.textContent='Enviando…';$('duration').textContent='';$('headers').textContent=''; output.textContent=''; try { const query=parseJson($('params').value,'Query params'), bodyText=$('body').value.trim(), method=$('method').value; const url=new URL($('endpoint').value.trim(),$('baseUrl').value.trim().replace(/\/?$/,'/')); Object.entries(query).forEach(([k,v])=>{if(v!==''&&v!==null&&v!==undefined)url.searchParams.set(k,String(v));}); const headers={Accept:'application/json'}; const token=$('token').value.trim(); if(token) headers.Authorization=`Bearer ${token}`; const options={method,headers}; if(bodyText && ['POST','PUT','PATCH'].includes(method)){ JSON.parse(bodyText); headers['Content-Type']='application/json'; options.body=bodyText; } const response=await fetch(url,options); const text=await response.text(); let data=text; try{data=text?JSON.parse(text):null;}catch{} const elapsed=Math.round(performance.now()-start); status.className=response.ok?'ok':'bad';status.textContent=`${response.status} ${response.statusText}`;$('duration').textContent=`${elapsed} ms`;$('headers').textContent=['content-type','location'].map(h=>response.headers.get(h)&&`${h}: ${response.headers.get(h)}`).filter(Boolean).join(' · '); output.textContent=typeof data==='string'?data:JSON.stringify(data,null,2); if(current.g==='Auth'&&current.n==='Login'&&response.ok&&data&&data.token){$('token').value=data.token; $('token').type='text';} } catch(error) { const elapsed=Math.round(performance.now()-start); status.className='bad';status.textContent='Network / request error';$('duration').textContent=`${elapsed} ms`; output.textContent=`${error.message}\n\nSi abriste este archivo con file://, usa el perfil dev (CORS permite Origin: null) o sirve el archivo desde un origen incluido en ORTOS_CORS_ALLOWED_ORIGINS.`; } }
+  $('send').onclick=send; $('reset').onclick=()=>showPreset(current); $('copyToken').onclick=async()=>{try{await navigator.clipboard.writeText($('token').value);$('copyToken').textContent='Copied';setTimeout(()=>{$('copyToken').textContent='Copy token'},1200)}catch{}}; renderPresets(); showPreset(current);
+</script>
+</body>
+</html>
