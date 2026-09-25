@@ -1,68 +1,30 @@
 package com.ortos.api.modules.appointments;
 
-import com.ortos.api.modules.appointments.AppointmentDto;
 import com.ortos.api.shared.security.AccessGuard;
 import com.ortos.api.shared.security.AuthenticatedUser;
 import com.ortos.api.shared.security.CurrentUser;
-import com.ortos.api.modules.appointments.AppointmentService;
+import jakarta.validation.Valid;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/appointments")
 public class AppointmentController {
-
-    private final AppointmentService appointmentService;
-
-    public AppointmentController(AppointmentService appointmentService) {
-        this.appointmentService = appointmentService;
-    }
-
-    @GetMapping
-    public List<AppointmentDto> findAll() {
-        AuthenticatedUser user = CurrentUser.get();
-        AccessGuard.requireAuthenticated(user);
-        List<AppointmentDto> all = appointmentService.findAll();
-        if (user.isPaciente()) {
-            return all.stream().filter(a -> a.getPatientId().equals(user.patientId())).toList();
-        }
-        return all;
-    }
-
-    @GetMapping("/{id}")
-    public AppointmentDto findById(@PathVariable String id) {
-        AppointmentDto dto = appointmentService.findById(id);
-        AccessGuard.requireBasicReadAccess(CurrentUser.get(), dto.getPatientId());
-        return dto;
-    }
-
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public AppointmentDto create(@RequestBody AppointmentDto dto) {
-        AuthenticatedUser user = CurrentUser.get();
-        AccessGuard.requireBasicStaff(user);
-        return appointmentService.create(dto, user);
-    }
-
-    @PutMapping("/{id}")
-    public AppointmentDto update(@PathVariable String id, @RequestBody AppointmentDto dto) {
-        AccessGuard.requireBasicStaff(CurrentUser.get());
-        return appointmentService.update(id, dto);
-    }
-
-    @PatchMapping("/{id}/status")
-    public AppointmentDto updateStatus(@PathVariable String id, @RequestBody Map<String, String> body) {
-        AccessGuard.requireBasicStaff(CurrentUser.get());
-        return appointmentService.updateStatus(id, body.get("status"));
-    }
-
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable String id) {
-        AccessGuard.requireBasicStaff(CurrentUser.get());
-        appointmentService.delete(id);
-    }
+    private final AppointmentService service;
+    public AppointmentController(AppointmentService service) { this.service = service; }
+    @GetMapping("/api/appointments") public List<AppointmentDto> all(@RequestParam(required=false) String patientId, @RequestParam(required=false) String doctorId, @RequestParam(required=false) Short statusId, @RequestParam(required=false) @DateTimeFormat(iso=DateTimeFormat.ISO.DATE) LocalDate date) { AuthenticatedUser user=CurrentUser.get(); AccessGuard.requireAuthenticated(user); return service.findAll(user.isPaciente()?user.patientId():patientId,doctorId,statusId,date); }
+    @GetMapping("/api/appointments/{id}") public AppointmentDto one(@PathVariable String id) { AppointmentDto dto=service.findById(id); AccessGuard.requireBasicReadAccess(CurrentUser.get(),dto.getPatientId()); return dto; }
+    @GetMapping("/api/appointments/patient/{patientId}") public List<AppointmentDto> patient(@PathVariable String patientId) { AccessGuard.requireBasicReadAccess(CurrentUser.get(),patientId); return service.findByPatient(patientId); }
+    @GetMapping("/api/appointments/doctor/{doctorId}") public List<AppointmentDto> doctor(@PathVariable String doctorId) { AccessGuard.requireAuthenticated(CurrentUser.get()); return service.findByDoctor(doctorId); }
+    @GetMapping("/api/appointments/date") public List<AppointmentDto> date(@RequestParam @DateTimeFormat(iso=DateTimeFormat.ISO.DATE) LocalDate date) { AccessGuard.requireAuthenticated(CurrentUser.get()); return service.findByDate(date); }
+    @PostMapping("/api/appointments") @ResponseStatus(HttpStatus.CREATED) public AppointmentDto create(@Valid @RequestBody AppointmentDto dto) { AuthenticatedUser user=CurrentUser.get(); AccessGuard.requireBasicStaff(user); return service.create(dto,user); }
+    @PutMapping("/api/appointments/{id}") public AppointmentDto update(@PathVariable String id,@Valid @RequestBody AppointmentDto dto) { AccessGuard.requireBasicStaff(CurrentUser.get()); return service.update(id,dto); }
+    @PatchMapping("/api/appointments/{id}/status") public AppointmentDto status(@PathVariable String id,@RequestBody Map<String,String> body) { AccessGuard.requireBasicStaff(CurrentUser.get()); return service.updateStatus(id,body.get("status")); }
+    @DeleteMapping("/api/appointments/{id}") @ResponseStatus(HttpStatus.NO_CONTENT) public void delete(@PathVariable String id) { AccessGuard.requireBasicStaff(CurrentUser.get()); service.delete(id); }
+    @GetMapping("/api/appointment-types") public List<AppointmentType> types() { AccessGuard.requireAuthenticated(CurrentUser.get()); return service.findTypes(); }
+    @GetMapping("/api/appointment-priorities") public List<AppointmentPriority> priorities() { AccessGuard.requireAuthenticated(CurrentUser.get()); return service.findPriorities(); }
+    @GetMapping("/api/appointment-statuses") public List<AppointmentStatus> statuses() { AccessGuard.requireAuthenticated(CurrentUser.get()); return service.findStatuses(); }
 }

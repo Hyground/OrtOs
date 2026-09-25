@@ -4,36 +4,45 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.OffsetDateTime;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
-@Table(name = "citas")
+@Table(name = "appointments")
 @Getter
 @Setter
 public class Cita {
     @Id
-    private String id;
+    private UUID id;
 
-    @Column(name = "patient_id")
+    @Column(name = "patient_id", nullable = false)
     private String patientId;
 
-    private String dentist;
-    private LocalDate date;
-    private String time;
-    private String duration;
-    private String chair;
-    private String treatment;
-    private String type;
-    private String priority;
-    private String reminder;
-    private String reason;
+    @Column(name = "doctor_id", nullable = false)
+    private String doctorId;
+
+    @Column(name = "appointment_type_id", nullable = false)
+    private Short appointmentTypeId;
+
+    @Column(name = "priority_id", nullable = false)
+    private Short priorityId;
+
+    @Column(name = "status_id", nullable = false)
+    private Short statusId;
+
+    @Column(name = "appointment_at", nullable = false)
+    private OffsetDateTime appointmentAt;
+
     private String notes;
-    private String status = "Pendiente";
 
-    @Column(name = "fecha_creacion")
-    private LocalDateTime fechaCreacion;
+    /** Compatibility accessor for read-only patient summaries; appointments no longer store a treatment. */
+    public LocalDate getDate() {
+        return appointmentAt == null ? null : appointmentAt.toLocalDate();
+    }
 
-    @Column(name = "creada_por")
-    private String creadaPor;
+    /** Treatments belong to the clinical module in the normalized model. */
+    public String getTreatment() {
+        return null;
+    }
 }
