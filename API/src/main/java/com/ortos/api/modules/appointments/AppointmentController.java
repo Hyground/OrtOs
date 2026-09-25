@@ -8,14 +8,19 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 public class AppointmentController {
     private final AppointmentService service;
     public AppointmentController(AppointmentService service) { this.service = service; }
-    @GetMapping("/api/appointments") public List<AppointmentDto> all(@RequestParam(required=false) String patientId, @RequestParam(required=false) String doctorId, @RequestParam(required=false) Short statusId, @RequestParam(required=false) @DateTimeFormat(iso=DateTimeFormat.ISO.DATE) LocalDate date) { AuthenticatedUser user=CurrentUser.get(); AccessGuard.requireAuthenticated(user); return service.findAll(user.isPaciente()?user.patientId():patientId,doctorId,statusId,date); }
+    @GetMapping("/api/appointments") public List<AppointmentDto> all(@RequestParam(required=false) String patientId, @RequestParam(required=false) String doctorId, @RequestParam(required=false) Short statusId, @RequestParam(required=false) @DateTimeFormat(iso=DateTimeFormat.ISO.DATE) LocalDate date, @RequestParam(required=false) @DateTimeFormat(iso=DateTimeFormat.ISO.DATE_TIME) OffsetDateTime from, @RequestParam(required=false) @DateTimeFormat(iso=DateTimeFormat.ISO.DATE_TIME) OffsetDateTime to) { AuthenticatedUser user=CurrentUser.get(); AccessGuard.requireAuthenticated(user); return service.findAll(user.isPaciente()?user.patientId():patientId,doctorId,statusId,date,from,to); }
+    @GetMapping("/api/appointments/calendar") public List<CalendarAppointmentDto> calendar(@RequestParam @DateTimeFormat(iso=DateTimeFormat.ISO.DATE_TIME) OffsetDateTime from, @RequestParam @DateTimeFormat(iso=DateTimeFormat.ISO.DATE_TIME) OffsetDateTime to, @RequestParam(required=false) String doctorId, @RequestParam(required=false) String patientId) { AuthenticatedUser user=CurrentUser.get(); AccessGuard.requireAuthenticated(user); return service.calendar(user.isPaciente()?user.patientId():patientId, doctorId, from, to); }
+    @GetMapping("/api/appointments/availability") public AvailabilityDto availability(@RequestParam String doctorId, @RequestParam @DateTimeFormat(iso=DateTimeFormat.ISO.DATE_TIME) OffsetDateTime from, @RequestParam @DateTimeFormat(iso=DateTimeFormat.ISO.DATE_TIME) OffsetDateTime to) { AccessGuard.requireBasicStaff(CurrentUser.get()); return service.availability(doctorId, from, to); }
+    @GetMapping("/api/appointments/availability/check") public AvailabilityCheckDto availabilityCheck(@RequestParam String doctorId, @RequestParam @DateTimeFormat(iso=DateTimeFormat.ISO.DATE_TIME) OffsetDateTime appointmentAt, @RequestParam(required=false) UUID excludeAppointmentId) { AccessGuard.requireBasicStaff(CurrentUser.get()); return service.checkAvailability(doctorId, appointmentAt, excludeAppointmentId); }
     @GetMapping("/api/appointments/{id}") public AppointmentDto one(@PathVariable String id) { AppointmentDto dto=service.findById(id); AccessGuard.requireBasicReadAccess(CurrentUser.get(),dto.getPatientId()); return dto; }
     @GetMapping("/api/appointments/patient/{patientId}") public List<AppointmentDto> patient(@PathVariable String patientId) { AccessGuard.requireBasicReadAccess(CurrentUser.get(),patientId); return service.findByPatient(patientId); }
     @GetMapping("/api/appointments/doctor/{doctorId}") public List<AppointmentDto> doctor(@PathVariable String doctorId) { AccessGuard.requireAuthenticated(CurrentUser.get()); return service.findByDoctor(doctorId); }

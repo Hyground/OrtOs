@@ -2,6 +2,7 @@ package com.ortos.api.modules.appointments;
 
 import com.ortos.api.modules.patients.PacienteRepository;
 import com.ortos.api.modules.staff.MedicoRepository;
+import com.ortos.api.modules.staff.Medico;
 import com.ortos.api.shared.exception.ApiException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,9 +42,13 @@ class AppointmentServiceTest {
 
         when(patients.existsById("patient-1")).thenReturn(true);
         when(doctors.existsById("doctor-1")).thenReturn(true);
+        Medico doctor = new Medico(); doctor.setId("doctor-1");
+        when(doctors.findByIdForScheduling("doctor-1")).thenReturn(Optional.of(doctor));
         when(types.existsById((short) 1)).thenReturn(true);
         when(priorities.existsById((short) 1)).thenReturn(true);
         when(statuses.existsById((short) 1)).thenReturn(true);
+        AppointmentStatus scheduled = new AppointmentStatus(); scheduled.setId((short) 1); scheduled.setName("Programada");
+        when(statuses.findById((short) 1)).thenReturn(Optional.of(scheduled));
         when(citas.save(any(Cita.class))).thenAnswer(invocation -> invocation.getArgument(0));
     }
 
@@ -144,6 +149,74 @@ class AppointmentServiceTest {
         dto.setDoctorId("missing");
 
         assertThrows(ApiException.class, () -> service.create(dto, null));
+    }
+
+    @Test
+    void rejectsSecondBlockingAppointmentForSameDoctorAndSlot() {
+        when(citas.findBlockingAtSlot(anyString(), any(), any(), any())).thenReturn(List.of(appointment()));
+
+        assertThrows(ApiException.class, () -> service.create(validDto(), null));
+        verify(notifications, never()).notifyAppointment(anyString(), any(), any());
+    }
+
+    @Test
+    void permitsSameSlotForDifferentDoctor() {
+        Medico otherDoctor = new Medico(); otherDoctor.setId("doctor-2");
+        when(doctors.findByIdForScheduling("doctor-2")).thenReturn(Optional.of(otherDoctor));
+        AppointmentDto dto = validDto(); dto.setDoctorId("doctor-2");
+
+        service.create(dto, null);
+
+        verify(citas).save(any(Cita.class));
+    }
+
+    @Test
+    void permitsSlotHeldByCancelledAppointment() {
+        AppointmentStatus cancelled = new AppointmentStatus(); cancelled.setId((short) 5); cancelled.setName("Cancelada");
+        when(statuses.findById((short) 5)).thenReturn(Optional.of(cancelled));
+        AppointmentDto dto = validDto(); dto.setStatusId((short) 5);
+
+        service.create(dto, null);
+
+        verify(citas).save(any(Cita.class));
+        verify(citas, never()).findBlockingAtSlot(anyString(), any(), any(), any());
+    }
+
+    @Test
+    void rejectsMoveToOccupiedSlotWithoutNotification() {
+        Cita existing = appointment();
+        when(citas.findById(existing.getId())).thenReturn(Optional.of(existing));
+        when(citas.findBlockingAtSlot(anyString(), any(), eq(existing.getId()), any())).thenReturn(List.of(appointment()));
+        AppointmentDto dto = validDto(); dto.setAppointmentAt(dto.getAppointmentAt().plusHours(1));
+
+        assertThrows(ApiException.class, () -> service.update(existing.getId().toString(), dto));
+        verify(notifications, never()).notifyAppointment(anyString(), any(), any());
+    }
+
+    @Test
+    void searchesRangeChronologically() {
+        OffsetDateTime from = OffsetDateTime.of(2026, 9, 24, 0, 0, 0, 0, ZoneOffset.UTC);
+        OffsetDateTime to = from.plusDays(1);
+        Cita first = appointment();
+        Cita second = appointment(); second.setAppointmentAt(first.getAppointmentAt().plusHours(1));
+        when(citas.search("patient-1", "doctor-1", (short) 1, from, to)).thenReturn(List.of(first, second));
+
+        assertEquals(2, service.findAll("patient-1", "doctor-1", (short) 1, null, from, to).size());
+        verify(citas).search("patient-1", "doctor-1", (short) 1, from, to);
+    }
+
+    @Test
+    void reportsAvailabilityForOccupiedAndFreeSlot() {
+        Cita conflict = appointment();
+        when(citas.findBlockingAtSlot(eq("doctor-1"), eq(conflict.getAppointmentAt()), isNull(), any()))
+                .thenReturn(List.of(conflict));
+
+        AvailabilityCheckDto occupied = service.checkAvailability("doctor-1", conflict.getAppointmentAt(), null);
+        AvailabilityCheckDto free = service.checkAvailability("doctor-1", conflict.getAppointmentAt().plusHours(1), null);
+
+        assertEquals(false, occupied.isAvailable());
+        assertEquals(conflict.getId(), occupied.getConflictingAppointmentId());
+        assertEquals(true, free.isAvailable());
     }
 
     private AppointmentDto validDto() {
