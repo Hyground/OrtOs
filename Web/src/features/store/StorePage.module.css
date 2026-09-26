@@ -4,10 +4,6 @@
   color: var(--color-text);
 }
 
-.embedded {
-  height: calc(100dvh - 235px);
-}
-
 .hero {
   display: grid;
   grid-template-columns: auto 1fr auto;
@@ -713,23 +709,4 @@
   color: var(--color-primary-dark);
   font-size: 12px;
   font-weight: 800;
-}
-
-.chargeFields {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 82px 112px;
-  gap: 8px;
-  min-width: 0;
-}
-.chargeFields label { font-size: 10px; }
-.cartItem { grid-template-columns: minmax(0, 1fr) auto; padding-right: 42px; }
-.cartItem > b { align-self: end; }
-.storeNotice { margin: 0; padding: 9px 12px; border-radius: 9px; color: var(--color-success); background: color-mix(in srgb, var(--color-success) 10%, transparent); font-size: 12px; }
-@media (max-width: 680px) {
-  .page, .embedded { height: auto; min-height: 0; overflow: visible; }
-  .storeLayout { height: auto; overflow: visible; grid-template-rows: auto auto; }
-  .catalog, .cart { height: auto; }
-  .catalogGrid, .cartItems { max-height: 360px; }
-  .chargeFields { grid-template-columns: 1fr 82px; }
-  .chargeFields > :first-child { grid-column: 1 / -1; }
 }
